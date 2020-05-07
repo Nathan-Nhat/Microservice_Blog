@@ -1,0 +1,31 @@
+summary: Sign up user
+parameters:
+  - name: form
+    in: body
+    description: Form sign up
+    schema:
+      type: object
+      required:
+        -username
+        -password
+        -email
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+        email:
+          type: string
+definitions:
+  User:
+    type: object
+    properties:
+      username:
+        type: string
+      role:
+        type: string
+responses:
+  200:
+    description: Return username and roles
+    schema:
+      $ref: '#/definitions/User'
