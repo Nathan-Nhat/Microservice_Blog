@@ -6,17 +6,18 @@ from app.helper.Convert import ConvertToDate
 import requests
 
 
-def fake(count=10000):
+def fake(count=100):
     faker = Faker()
     for i in range(count):
         post = Post(title=faker.text(),
-                    body=faker.text(),
+                    body=faker.text() + '.' + faker.text() + '.' + faker.text() + '.' + faker.text() + '.' + faker.text() + '.' + faker.text() + '.' + faker.text() + '.' + faker.text()+ '.' + faker.text()+ '.' + faker.text(),
                     date_post=ConvertToDate(faker.past_date()),
-                    author_id=random.randint(1, 999))
-        res = requests.get(f'http://localhost:5001/api/v1/profile/user_profile?user_id={post.author_id}')
-        if res.status_code == 200:
-            post.author_name = res.json().get('name')
-        else:
-            post.author_name = 'N/A'
+                    author_username=f'{faker.user_name()}' + str(i))
+        # res = requests.get(f'http://localhost:5001/api/v1/profile/user_profile?user_id={post.author_id}')
+        # if res.status_code == 200:
+        #     post.author_name = res.json().get('username')
+        # else:
+        #     post.author_name = 'N/A'
+        post.body_summary = post.body[0:200] + '...'
         db.session.add(post)
     db.session.commit()

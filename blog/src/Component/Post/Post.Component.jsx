@@ -3,7 +3,6 @@ import {makeStyles} from "@material-ui/core/styles";
 import {Box, Button, Typography, Divider} from "@material-ui/core";
 import ChatBubbleRoundedIcon from '@material-ui/icons/ChatBubbleRounded';
 import ThumbUpAltRoundedIcon from '@material-ui/icons/ThumbUpAltRounded';
-
 const useStyle = makeStyles({
     container: {
         display: "flex",
@@ -80,16 +79,16 @@ const PostComponent = ({data}) => {
             <Box className={classes.container}>
                 <img className={classes.image} src='https://i.stack.imgur.com/l60Hf.png'/>
                 <Box className={classes.detail}>
-                    <Typography align="left" className={classes.title}><a>{data.title}</a></Typography>
+                    <Typography align="left" className={classes.title}><a>{data.title.split('.')[0]}</a></Typography>
                     <Box style={{flexGrow: 1}}></Box>
                     <Box className={classes.tagsContainer}>
                         {['python', 'data', 'font-end'].map((item, index) => {
-                            return <a className={classes.tags} key={index}>{item}</a>
+                            return <a key = {index} className={classes.tags} key={index}>{item}</a>
                         })}
                     </Box>
-                    <Typography align={'left'} className={classes.summary}>{data.body}</Typography>
+                    <Typography align={'left'} className={classes.summary}>{data.body_summary}</Typography>
                     <Typography align='left' className={classes.author}>
-                        <i className={classes.writer}>{data.author_id}</i> write at date {data.date_post}
+                        <i className={classes.writer}>{data.author_username}</i> write at date {data.date_post}
                     </Typography>
                 </Box>
                 <Box className={classes.commentContainer}>

@@ -27,12 +27,12 @@ def get_post_by_id():
 @post.route('/', methods=['POST'])
 def add_post():
     post_details = request.get_json()
-    if post_details.get('author_id') is None:
+    if post_details.get('author_username') is None:
         raise CustomException('You need to put author', 500)
     post_add = Post(title=post_details.get('title'),
                     body=post_details.get('body'),
                     date_post=post_details.get('date_post') or datetime.utcnow(),
-                    author_id=post_details.get('author_id'))
+                    author_id=post_details.get('author_username'))
     db.session.add(post_add)
     db.session.commit()
     return jsonify(post_add.to_json()), 200
@@ -68,6 +68,7 @@ def get_all_post_by_page():
     page = int(page)
     itemPerPage = request.args.get('items_per_page') or '20'
     itemPerPage = int(itemPerPage)
+    type = int(request.args.get('type', '0'))
     req_from = request.args.get('from') or '2000-01-01 00:00:00'
     date_from = DateTimeCnv(req_from)
     req_to = request.args.get('to') or '3000-01-01 00:00:00'
@@ -75,8 +76,11 @@ def get_all_post_by_page():
     posts = Post.query.filter(Post.date_post >= date_from).filter(Post.date_post <= date_to) \
         .order_by(Post.date_post.desc()) \
         .paginate(page, itemPerPage, error_out=False)
-    total_post = posts.items
-    time.sleep(3)
-    return jsonify({'Post': list(map(lambda d: d.to_json(), total_post)),
+    post_paginated = posts.items
+    num_post = Post.query.filter(Post.date_post <= date_to) \
+        .order_by(Post.date_post.desc()).count()
+    num_page = num_post // itemPerPage + 1
+    return jsonify({'Post': list(map(lambda d: d.to_json_summary(), post_paginated)),
                     'page': page,
-                    'itemPerPage': itemPerPage}), 200
+                    'itemPerPage': itemPerPage,
+                    'total_pages': num_page}), 200

@@ -3,5 +3,14 @@
   <component name="JavaScriptSettings">
     <option name="languageLevel" value="JSX" />
   </component>
+  <component name="ProjectPlainTextFileTypeManager">
+    <file url="file://$PROJECT_DIR$/src/redux/Reducer/ChildReducers/AllUsersReducer.js" />
+    <file url="file://$PROJECT_DIR$/src/redux/Reducer/ChildReducers/AuthenticationReducer.js" />
+    <file url="file://$PROJECT_DIR$/src/redux/Reducer/ChildReducers/EditFormReducer.js" />
+    <file url="file://$PROJECT_DIR$/src/redux/Reducer/ChildReducers/NotificationReducer.js" />
+    <file url="file://$PROJECT_DIR$/src/redux/Reducer/ChildReducers/SearchReducer.js" />
+    <file url="file://$PROJECT_DIR$/src/redux/Reducer/ChildReducers/SingleUserReducer.js" />
+    <file url="file://$PROJECT_DIR$/src/redux/Reducer/ChildReducers/UserSearchReducer.js" />
+  </component>
   <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.8" project-jdk-type="Python SDK" />
 </project>
