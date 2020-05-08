@@ -9,7 +9,7 @@ from app.helper.auth_connector import verify_jwt, Permission
 from flask_cors import cross_origin
 
 @profile.route('/user_profile', methods=['GET'])
-@cross_origin(origins=['http://localhost:3000'])
+@cross_origin(origins=['http://localhost:3000, http://localhost:5003'])
 def get_user_profile():
     user_id = request.args.get('user_id')
     user_details = UserDetails.query.filter_by(user_id=user_id).first()

@@ -8,7 +8,8 @@ class Post(db.Model):
     title = db.Column(db.Text)
     body = db.Column(db.Text)
     date_post = db.Column(db.DateTime, index=True, default=datetime.utcnow())
-    author_id = db.Column(db.Integer)
+    author_id = db.Column(db.Integer, unique=True)
+    author_name = db.Column(db.String(32))
 
     def to_json(self):
         ret = {
@@ -16,6 +17,7 @@ class Post(db.Model):
             'title': self.title,
             'body': self.body,
             'date_post': self.date_post,
-            'author_id': self.author_id
+            'author_id': self.author_id,
+            'author_name': self.author_name
         }
         return ret

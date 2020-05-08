@@ -8,4 +8,4 @@ if __name__ == '__main__':
     server = Server(port=5001)
     manager.add_command('db', MigrateCommand)
     manager.add_command('runserver', server)
-    manager.run()
+    app.run(threaded=True, port=5001)
