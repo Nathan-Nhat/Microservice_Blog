@@ -3,6 +3,11 @@ import {makeStyles} from "@material-ui/core/styles";
 import {Box, Button, Typography, Divider} from "@material-ui/core";
 import ChatBubbleRoundedIcon from '@material-ui/icons/ChatBubbleRounded';
 import ThumbUpAltRoundedIcon from '@material-ui/icons/ThumbUpAltRounded';
+import {NavLink} from "react-router-dom";
+import {theme} from "../../Themes";
+import ReactMarkdown from "react-markdown/with-html";
+import '../../Markdown.style.css'
+import CodeBlock from "../../Helper/CodeBlock";
 const useStyle = makeStyles({
     container: {
         display: "flex",
@@ -29,21 +34,26 @@ const useStyle = makeStyles({
     elementComment: {
         display: "flex",
         flexDirection: "row",
-        marginRight : "0.5rem"
+        marginRight: "0.5rem"
     },
     numComment: {
         fontSize: "0.7rem",
-        marginRight : '0.3rem'
+        marginRight: '0.3rem'
     },
     iconComment: {
         fontSize: "1rem"
     },
+    containerTitle: {
+        textAlign: "left"
+    },
     title: {
         fontWeight: "bold",
-        fontSize: "1.5rem",
-        color: "#99c9ad"
+        fontSize: "1.2rem",
+        color: theme.palette.primary,
+        textDecoration: "None",
     },
     tagsContainer: {
+        marginTop:'0.5rem',
         display: "flex",
         flexDirection: 'row',
     },
@@ -59,7 +69,8 @@ const useStyle = makeStyles({
         }
     },
     summary: {
-        marginTop: '0.5rem'
+        marginTop: '0.5rem',
+        textAlign : 'left'
     },
     author: {
         marginTop: "1rem",
@@ -67,28 +78,33 @@ const useStyle = makeStyles({
     },
     writer: {
         color: 'blue',
+        textDecoration : "None",
         '&:hover': {
             cursor: 'pointer'
         }
-    }
+    },
+
 })
 const PostComponent = ({data}) => {
-    const classes = useStyle()
+    const classes = useStyle(theme)
     return (
         <Box>
             <Box className={classes.container}>
-                <img className={classes.image} src='https://i.stack.imgur.com/l60Hf.png'/>
+                <img className={classes.image} src={data.author_avatar}/>
                 <Box className={classes.detail}>
-                    <Typography align="left" className={classes.title}><a>{data.title.split('.')[0]}</a></Typography>
-                    <Box style={{flexGrow: 1}}></Box>
+                    <Box className={classes.containerTitle}>
+                        <NavLink className={classes.title}
+                                 to={`/post/${data.post_id}`}>{data.title.split('.')[0]}</NavLink>
+                    </Box>
                     <Box className={classes.tagsContainer}>
                         {['python', 'data', 'font-end'].map((item, index) => {
-                            return <a key = {index} className={classes.tags} key={index}>{item}</a>
+                            return <a key={index} className={classes.tags} key={index}>{item}</a>
                         })}
                     </Box>
-                    <Typography align={'left'} className={classes.summary}>{data.body_summary}</Typography>
+                    <ReactMarkdown className={classes.summary} source={data.body_summary}
+                                      renderers={{code :CodeBlock}} escapeHtml={false}/>
                     <Typography align='left' className={classes.author}>
-                        <i className={classes.writer}>{data.author_username}</i> write at date {data.date_post}
+                        <NavLink className={classes.writer} to = {`/profile/${data.author_id}`}>{data.author_name}</NavLink> write at date {data.date_post}
                     </Typography>
                 </Box>
                 <Box className={classes.commentContainer}>

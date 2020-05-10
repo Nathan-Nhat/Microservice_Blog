@@ -6,6 +6,7 @@ import {URL_PROFILE_SERVICE} from '../../Constants'
 import PersonRoundedIcon from '@material-ui/icons/PersonRounded';
 import EmailRoundedIcon from '@material-ui/icons/EmailRounded';
 import HomeIcon from '@material-ui/icons/Home';
+
 const useStyle = makeStyles({
     container: {
         display: "flex",
@@ -24,15 +25,20 @@ const useStyle = makeStyles({
         // fontSize :"3rem"
     },
     element: {
-        marginTop: "1rem"
+        marginTop: "1rem",
+    },
+    author: {
+        marginTop: "1rem",
+        fontStyle: 'italic',
+        fontSize : '0.8rem'
     },
     button: {
         marginTop: "1rem",
         float: 'left'
     },
-    field : {
-        display : "flex",
-        flexDirection : "row"
+    field: {
+        display: "flex",
+        flexDirection: "row"
     }
 })
 const DetailsComponent = ({user_id}) => {
@@ -43,7 +49,8 @@ const DetailsComponent = ({user_id}) => {
         email: 'anonymous@gmail.com',
         address: 'La khe - Ha Dong - Ha Noi',
         member_since: '06-01-1996',
-        about_me: 'N/A'
+        about_me: 'N/A',
+        avatar_hash : 'https://greendestinations.org/wp-content/uploads/2019/05/avatar-exemple.jpg'
     })
     useEffect(() => {
         API.get_data(URL_PROFILE_SERVICE + '/user_profile?user_id=' + user_id)
@@ -53,31 +60,32 @@ const DetailsComponent = ({user_id}) => {
                 email: res.data.email,
                 address: res.data.address,
                 about_me: res.data.about_me,
-                member_since: res.data.member_since
+                member_since: res.data.member_since,
+                avatar_hash: res.data.avatar_hash
             }))
     }, [])
 
     return (
         <div className={classes.container}>
-            <img className={classes.image} src="https://i.stack.imgur.com/l60Hf.png"/>
+            <img className={classes.image} src={profile.avatar_hash}/>
             <Box className={classes.boxDetails}>
                 <Typography variant='h3' align='left' className={classes.nameText}>{profile.firstName}</Typography>
                 <div className={classes.field}>
-                    <PersonRoundedIcon  style = {{ marginRight : "1rem"}}/>
+                    <PersonRoundedIcon style={{marginRight: "1rem"}}/>
                     <Typography align='left'>{profile.fullName}</Typography>
                 </div>
-                 <div className={classes.field} >
-                    <EmailRoundedIcon  style = {{ marginRight : "1rem"}}/>
+                <div className={classes.field}>
+                    <EmailRoundedIcon style={{marginRight: "1rem"}}/>
                     <Typography align='left'>{profile.email}</Typography>
                 </div>
-                <div className={classes.field} >
-                    <HomeIcon style = {{ marginRight : "1rem"}}/>
+                <div className={classes.field}>
+                    <HomeIcon style={{marginRight: "1rem"}}/>
                     <Typography align='left'><a
-                    href={`https://www.google.com/maps/place/${profile.address}`}>{profile.address}</a></Typography>
+                        href={`https://www.google.com/maps/place/${profile.address}`}>{profile.address}</a></Typography>
                 </div>
 
                 <Typography className={classes.element} align='left'>{profile.about_me}</Typography>
-                <Typography className={classes.element} align='left'>Member
+                <Typography className={classes.author} align='left'>Member
                     since {profile.member_since.substr(0, 10)}</Typography>
                 {user_id === localStorage.getItem('user_id') ?
                     <Button className={classes.button} variant='outlined'>Edit Profile</Button> : null}

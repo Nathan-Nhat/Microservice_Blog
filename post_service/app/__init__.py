@@ -22,5 +22,7 @@ def create_app(config_name):
     swagger.init_app(app)
     moment.init_app(app)
     from app.api import post
+    from app.models.post_model import Post
+    from app.models.comment_model import Comments
     app.register_blueprint(post, url_prefix='/api/v1/post')
     return app

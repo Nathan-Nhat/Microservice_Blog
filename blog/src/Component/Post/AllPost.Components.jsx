@@ -39,13 +39,13 @@ const AllPostComponents = () => {
         dispatch(change_page_post(newVal))
     }
     return (
-        <div>
+        <div style={{textAlign : 'center'}}>
             <HeaderPost/>
             {
                 state.isLoading === true ?
-                    <CircularProgress style={{marginTop: "3rem"}}/>
+                    <CircularProgress style={{marginTop:'3rem'}}/>
                     :
-                    <Box>
+                    <Box style={{textAlign:'center'}}>
                         <Box>
                             {
                                 state.posts.map((item, index) => {
@@ -54,7 +54,7 @@ const AllPostComponents = () => {
                             }
                         </Box>
                         <Box>
-                            <Pagination page={state.page} count={state.total_pages} variant="outlined"
+                            <Pagination page={state.page} count={state.total_pages} variant="outlined" style={{width : '350px', margin : " 2rem auto"}}
                                         color="primary" onChange={handleChange}/>
                         </Box>
                     </Box>

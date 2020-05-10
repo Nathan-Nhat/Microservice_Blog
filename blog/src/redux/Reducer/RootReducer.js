@@ -1,8 +1,12 @@
 import {combineReducers} from 'redux'
 import PostReducer from './ChildReducers/PostReducer'
 import RequestPostReducer from "./ChildReducers/RequestPostReducer";
+import NotifyReducer from "./ChildReducers/NotifyReducer";
+import AuthenReducer from "./ChildReducers/AuthenReducer";
 const RootReducer = (history) => combineReducers({
     PostReducer,
-    RequestPostReducer
+    RequestPostReducer,
+    NotifyReducer,
+    AuthenReducer,
 });
 export default RootReducer;

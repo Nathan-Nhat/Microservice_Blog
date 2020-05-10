@@ -5,6 +5,7 @@ import LoginPage from "../Pages/LoginPage";
 import SignupPage from '../Pages/SignupPage'
 import MainPage from "../Pages/MainPage";
 import ProfilePage from "../Pages/ProfilePage";
+import SinglePostPage from "../Pages/SinglePostPage";
 const useStyle = makeStyles({
     container: {
         marginTop:"2rem",
@@ -23,6 +24,7 @@ const MainComponent = () => {
                 <Route path='/signup' component={SignupPage}/>
                 <Route exact path = '/' component={MainPage}/>
                 <Route path='/profile/:userId' component={ProfilePage} />
+                <Route path='/post/:post_id' component={SinglePostPage}/>
             </Switch>
 
         </div>

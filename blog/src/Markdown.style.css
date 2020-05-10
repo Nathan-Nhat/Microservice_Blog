@@ -1,0 +1,36 @@
+pre {
+  border: 1px solid #ccc;
+  font-size: 0.8rem;
+  line-height: 1.7rem;
+}
+
+blockquote {
+  color: #666;
+  margin: 0;
+  padding-left: 3em;
+  border-left: 0.5em #eee solid;
+}
+
+tr {
+  border-top: 1px solid #c6cbd1;
+  background: #fff;
+}
+
+th,
+td {
+  padding: 6px 13px;
+  border: 1px solid #dfe2e5;
+}
+
+.markdown > table tr:nth-child(2n) {
+  background: #f6f8fa;
+}
+
+.markdown {
+}
+.markdown > p img {
+  width: 80%;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}

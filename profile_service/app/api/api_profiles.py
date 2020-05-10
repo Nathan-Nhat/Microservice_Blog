@@ -8,8 +8,9 @@ from app.helper.Exception import CustomException
 from app.helper.auth_connector import verify_jwt, Permission
 from flask_cors import cross_origin
 
+
 @profile.route('/user_profile', methods=['GET'])
-@cross_origin(origins=['http://localhost:3000, http://localhost:5003'])
+@cross_origin(origins=['http://localhost:3000', 'http://localhost:5002', 'http://localhost:5000'])
 def get_user_profile():
     user_id = request.args.get('user_id')
     user_details = UserDetails.query.filter_by(user_id=user_id).first()
@@ -75,3 +76,18 @@ def get_all_user():
     userDetails = UserDetails.query.all()
     count = UserDetails.query.count()
     return jsonify({'UserDetails': list(map(lambda d: d.to_json(), userDetails)), 'TotalUser': count})
+
+
+@profile.route('/list_user_profile')
+def get_list_user():
+    str_list = request.args.get('list')
+    arr_id = str_list.split(',')
+    list_profile = UserDetails.query.filter(UserDetails.user_id.in_(arr_id)).all()
+    if list_profile is None:
+        raise CustomException('Error while fetch User Profile', 404)
+    return jsonify({
+        'profile': list(map(lambda d: {
+            'user_id': d.user_id,
+            'name': d.name,
+            'avatar_hash': d.avatar_hash}, list_profile))
+    }), 200

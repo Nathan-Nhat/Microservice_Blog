@@ -36,3 +36,9 @@
     transform: rotate(360deg);
   }
 }
+p {
+  line-height: 1.7rem;
+}
+ul {
+  line-height: 1.7rem;
+}
