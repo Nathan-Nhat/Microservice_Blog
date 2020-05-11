@@ -1,23 +1,54 @@
 import axios from 'axios'
 
-export function get_data(url, is_jwt_required) {
+export function get_data(url, param, is_jwt_required) {
     var jwt = null
     var user_id = null
-    if (is_jwt_required){
+    var params = param
+    if (is_jwt_required) {
         jwt = localStorage.getItem('jwt')
         user_id = localStorage.getItem('user_id')
-        url = url + '?token=' + jwt + '&user_id=' + user_id
+        if (jwt !== null && user_id !== null)
+            params = Object.assign({}, param,{token : jwt}, {user_id:user_id});
+
     }
-    return axios.get(url)
+    return axios({
+        method: 'GET',
+        url: url,
+        params: params,
+    })
 }
 
-export function post_data(url, data, is_jwt_required) {
+export function post_data(url, param, data, is_jwt_required) {
     var jwt = null
     var user_id = null
-    if (is_jwt_required){
+    var params = param
+    if (is_jwt_required) {
         jwt = localStorage.getItem('jwt')
         user_id = localStorage.getItem('user_id')
-        url = url + '?token=' + jwt + '&user_id=' + user_id
+        if (jwt !== null && user_id !== null)
+            params = Object.assign({}, param,{token : jwt}, {user_id:user_id});
     }
-    return axios.post(url, data)
+    return axios({
+        method: 'POST',
+        url: url,
+        params: params,
+        data: data,
+    })
+}
+
+export function delete_data(url, param, is_jwt_required) {
+    var jwt = null
+    var user_id = null
+    var params = param
+    if (is_jwt_required) {
+        jwt = localStorage.getItem('jwt')
+        user_id = localStorage.getItem('user_id')
+        if (jwt !== null && user_id !== null)
+            params = Object.assign({}, param,{token : jwt}, {user_id:user_id});
+    }
+    return axios({
+        method: 'DELETE',
+        url: url,
+        params: params,
+    })
 }

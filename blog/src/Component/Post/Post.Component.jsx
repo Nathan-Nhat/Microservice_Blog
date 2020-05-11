@@ -8,6 +8,8 @@ import {theme} from "../../Themes";
 import ReactMarkdown from "react-markdown/with-html";
 import '../../Markdown.style.css'
 import CodeBlock from "../../Helper/CodeBlock";
+import Grow from '@material-ui/core/Grow';
+
 const useStyle = makeStyles({
     container: {
         display: "flex",
@@ -53,7 +55,7 @@ const useStyle = makeStyles({
         textDecoration: "None",
     },
     tagsContainer: {
-        marginTop:'0.5rem',
+        marginTop: '0.5rem',
         display: "flex",
         flexDirection: 'row',
     },
@@ -70,7 +72,7 @@ const useStyle = makeStyles({
     },
     summary: {
         marginTop: '0.5rem',
-        textAlign : 'left'
+        textAlign: 'left'
     },
     author: {
         marginTop: "1rem",
@@ -78,7 +80,7 @@ const useStyle = makeStyles({
     },
     writer: {
         color: 'blue',
-        textDecoration : "None",
+        textDecoration: "None",
         '&:hover': {
             cursor: 'pointer'
         }
@@ -88,38 +90,42 @@ const useStyle = makeStyles({
 const PostComponent = ({data}) => {
     const classes = useStyle(theme)
     return (
-        <Box>
-            <Box className={classes.container}>
-                <img className={classes.image} src={data.author_avatar}/>
-                <Box className={classes.detail}>
-                    <Box className={classes.containerTitle}>
-                        <NavLink className={classes.title}
-                                 to={`/post/${data.post_id}`}>{data.title.split('.')[0]}</NavLink>
+        <Grow in={true}>
+            <Box>
+                <Box className={classes.container}>
+                    <img className={classes.image} src={data.author_avatar}/>
+                    <Box className={classes.detail}>
+                        <Box className={classes.containerTitle}>
+                            <NavLink className={classes.title}
+                                     to={`/post/${data.post_id}`}>{data.title.split('.')[0]}</NavLink>
+                        </Box>
+                        <Box className={classes.tagsContainer}>
+                            {['python', 'data', 'font-end'].map((item, index) => {
+                                return <a key={index} className={classes.tags} key={index}>{item}</a>
+                            })}
+                        </Box>
+                        <ReactMarkdown className={classes.summary} source={data.body_summary}
+                                       renderers={{code: CodeBlock}} escapeHtml={false}/>
+                        <Typography align='left' className={classes.author}>
+                            <NavLink className={classes.writer}
+                                     to={`/profile/${data.author_id}`}>{data.author_name}</NavLink> write at
+                            date {data.date_post}
+                        </Typography>
                     </Box>
-                    <Box className={classes.tagsContainer}>
-                        {['python', 'data', 'font-end'].map((item, index) => {
-                            return <a key={index} className={classes.tags} key={index}>{item}</a>
-                        })}
+                    <Box className={classes.commentContainer}>
+                        <Box className={classes.elementComment}>
+                            <Typography className={classes.numComment}>100</Typography>
+                            <ChatBubbleRoundedIcon className={classes.iconComment}/>
+                        </Box>
+                        <Box className={classes.elementComment}>
+                            <Typography className={classes.numComment}>100</Typography>
+                            <ThumbUpAltRoundedIcon className={classes.iconComment}/>
+                        </Box>
                     </Box>
-                    <ReactMarkdown className={classes.summary} source={data.body_summary}
-                                      renderers={{code :CodeBlock}} escapeHtml={false}/>
-                    <Typography align='left' className={classes.author}>
-                        <NavLink className={classes.writer} to = {`/profile/${data.author_id}`}>{data.author_name}</NavLink> write at date {data.date_post}
-                    </Typography>
                 </Box>
-                <Box className={classes.commentContainer}>
-                    <Box className={classes.elementComment}>
-                        <Typography className={classes.numComment}>100</Typography>
-                        <ChatBubbleRoundedIcon className={classes.iconComment}/>
-                    </Box>
-                    <Box className={classes.elementComment}>
-                        <Typography className={classes.numComment}>100</Typography>
-                        <ThumbUpAltRoundedIcon className={classes.iconComment}/>
-                    </Box>
-                </Box>
+                <Divider/>
             </Box>
-            <Divider/>
-        </Box>
+        </Grow>
     );
 };
 

@@ -12,10 +12,11 @@ const AuthenReducer = (state = initialState, action) => {
         case Actions.FETCH_USER:
             state = {
                 isAuthenticated: true,
-                id : action.data.user_id,
-                name : action.data.user_name,
-                email: action.data.user_email
+                id : action.data.id,
+                name : action.data.name,
+                email: action.data.email
             }
+            console.log(state)
             return state;
         default:
             return state;

@@ -24,7 +24,7 @@ const AllPostComponents = () => {
     const dispatch = useDispatch()
     useEffect(() => {
         setState({...state, isLoading: true})
-        get_data(URL_POST_SERVICE + `/get_all?type=${request_post.type}&page=${request_post.page}`, false)
+        get_data(URL_POST_SERVICE + `/get_all`, {type: request_post.type, page :request_post.page}, false)
             .then(res => {
                 setState({
                     isLoading: false,
@@ -39,13 +39,15 @@ const AllPostComponents = () => {
         dispatch(change_page_post(newVal))
     }
     return (
-        <div style={{textAlign : 'center'}}>
+        <div style={{textAlign: 'center'}}>
             <HeaderPost/>
             {
                 state.isLoading === true ?
-                    <CircularProgress style={{marginTop:'3rem'}}/>
+                    <div style={{height: '100vh'}}>
+                        <CircularProgress style={{marginTop: '3rem'}}/>
+                    </div>
                     :
-                    <Box style={{textAlign:'center'}}>
+                    <Box style={{textAlign: 'center'}}>
                         <Box>
                             {
                                 state.posts.map((item, index) => {
@@ -54,10 +56,12 @@ const AllPostComponents = () => {
                             }
                         </Box>
                         <Box>
-                            <Pagination page={state.page} count={state.total_pages} variant="outlined" style={{width : '350px', margin : " 2rem auto"}}
+                            <Pagination page={state.page} count={state.total_pages} variant="outlined"
+                                        style={{width: '350px', margin: " 2rem auto"}}
                                         color="primary" onChange={handleChange}/>
                         </Box>
                     </Box>
+
             }
 
         </div>

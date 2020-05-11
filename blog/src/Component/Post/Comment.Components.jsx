@@ -86,7 +86,7 @@ const CommentComponents = ({post_id}) => {
             body: state.comment,
             post_id: post_id,
         }
-        post_data(URL_POST_SERVICE + '/comments', data, true)
+        post_data(URL_POST_SERVICE + '/comments', {},data, true)
             .then(res => {
                 console.log(res.data)
                 var new_list = state.list_comment
@@ -99,7 +99,7 @@ const CommentComponents = ({post_id}) => {
     }
     const {isAuthenticated} = useSelector(state => state.AuthenReducer)
     React.useEffect(() => {
-        get_data(URL_POST_SERVICE + `/comments/${post_id}?page=${state.page}&item_per_page=${5}`, false)
+        get_data(URL_POST_SERVICE + `/comments/${post_id}`, {page : state.page, item_per_page : 5}, false)
             .then(res => {
                 let isDone = false
                 if (state.page === 0 && res.data.total === 1) isDone = true

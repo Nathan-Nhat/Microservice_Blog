@@ -6,6 +6,7 @@ import {URL_PROFILE_SERVICE} from '../../Constants'
 import PersonRoundedIcon from '@material-ui/icons/PersonRounded';
 import EmailRoundedIcon from '@material-ui/icons/EmailRounded';
 import HomeIcon from '@material-ui/icons/Home';
+import {useSelector} from "react-redux";
 
 const useStyle = makeStyles({
     container: {
@@ -30,7 +31,7 @@ const useStyle = makeStyles({
     author: {
         marginTop: "1rem",
         fontStyle: 'italic',
-        fontSize : '0.8rem'
+        fontSize: '0.8rem'
     },
     button: {
         marginTop: "1rem",
@@ -39,6 +40,10 @@ const useStyle = makeStyles({
     field: {
         display: "flex",
         flexDirection: "row"
+    },
+    followText : {
+        lineHeight :'3rem',
+        marginLeft : '2rem'
     }
 })
 const DetailsComponent = ({user_id}) => {
@@ -50,10 +55,17 @@ const DetailsComponent = ({user_id}) => {
         address: 'La khe - Ha Dong - Ha Noi',
         member_since: '06-01-1996',
         about_me: 'N/A',
-        avatar_hash : 'https://greendestinations.org/wp-content/uploads/2019/05/avatar-exemple.jpg'
+        avatar_hash: 'https://greendestinations.org/wp-content/uploads/2019/05/avatar-exemple.jpg',
+        number_follower: 0,
+        number_followed: 0,
+        is_followed: false,
     })
+    const {id, isAuthenticated} = useSelector(state => state.AuthenReducer)
     useEffect(() => {
-        API.get_data(URL_PROFILE_SERVICE + '/user_profile?user_id=' + user_id)
+        API.get_data(URL_PROFILE_SERVICE + '/user_profile', {
+            profile_id: user_id,
+            my_user_id: localStorage.getItem('user_id')
+        }, false)
             .then(res => setProfile({
                 firstName: res.data.name.split(' ')[1],
                 fullName: res.data.name,
@@ -61,9 +73,30 @@ const DetailsComponent = ({user_id}) => {
                 address: res.data.address,
                 about_me: res.data.about_me,
                 member_since: res.data.member_since,
-                avatar_hash: res.data.avatar_hash
+                avatar_hash: res.data.avatar_hash,
+                number_follower: res.data.number_follower,
+                number_followed: res.data.number_followed,
+                is_followed: res.data.is_followed
             }))
     }, [])
+
+    const handleFollow = () => {
+        API.post_data(URL_PROFILE_SERVICE + '/follow', {user_follow: user_id}, null, true)
+            .then(res => setProfile({
+                ...profile,
+                number_follower: profile.number_follower + 1,
+                is_followed: true
+            }))
+    }
+
+    const handleUnFollow = () => {
+        API.delete_data(URL_PROFILE_SERVICE + '/follow', {user_follow: user_id}, true)
+            .then(res => setProfile({
+                ...profile,
+                number_follower: profile.number_follower - 1,
+                is_followed: false
+            }))
+    }
 
     return (
         <div className={classes.container}>
@@ -87,8 +120,23 @@ const DetailsComponent = ({user_id}) => {
                 <Typography className={classes.element} align='left'>{profile.about_me}</Typography>
                 <Typography className={classes.author} align='left'>Member
                     since {profile.member_since.substr(0, 10)}</Typography>
-                {user_id === localStorage.getItem('user_id') ?
-                    <Button className={classes.button} variant='outlined'>Edit Profile</Button> : null}
+                {
+                    parseInt(user_id) === id ? null :
+                        <div style={{marginTop: '1rem', display: 'flex', flexDirection: 'row'}}>
+                            {profile.is_followed ?
+                                <Button onClick={handleUnFollow} variant={'contained'}
+                                        color='secondary'>Following</Button> :
+                                <Button onClick={handleFollow} variant={'contained'} color='primary'>Follow</Button>
+                            }
+                            <Typography className={classes.followText}>Follower : {profile.number_follower}</Typography>
+                            <Typography className={classes.followText}>Following : {profile.number_followed}</Typography>
+                        </div>
+                }
+
+                {
+                    parseInt(user_id) === id ?
+                        <Button className={classes.button} variant='outlined'>Edit Profile</Button> : null
+                }
             </Box>
         </div>
     );

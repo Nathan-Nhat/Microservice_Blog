@@ -36,7 +36,7 @@ def verify_jwt(blueprint, permissions):
                 if body.get('user_id') != user_id:
                     if not body.get('admin_permission'):
                         return jsonify({'message': 'User dont have permission'}), 403
-                return func(*args, **kwargs)
+                return func(user_id=user_id, *args, **kwargs)
 
         return inner_function
 

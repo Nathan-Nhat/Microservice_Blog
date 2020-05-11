@@ -94,7 +94,7 @@ const WritePostComponent = () => {
             dispatch(open_notification({message: "Write something", type: 'error'}))
             return
         }
-        post_data(URL_POST_SERVICE + `/`, data, true)
+        post_data(URL_POST_SERVICE + `/`, {},data, true)
             .then(res => {
                 console.log(res)
                 setState({...state, isLoading: false})

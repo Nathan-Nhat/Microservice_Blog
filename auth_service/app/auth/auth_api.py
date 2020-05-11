@@ -77,6 +77,7 @@ def authenticate():
 def verify_login():
     token = request.args.get('token')
     user_id = request.args.get('user_id')
+    print(token, user_id)
     if user_id is None or token is None:
         return jsonify({
             'message': 'verify Fail'
@@ -93,9 +94,9 @@ def verify_login():
             'message': 'there is some thing wrong. Login again'
         }), 403
     with get_connection(auth, name='auth_service') as conn:
-        resp = conn.get(ServiceURL.PROFILE_SERVICE + 'user_profile?user_id=' + str(user_id))
+        resp = conn.get(ServiceURL.PROFILE_SERVICE + 'user_profile?profile_id=' + str(user_id))
         if resp.status_code != 200:
-            return jsonify({'message': 'Invalid Password'}), 403
+            return jsonify({'message': 'Error here'}), 403
     return jsonify({
         'message': 'Valid User',
         'user_id': user_id,

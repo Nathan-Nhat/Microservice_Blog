@@ -17,16 +17,6 @@ function App() {
     return (
         <Provider store={store}>
             <AuthComponent/>
-            <MuiThemeProvider theme={defaultTheme}>
-                <div>
-                    <Router>
-                        <AppbarComponent/>
-                        <MainComponent/>
-                        <Route path = '/add_post' component={WritePostComponent}/>
-                    </Router>
-                </div>
-                <Notification/>
-            </MuiThemeProvider>
         </Provider>
     );
 }

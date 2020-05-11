@@ -10,11 +10,13 @@ import '../Markdown.style.css'
 import CodeBlock from "../Helper/CodeBlock";
 import CommentComponents from "../Component/Post/Comment.Components";
 import Divider from "@material-ui/core/Divider";
+import Fade from '@material-ui/core/Fade';
+
 const useStyle = makeStyles({
     container: {},
     title: {
         textAlign: 'left',
-        fontWeight:"bold"
+        fontWeight: "bold"
     },
     tagsContainer: {
         textAlign: "left",
@@ -66,7 +68,7 @@ const SinglePostPage = () => {
             author_name: 'Tran Trung Nhat',
             date_post: '20/3/2020',
             author_id: 123,
-            author_avatar : ''
+            author_avatar: ''
         },
     })
     const classes = useStyle()
@@ -90,29 +92,33 @@ const SinglePostPage = () => {
             })
     }, [])
     return (
-        <div>
-            {
-                state.isLoading === true ? <CircularProgress style={{marginTop: "3rem"}}/> :
-                    <Box className={classes.container}>
-                        <Typography color = "primary" variant={'h4'} className={classes.title}>{state.data.title.split('.')[0]}</Typography>
-                        <Box className={classes.tagsContainer}>
-                            {state.data.tag.map((item, index) => {
-                                return <a key={index} className={classes.tags} key={index}>{item}</a>
-                            })}
+        <Fade in={true}>
+            <div>
+                {
+                    state.isLoading === true ? <CircularProgress style={{marginTop: "3rem"}}/> :
+                        <Box className={classes.container}>
+                            <Typography color="primary" variant={'h4'}
+                                        className={classes.title}>{state.data.title.split('.')[0]}</Typography>
+                            <Box className={classes.tagsContainer}>
+                                {state.data.tag.map((item, index) => {
+                                    return <a key={index} className={classes.tags} key={index}>{item}</a>
+                                })}
+                            </Box>
+                            <Box className={classes.author}>
+                                <img className={classes.image} src={state.data.author_avatar}/>
+                                <Typography className={classes.textAuthor}><NavLink
+                                    to={`/profile/${state.data.author_id}`}>{state.data.author_name}</NavLink> wrote
+                                    at {state.data.date_post}
+                                </Typography>
+                            </Box>
+                            <ReactMarkdown className="markdown" source={state.data.body}
+                                           renderers={{code: CodeBlock}} escapeHtml={false}/>
                         </Box>
-                        <Box className={classes.author}>
-                            <img className={classes.image} src={state.data.author_avatar}/>
-                            <Typography className={classes.textAuthor}><NavLink to={`/profile/${state.data.author_id}`}>{state.data.author_name}</NavLink> wrote
-                                at {state.data.date_post}
-                            </Typography>
-                        </Box>
-                        <ReactMarkdown className="markdown" source={state.data.body}
-                                      renderers={{code :CodeBlock}} escapeHtml={false}/>
-                    </Box>
-            }
-            <Divider/>
-            <CommentComponents post_id={post_id}/>
-        </div>
+                }
+                <Divider/>
+                <CommentComponents post_id={post_id}/>
+            </div>
+        </Fade>
     );
 };
 

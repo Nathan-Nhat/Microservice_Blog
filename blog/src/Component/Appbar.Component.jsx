@@ -25,14 +25,14 @@ const AppbarComponent = () => {
     const classes = useStyles();
     const history = useHistory()
     const dispatch = useDispatch()
-    const handleClick = (e, index) => {
+    async function handleClick (e, index){
         e.preventDefault()
         if (index === 1) history.push('/login')
         else if (index === 2) history.push('/signup')
         else if (index === 3) history.push('/add_post')
         else {
-            localStorage.removeItem('jwt')
-            localStorage.removeItem('user_id')
+            await localStorage.removeItem('jwt')
+            await localStorage.removeItem('user_id')
             let data = {
                 isAuthenticated: false,
                 id: 0,

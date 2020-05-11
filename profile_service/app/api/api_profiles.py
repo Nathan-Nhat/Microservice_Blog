@@ -12,11 +12,21 @@ from flask_cors import cross_origin
 @profile.route('/user_profile', methods=['GET'])
 @cross_origin(origins=['http://localhost:3000', 'http://localhost:5002', 'http://localhost:5000'])
 def get_user_profile():
-    user_id = request.args.get('user_id')
+    user_id = request.args.get('profile_id')
+    my_user_id = request.args.get('my_user_id')
     user_details = UserDetails.query.filter_by(user_id=user_id).first()
     if user_details is None:
         raise CustomException('Cannot found User', status_code=404)
-    return resp_json(user_details.to_json(), 200)
+    resp = user_details.to_json()
+    if my_user_id is not None:
+        my_user = UserDetails.query.filter_by(user_id=my_user_id).first()
+        if my_user is None:
+            return resp_json(resp, 200)
+        if my_user.is_following(user_id):
+            resp['is_followed'] = True
+        else:
+            resp['is_followed'] = False
+    return resp_json(resp, 200)
 
 
 @profile.route('/user_profile', methods=['POST'])
@@ -33,9 +43,8 @@ def post_user_profile():
 
 @profile.route('/user_profile', methods=['PUT'])
 @verify_jwt(blueprint=profile, permissions=[Permission.FOLLOW])
-def put_user_profile():
+def put_user_profile(user_id):
     user_details = request.get_json()
-    user_id = request.args.get('user_id')
     if user_details is None or user_id is None:
         raise CustomException('Invalid User', status_code=404)
     query = UserDetails.query.filter_by(user_id=user_id)
@@ -90,4 +99,34 @@ def get_list_user():
             'user_id': d.user_id,
             'name': d.name,
             'avatar_hash': d.avatar_hash}, list_profile))
+    }), 200
+
+
+@profile.route('/follow', methods=['POST'])
+@verify_jwt(blueprint=profile, permissions=[Permission.FOLLOW])
+def add_follow(user_id):
+    user_follow = request.args.get('user_follow')
+    user = UserDetails.query.filter_by(user_id=user_id).first()
+    if user is None or user_follow is None:
+        raise CustomException('There some error', 500)
+    user_follow = int(user_follow)
+    user.follow(user_follow)
+    db.session.commit()
+    return jsonify({
+        'message': 'Success'
+    }), 200
+
+
+@profile.route('/follow', methods=['DELETE'])
+@verify_jwt(blueprint=profile, permissions=[Permission.FOLLOW])
+def delete_follow(user_id):
+    user_follow = request.args.get('user_follow')
+    user = UserDetails.query.filter_by(user_id=user_id).first()
+    if user is None or user_follow is None:
+        raise CustomException('There some error', 500)
+    user_follow = int(user_follow)
+    user.un_follow(user_follow)
+    db.session.commit()
+    return jsonify({
+        'message': 'Success'
     }), 200
