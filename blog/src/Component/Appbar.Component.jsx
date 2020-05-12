@@ -31,8 +31,8 @@ const AppbarComponent = () => {
         else if (index === 2) history.push('/signup')
         else if (index === 3) history.push('/add_post')
         else {
-            await localStorage.removeItem('jwt')
-            await localStorage.removeItem('user_id')
+             localStorage.removeItem('jwt')
+             localStorage.removeItem('user_id')
             let data = {
                 isAuthenticated: false,
                 id: 0,
@@ -40,13 +40,12 @@ const AppbarComponent = () => {
                 email: ''
             }
             dispatch(fetch_user(data))
-            window.location.reload(false);
         }
     }
     const handleHome = () => {
         history.push('/')
     }
-    const isAuthenticate = useSelector(state => state.AuthenReducer.isAuthenticated)
+    const {isAuthenticated} = useSelector(state => state.AuthenReducer)
     return (
         <AppBar position="static">
             <Toolbar>
@@ -57,8 +56,9 @@ const AppbarComponent = () => {
                                                          style={{color: "white", fontWeight: "bold"}}>Blog</Typography></Button>
                 <div className={classes.title}>
                 </div>
+                {console.log('-------'+isAuthenticated)}
                 {
-                    isAuthenticate === false ?
+                    isAuthenticated === false ?
                         <div>
                             <Button color="inherit" className={classes.link} onClick={(e) => handleClick(e, 1)}>
                                 Login

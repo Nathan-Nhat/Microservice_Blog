@@ -42,6 +42,16 @@ class UserDetails(db.Model):
         }
         return json_user_details
 
+    def to_short_json(self):
+        short_json = {
+            'user_id': self.user_id,
+            'user_name': self.name,
+            'user_avatar': self.avatar_hash,
+            'number_follower': self.followers.count(),
+            'number_followed': self.followed.count()
+        }
+        return short_json
+
     def ping(self):
         self.last_seen = datetime.utcnow()
 

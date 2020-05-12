@@ -14,7 +14,6 @@ const AllPostComponents = () => {
         isLoading: true,
         posts: [{
             title: "Title",
-            body: 'Summary',
             author_id: 123,
             date_post: '06/01/1996'
         }],
@@ -22,9 +21,11 @@ const AllPostComponents = () => {
         total_pages: 1,
     })
     const dispatch = useDispatch()
+    const {id, isAuthenticated} = useSelector(state=>state.AuthenReducer)
     useEffect(() => {
         setState({...state, isLoading: true})
-        get_data(URL_POST_SERVICE + `/get_all`, {type: request_post.type, page :request_post.page}, false)
+        let params = isAuthenticated ? {type: request_post.type, page :request_post.page, user_current_id : id} : {type: request_post.type, page :request_post.page}
+        get_data(URL_POST_SERVICE + `/get_all`, params, false)
             .then(res => {
                 setState({
                     isLoading: false,

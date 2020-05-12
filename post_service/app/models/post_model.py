@@ -6,12 +6,12 @@ class Post(db.Model):
     __tablename__ = 'posts'
     post_id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.Text)
-    body_summary = db.Column(db.Text)
     body = db.Column(db.Text)
     body_html = db.Column(db.Text)
     date_post = db.Column(db.DateTime, index=True, default=datetime.utcnow())
     author_id = db.Column(db.Integer)
     comments = db.relationship('Comments', backref='post', lazy='dynamic')
+    like = db.relationship('Like', backref='post', lazy='dynamic')
 
     def to_json_full(self, name, avatar_hash):
         ret = {
@@ -22,6 +22,8 @@ class Post(db.Model):
             'author_name': name,
             'author_avatar': avatar_hash,
             'author_id': self.author_id,
+            'num_comment': self.comments.count(),
+            'num_like': self.like.count()
         }
         return ret
 
@@ -29,10 +31,11 @@ class Post(db.Model):
         ret = {
             'post_id': self.post_id,
             'title': self.title,
-            'body_summary': self.body_summary,
             'date_post': self.date_post,
             'author_name': name,
             'author_avatar': avatar_hash,
-            'author_id': self.author_id
+            'author_id': self.author_id,
+            'num_comment': self.comments.count(),
+            'num_like': self.like.count()
         }
         return ret

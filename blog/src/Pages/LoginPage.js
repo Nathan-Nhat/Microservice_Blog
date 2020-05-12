@@ -35,7 +35,13 @@ const LoginPage = () => {
             .then(res => {
                 localStorage.setItem('jwt', res.data.jwt)
                 localStorage.setItem('user_id', res.data.user_id)
-                dispatch(fetch_user(res.data))
+                let data = {
+                    isAuthenticated: true,
+                    id : res.data.user_id,
+                    email : res.data.user_email,
+                    name : res.data.name
+                }
+                dispatch(fetch_user(data))
                 history.push('/')
                 dispatch(open_notification({message: 'Login Success', type: 'success'}))
             })
@@ -48,9 +54,9 @@ const LoginPage = () => {
                 isAuthenticated === false?
                 < Paper className={classes.container}>
                     <Typography variant={"h6"}>Login</Typography>
-                    <TextField required id="standard-required" label="Username" type="text" name='username'
+                    <TextField required id="username" label="Username" type="text" name='username'
                     onChange={handleChange}/>
-                    <TextField required id="standard-required" label="Password" type="password" name='password'
+                    <TextField required id="password" label="Password" type="password" name='password'
                     onChange={handleChange}/>
                     <Button variant="contained" color="primary" onClick={handleClick}
                     className={classes.button}> Login</Button>

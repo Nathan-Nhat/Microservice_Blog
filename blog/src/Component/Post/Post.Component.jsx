@@ -70,10 +70,6 @@ const useStyle = makeStyles({
             boxShadow: '0px 2px 18px -8px rgba(0,0,0,0.75)'
         }
     },
-    summary: {
-        marginTop: '0.5rem',
-        textAlign: 'left'
-    },
     author: {
         marginTop: "1rem",
         fontSize: '0.7rem'
@@ -90,22 +86,20 @@ const useStyle = makeStyles({
 const PostComponent = ({data}) => {
     const classes = useStyle(theme)
     return (
-        <Grow in={true}>
+        // <Grow in={true}>
             <Box>
                 <Box className={classes.container}>
                     <img className={classes.image} src={data.author_avatar}/>
                     <Box className={classes.detail}>
                         <Box className={classes.containerTitle}>
                             <NavLink className={classes.title}
-                                     to={`/post/${data.post_id}`}>{data.title.split('.')[0]}</NavLink>
+                                     to={`/post/${data.post_id}`}>{data.title}</NavLink>
                         </Box>
                         <Box className={classes.tagsContainer}>
                             {['python', 'data', 'font-end'].map((item, index) => {
                                 return <a key={index} className={classes.tags} key={index}>{item}</a>
                             })}
                         </Box>
-                        <ReactMarkdown className={classes.summary} source={data.body_summary}
-                                       renderers={{code: CodeBlock}} escapeHtml={false}/>
                         <Typography align='left' className={classes.author}>
                             <NavLink className={classes.writer}
                                      to={`/profile/${data.author_id}`}>{data.author_name}</NavLink> write at
@@ -114,18 +108,18 @@ const PostComponent = ({data}) => {
                     </Box>
                     <Box className={classes.commentContainer}>
                         <Box className={classes.elementComment}>
-                            <Typography className={classes.numComment}>100</Typography>
+                            <Typography className={classes.numComment}>{data.num_comment}</Typography>
                             <ChatBubbleRoundedIcon className={classes.iconComment}/>
                         </Box>
                         <Box className={classes.elementComment}>
-                            <Typography className={classes.numComment}>100</Typography>
-                            <ThumbUpAltRoundedIcon className={classes.iconComment}/>
+                            <Typography className={classes.numComment}>{data.num_like}</Typography>
+                            <ThumbUpAltRoundedIcon color= {data.is_liked?'primary': 'action'}  className={classes.iconComment}/>
                         </Box>
                     </Box>
                 </Box>
                 <Divider/>
             </Box>
-        </Grow>
+        // </Grow>
     );
 };
 

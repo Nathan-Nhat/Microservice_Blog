@@ -92,6 +92,7 @@ const CommentComponents = ({post_id}) => {
                 var new_list = state.list_comment
                 new_list.unshift(res.data)
                 setState({
+                    ...state,
                     comment: '',
                     list_comment: new_list
                 })
@@ -114,7 +115,7 @@ const CommentComponents = ({post_id}) => {
     }, [])
     const handlePage = (e) => {
         let newVal = state.page + 1
-        get_data(URL_POST_SERVICE + `/comments/${post_id}?page=${newVal}&item_per_page=${5}`, false)
+        get_data(URL_POST_SERVICE + `/comments/${post_id}`, {page : newVal, item_per_page : 5},false)
             .then(res => {
                 let newList = state.list_comment.concat(res.data.comments)
                 let isDone = false
@@ -145,13 +146,6 @@ const CommentComponents = ({post_id}) => {
                 </div> :
                     <Typography>Please <NavLink to={'/login'}>login</NavLink> to leave a comment!</Typography>
                 }
-                {
-                    state.isFinished ? <Box>
-                            <Typography className={classes.loadMore}> </Typography>
-                        </Box> :
-                        <Box>
-                            <Typography className={classes.loadMore} onClick={handlePage}>Load more...</Typography>
-                        </Box>}
                 <div>
                     {
                         state.list_comment.map((item, index) => {
@@ -173,6 +167,13 @@ const CommentComponents = ({post_id}) => {
                         })
                     }
                     <Divider/>
+                                    {
+                    state.isFinished ? <Box>
+                            <Typography className={classes.loadMore}> </Typography>
+                        </Box> :
+                        <Box>
+                            <Typography className={classes.loadMore} onClick={handlePage}>Load more...</Typography>
+                        </Box>}
                 </div>
             </div>
         </div>

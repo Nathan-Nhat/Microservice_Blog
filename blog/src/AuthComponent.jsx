@@ -31,7 +31,9 @@ const AuthComponent = () => {
                     setState(false)
                 })
         }
-        setState(false)
+        else {
+            setState(false)
+        }
     }, [])
     const dispatch = useDispatch()
     return (

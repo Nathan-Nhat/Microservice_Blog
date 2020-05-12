@@ -41,14 +41,15 @@ const useStyle = makeStyles({
         display: "flex",
         flexDirection: "row"
     },
-    followText : {
-        lineHeight :'3rem',
-        marginLeft : '2rem'
+    followText: {
+        lineHeight: '3rem',
+        marginLeft: '2rem'
     }
 })
 const DetailsComponent = ({user_id}) => {
     const classes = useStyle()
     const [profile, setProfile] = useState({
+        isLoading: true,
         firstName: 'Anonymous',
         fullName: 'Anonymous',
         email: 'anonymous@gmail.com',
@@ -62,12 +63,14 @@ const DetailsComponent = ({user_id}) => {
     })
     const {id, isAuthenticated} = useSelector(state => state.AuthenReducer)
     useEffect(() => {
+        setProfile({...profile, isLoading: true})
         API.get_data(URL_PROFILE_SERVICE + '/user_profile', {
             profile_id: user_id,
-            my_user_id: localStorage.getItem('user_id')
+            my_user_id: id
         }, false)
             .then(res => setProfile({
-                firstName: res.data.name.split(' ')[1],
+                isLoading: false,
+                firstName: res.data.name.split(' ')[0],
                 fullName: res.data.name,
                 email: res.data.email,
                 address: res.data.address,
@@ -78,6 +81,7 @@ const DetailsComponent = ({user_id}) => {
                 number_followed: res.data.number_followed,
                 is_followed: res.data.is_followed
             }))
+            .catch(error => setProfile({...profile, isLoading: false}))
     }, [])
 
     const handleFollow = () => {
@@ -99,45 +103,55 @@ const DetailsComponent = ({user_id}) => {
     }
 
     return (
-        <div className={classes.container}>
-            <img className={classes.image} src={profile.avatar_hash}/>
-            <Box className={classes.boxDetails}>
-                <Typography variant='h3' align='left' className={classes.nameText}>{profile.firstName}</Typography>
-                <div className={classes.field}>
-                    <PersonRoundedIcon style={{marginRight: "1rem"}}/>
-                    <Typography align='left'>{profile.fullName}</Typography>
-                </div>
-                <div className={classes.field}>
-                    <EmailRoundedIcon style={{marginRight: "1rem"}}/>
-                    <Typography align='left'>{profile.email}</Typography>
-                </div>
-                <div className={classes.field}>
-                    <HomeIcon style={{marginRight: "1rem"}}/>
-                    <Typography align='left'><a
-                        href={`https://www.google.com/maps/place/${profile.address}`}>{profile.address}</a></Typography>
-                </div>
-
-                <Typography className={classes.element} align='left'>{profile.about_me}</Typography>
-                <Typography className={classes.author} align='left'>Member
-                    since {profile.member_since.substr(0, 10)}</Typography>
-                {
-                    parseInt(user_id) === id ? null :
-                        <div style={{marginTop: '1rem', display: 'flex', flexDirection: 'row'}}>
-                            {profile.is_followed ?
-                                <Button onClick={handleUnFollow} variant={'contained'}
-                                        color='secondary'>Following</Button> :
-                                <Button onClick={handleFollow} variant={'contained'} color='primary'>Follow</Button>
-                            }
-                            <Typography className={classes.followText}>Follower : {profile.number_follower}</Typography>
-                            <Typography className={classes.followText}>Following : {profile.number_followed}</Typography>
+        <div>
+            { profile.isLoading ? null :
+                <div className={classes.container}>
+                    <img className={classes.image} src={profile.avatar_hash}/>
+                    <Box className={classes.boxDetails}>
+                        <Typography variant='h3' align='left'
+                                    className={classes.nameText}>{profile.firstName}</Typography>
+                        <div className={classes.field}>
+                            <PersonRoundedIcon style={{marginRight: "1rem"}}/>
+                            <Typography align='left'>{profile.fullName}</Typography>
                         </div>
-                }
+                        <div className={classes.field}>
+                            <EmailRoundedIcon style={{marginRight: "1rem"}}/>
+                            <Typography align='left'>{profile.email}</Typography>
+                        </div>
+                        <div className={classes.field}>
+                            <HomeIcon style={{marginRight: "1rem"}}/>
+                            <Typography align='left'><a
+                                href={`https://www.google.com/maps/place/${profile.address}`}>{profile.address}</a></Typography>
+                        </div>
 
-                {
-                    parseInt(user_id) === id ?
-                        <Button className={classes.button} variant='outlined'>Edit Profile</Button> : null
-                }
-            </Box>
+                        <Typography className={classes.element} align='left'>{profile.about_me}</Typography>
+                        <Typography className={classes.author} align='left'>Member
+                            since {profile.member_since.substr(0, 10)}</Typography>
+                        {
+                            <div style={{marginTop: '1rem', display: 'flex', flexDirection: 'row'}}>
+                                {console.log(user_id, id, isAuthenticated)}
+                                {
+                                    (!isAuthenticated || parseInt(user_id) === id) ? null :
+                                        profile.is_followed ?
+                                            <Button onClick={handleUnFollow} variant={'contained'}
+                                                    color='secondary'>Following</Button> :
+                                            <Button onClick={handleFollow} variant={'contained'}
+                                                    color='primary'>Follow</Button>
+                                }
+                                <Typography className={classes.followText}>Follower
+                                    : {profile.number_follower}</Typography>
+                                <Typography className={classes.followText}>Following
+                                    : {profile.number_followed}</Typography>
+                            </div>
+                        }
+
+                        {
+                            parseInt(user_id) === id ?
+                                <Button className={classes.button} variant='outlined'>Edit Profile</Button> : null
+                        }
+                    </Box>
+                </div>
+            }
         </div>
     );
 };

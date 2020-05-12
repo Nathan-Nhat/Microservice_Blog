@@ -32,7 +32,8 @@ class User(db.Model):
         self.password_hash = generate_password_hash(password)
 
     def verify_password(self, password):
-        return check_password_hash(self.password_hash, password)
+        bool_t = check_password_hash(self.password_hash, password)
+        return bool_t
 
     def can(self, permission):
         return self.roles is not None and self.roles.has_permission(permission)

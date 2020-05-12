@@ -11,7 +11,7 @@ const AuthenReducer = (state = initialState, action) => {
     switch (action.type) {
         case Actions.FETCH_USER:
             state = {
-                isAuthenticated: true,
+                isAuthenticated: action.data.isAuthenticated,
                 id : action.data.id,
                 name : action.data.name,
                 email: action.data.email

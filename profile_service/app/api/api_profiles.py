@@ -30,11 +30,9 @@ def get_user_profile():
 
 
 @profile.route('/user_profile', methods=['POST'])
-def post_user_profile():
+def post_user_profile(user_id):
     user_details = request.get_json()
-    if UserDetails.query.filter_by(email=user_details['email']).first() is not None:
-        raise CustomException('User already exist', status_code=500)
-    userDetails = UserDetails()
+    userDetails = UserDetails(user_id=user_id, email=user_details.get('email'), name=user_details.get('name'))
     userDetails.__dict__.update(user_details)
     db.session.add(userDetails)
     db.session.commit()
@@ -42,7 +40,7 @@ def post_user_profile():
 
 
 @profile.route('/user_profile', methods=['PUT'])
-@verify_jwt(blueprint=profile, permissions=[Permission.FOLLOW])
+@verify_jwt(blueprint=profile, permissions=[Permission.WRITE])
 def put_user_profile(user_id):
     user_details = request.get_json()
     if user_details is None or user_id is None:
@@ -95,11 +93,7 @@ def get_list_user():
     if list_profile is None:
         raise CustomException('Error while fetch User Profile', 404)
     return jsonify({
-        'profile': list(map(lambda d: {
-            'user_id': d.user_id,
-            'name': d.name,
-            'avatar_hash': d.avatar_hash}, list_profile))
-    }), 200
+        'profile': list(map(lambda d: d.to_short_json(), list_profile))}), 200
 
 
 @profile.route('/follow', methods=['POST'])
@@ -130,3 +124,23 @@ def delete_follow(user_id):
     return jsonify({
         'message': 'Success'
     }), 200
+
+
+@profile.route('/follow/<user_id>/followers', methods=['GET'])
+def get_all_followers(user_id):
+    user = UserDetails.query.filter_by(user_id=user_id).first()
+    if user is None:
+        raise CustomException('Cannot find user', 404)
+    ret = list(map(lambda d: d.follower.to_short_json(), user.followers.all()))
+    return jsonify(ret), 200
+
+
+@profile.route('/follow/<user_id>/followeds', methods=['GET'])
+def get_all_followeds(user_id):
+    user = UserDetails.query.filter_by(user_id=user_id).first()
+    if user is None:
+        raise CustomException('Cannot find user', 404)
+    ret = list(map(lambda d: d.followed.to_short_json(), user.followed.all()))
+    return jsonify(ret), 200
+
+

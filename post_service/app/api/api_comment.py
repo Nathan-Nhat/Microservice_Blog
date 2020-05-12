@@ -27,7 +27,7 @@ def add_comment():
         user_id=1
     )
     with get_connection(post, name='profile') as conn:
-        resp = conn.get(ServiceURL.PROFILE_SERVICE + 'user_profile?user_id=' + str(comment.user_id))
+        resp = conn.get(ServiceURL.PROFILE_SERVICE + 'user_profile?profile_id=' + str(comment.user_id))
         if resp.status_code != 200:
             raise CustomException('Cannot found post', 404)
     db.session.add(comment)

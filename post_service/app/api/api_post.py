@@ -13,6 +13,7 @@ from app.helper.Connection import get_connection
 from app.helper.ServiceURL import ServiceURL
 from bs4 import BeautifulSoup
 from markdown import markdown
+from app.models.like_model import Like
 
 
 @post.route('/test')
@@ -24,28 +25,33 @@ def test():
 def get_post_by_id(post_id):
     post_current = Post.query.filter_by(post_id=post_id).first()
     with get_connection(post, name='profile') as conn:
-        resp = conn.get(ServiceURL.PROFILE_SERVICE + '/user_profile?user_id=' + str(post_current.author_id))
+        resp = conn.get(ServiceURL.PROFILE_SERVICE + '/user_profile?profile_id=' + str(post_current.author_id))
         if resp.status_code != 200:
             raise CustomException('Cannot found post', 404)
     if post_current is None:
         raise CustomException('Cannot found post', 404)
-    return jsonify(post_current.to_json_full(resp.json().get('name'), resp.json().get('avatar_hash'))), 200
+
+    ret = post_current.to_json_full(resp.json().get('name'), resp.json().get('avatar_hash'))
+    cur_user_id = request.args.get('user_current_id')
+    ret['is_liked'] = False
+    if cur_user_id is not None:
+        like = post_current.like.filter_by(user_id=cur_user_id).first()
+        if like is not None:
+            ret['is_liked'] = True
+    return jsonify(ret), 200
 
 
 @post.route('/', methods=['POST'])
 @verify_jwt(blueprint=post, permissions=[Permission.WRITE])
-def add_post():
+def add_post(user_id):
     post_details = request.get_json()
-    if post_details.get('author_id') is None:
-        raise CustomException('You need to put author', 500)
     html = markdown(post_details.get('body'))
     text = '. '.join(BeautifulSoup(html).find_all(text=True))
     post_add = Post(title=post_details.get('title'),
                     body_html=post_details.get('body'),
                     body=text,
                     date_post=datetime.utcnow(),
-                    body_summary=text[0:200] + '...',
-                    author_id=post_details.get('author_id'))
+                    author_id=user_id)
     db.session.add(post_add)
     db.session.commit()
     return jsonify(post_add.to_json_summary(None, None)), 200
@@ -90,7 +96,7 @@ def get_all_post_by_page():
         .paginate(page, itemPerPage, error_out=False)
     post_paginated = posts.items
     total = posts.total
-    num_page = total//itemPerPage + 1
+    num_page = total // itemPerPage + 1
     list = [str(x.author_id) for x in post_paginated]
     str_list = ','.join(set(list))
     with get_connection(post, name='profile') as conn:
@@ -102,9 +108,59 @@ def get_all_post_by_page():
     data_index = [x.get('user_id') for x in data]
     for element in post_paginated:
         index = data_index.index(element.author_id)
-        json = element.to_json_summary(data[index].get('name'), data[index].get('avatar_hash'))
+        json = element.to_json_summary(data[index].get('user_name'), data[index].get('user_avatar'))
+        json['is_liked'] = False
+        current_user_id = request.args.get('user_current_id')
+        if current_user_id is not None:
+            like = element.like.filter_by(user_id=current_user_id).first()
+            if like is not None:
+                json['is_liked'] = True
         list_post.append(json)
     return jsonify({'Post': list_post,
                     'page': page,
                     'itemPerPage': itemPerPage,
                     'total_pages': num_page}), 200
+
+
+@post.route('/<post_id>/like', methods=['POST'])
+@verify_jwt(blueprint=post, permissions=[Permission.FOLLOW])
+@cross_origin(origins=['http://localhost:3000'])
+def like_post(post_id, user_id):
+    post_liked = Post.query.filter_by(post_id=post_id).first()
+    if post_liked is None:
+        raise CustomException('Not found post', 404)
+    like = Like(user_id=user_id, post_id=post_id, date_like=datetime.utcnow())
+    db.session.add(like)
+    db.session.commit()
+    return jsonify({'message': 'Like Success'})
+
+
+@post.route('/<post_id>/like', methods=['DELETE'])
+@verify_jwt(blueprint=post, permissions=[Permission.FOLLOW])
+@cross_origin(origins=['http://localhost:3000'])
+def unlike_post(post_id, user_id):
+    post_like = Post.query.filter_by(post_id=post_id).first()
+    if post_like is None:
+        raise CustomException('Not found post', 404)
+    like = post_like.like.query.filter_by(user_id=user_id).first()
+    if like is not None:
+        db.session.delete(like)
+        db.session.commit()
+        return jsonify({'message': 'Like Success'})
+    raise CustomException('You not like this', 404)
+
+
+@post.route('/<user_id>/posts', methods=['GET'])
+def get_user_post(user_id):
+    with get_connection(post, name='profile') as conn:
+        resp = conn.get(ServiceURL.PROFILE_SERVICE + '/user_profile?profile_id=' + str(user_id))
+        if resp.status_code != 200:
+            raise CustomException('Cannot found user', 404)
+    posts = Post.query.filter_by(author_id=user_id).all()
+    if posts is None:
+        return jsonify({'message': 'User have no post'}), 404
+    list_post = list(map(lambda d: d.to_json_summary(resp.json().get('name'), resp.json().get('avatar_hash')), posts))
+    return jsonify({
+        'user_id': user_id,
+        'posts': list_post
+    }), 200

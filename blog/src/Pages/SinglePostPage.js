@@ -11,6 +11,7 @@ import CodeBlock from "../Helper/CodeBlock";
 import CommentComponents from "../Component/Post/Comment.Components";
 import Divider from "@material-ui/core/Divider";
 import Fade from '@material-ui/core/Fade';
+import {useSelector} from "react-redux";
 
 const useStyle = makeStyles({
     container: {},
@@ -68,15 +69,20 @@ const SinglePostPage = () => {
             author_name: 'Tran Trung Nhat',
             date_post: '20/3/2020',
             author_id: 123,
-            author_avatar: ''
+            author_avatar: '',
+            num_like: 0,
+            num_comment: 0,
+            is_liked: false
         },
     })
+    const {id, isAuthenticated} = useSelector(state => state.AuthenReducer)
     const classes = useStyle()
     useEffect(() => {
         setState({...state, isLoading: true})
-        get_data(URL_POST_SERVICE + `/${post_id}`, false)
+        let params = isAuthenticated ? {user_current_id: id} : {}
+        get_data(URL_POST_SERVICE + `/${post_id}`, params, false)
             .then(res => {
-                console.log(res.data.author_avatar)
+                console.log(res.data)
                 setState({
                     isLoading: false,
                     data: {
@@ -86,19 +92,22 @@ const SinglePostPage = () => {
                         author_name: res.data.author_name,
                         date_post: res.data.date_post,
                         author_id: res.data.author_id,
-                        author_avatar: res.data.author_avatar
+                        author_avatar: res.data.author_avatar,
+                        is_liked: res.data.is_liked,
+                        num_comment: res.data.num_comment,
+                        num_like: res.data.num_like
                     }
                 })
             })
     }, [])
     return (
-        <Fade in={true}>
+        // <Fade in={true}>
             <div>
                 {
                     state.isLoading === true ? <CircularProgress style={{marginTop: "3rem"}}/> :
                         <Box className={classes.container}>
                             <Typography color="primary" variant={'h4'}
-                                        className={classes.title}>{state.data.title.split('.')[0]}</Typography>
+                                        className={classes.title}>{state.data.title}</Typography>
                             <Box className={classes.tagsContainer}>
                                 {state.data.tag.map((item, index) => {
                                     return <a key={index} className={classes.tags} key={index}>{item}</a>
@@ -118,7 +127,7 @@ const SinglePostPage = () => {
                 <Divider/>
                 <CommentComponents post_id={post_id}/>
             </div>
-        </Fade>
+        // </Fade>
     );
 };
 
