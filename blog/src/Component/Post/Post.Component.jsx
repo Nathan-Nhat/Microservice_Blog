@@ -5,16 +5,15 @@ import ChatBubbleRoundedIcon from '@material-ui/icons/ChatBubbleRounded';
 import ThumbUpAltRoundedIcon from '@material-ui/icons/ThumbUpAltRounded';
 import {NavLink} from "react-router-dom";
 import {theme} from "../../Themes";
-import ReactMarkdown from "react-markdown/with-html";
 import '../../Markdown.style.css'
-import CodeBlock from "../../Helper/CodeBlock";
 import Grow from '@material-ui/core/Grow';
+import VisibilityRoundedIcon from '@material-ui/icons/VisibilityRounded';
 
 const useStyle = makeStyles({
     container: {
         display: "flex",
         flexDirection: "row",
-        padding: "1rem"
+        padding: "1rem 1rem 0.5rem 1rem"
     },
     image: {
         width: "3rem",
@@ -24,35 +23,39 @@ const useStyle = makeStyles({
     },
     detail: {
         width: "100%",
-        margin: "0.7rem 0",
         display: "flex",
         flexDirection: "column"
     },
     commentContainer: {
         display: "flex",
+        marginTop : '0.5rem',
         flexDirection: 'row',
-        margin: "0.5rem 0",
+        opacity : '50%'
     },
     elementComment: {
         display: "flex",
         flexDirection: "row",
-        marginRight: "0.5rem"
+        marginRight: "1rem"
     },
     numComment: {
-        fontSize: "0.7rem",
-        marginRight: '0.3rem'
+        fontSize: "1rem",
+        marginLeft: '0.2rem'
     },
     iconComment: {
-        fontSize: "1rem"
+        fontSize: "1rem",
+        margin: 'auto'
     },
     containerTitle: {
-        textAlign: "left"
+        textAlign: "left",
     },
     title: {
-        fontWeight: "bold",
-        fontSize: "1.2rem",
-        color: theme.palette.primary,
+        // fontWeight: "bold",
+        fontSize: "1.3rem",
+        color: 'black',
         textDecoration: "None",
+        '&:hover': {
+            color: theme.palette.primary
+        }
     },
     tagsContainer: {
         marginTop: '0.5rem',
@@ -62,17 +65,20 @@ const useStyle = makeStyles({
     tags: {
         fontSize: '0.7rem',
         backgroundColor: '#dee3e0',
-        borderRadius: "0.2rem",
-        marginRight: "0.3rem",
+        borderRadius: "0.4rem",
+        marginRight: "0.7rem",
         padding: '0.3rem',
+        border: '1px solid #d7d9d7',
+        opacity: '70%',
+        lineHeight: '0.7rem',
         '&:hover': {
             cursor: 'pointer',
-            boxShadow: '0px 2px 18px -8px rgba(0,0,0,0.75)'
+            boxShadow: '0px 2px 18px -8px rgba(0,0,0,0.75)',
+            backgroundColor: '#d7d9d7'
         }
     },
     author: {
-        marginTop: "1rem",
-        fontSize: '0.7rem'
+        fontSize: '0.9rem'
     },
     writer: {
         color: 'blue',
@@ -87,38 +93,44 @@ const PostComponent = ({data}) => {
     const classes = useStyle(theme)
     return (
         // <Grow in={true}>
-            <Box>
-                <Box className={classes.container}>
-                    <img className={classes.image} src={data.author_avatar}/>
-                    <Box className={classes.detail}>
-                        <Box className={classes.containerTitle}>
-                            <NavLink className={classes.title}
-                                     to={`/post/${data.post_id}`}>{data.title}</NavLink>
-                        </Box>
-                        <Box className={classes.tagsContainer}>
-                            {['python', 'data', 'font-end'].map((item, index) => {
-                                return <a key={index} className={classes.tags} key={index}>{item}</a>
-                            })}
-                        </Box>
-                        <Typography align='left' className={classes.author}>
-                            <NavLink className={classes.writer}
-                                     to={`/profile/${data.author_id}`}>{data.author_name}</NavLink> write at
-                            date {data.date_post}
-                        </Typography>
+        <Box>
+            <Box className={classes.container}>
+                <img className={classes.image} src={data.author.avatar_hash}/>
+                <Box className={classes.detail}>
+                    <Typography align='left' className={classes.author}>
+                        <NavLink className={classes.writer}
+                                 to={`/profile/${data.author.user_id}`}>{data.author.name}</NavLink> write at
+                        date {data.date_post}
+                    </Typography>
+                    <Box className={classes.containerTitle}>
+                        <NavLink className={classes.title}
+                                 to={`/post/${data.post_id}`}>{data.title}</NavLink>
+                    </Box>
+                    <Box className={classes.tagsContainer}>
+                        {['python', 'data', 'font-end'].map((item, index) => {
+                            return <a key={index} className={classes.tags} key={index}>{item}</a>
+                        })}
                     </Box>
                     <Box className={classes.commentContainer}>
                         <Box className={classes.elementComment}>
-                            <Typography className={classes.numComment}>{data.num_comment}</Typography>
-                            <ChatBubbleRoundedIcon className={classes.iconComment}/>
+                            <VisibilityRoundedIcon color={data.is_liked ? 'primary' : ''} className={classes.iconComment}/>
+                            <Typography className={classes.numComment}>{99999}</Typography>
                         </Box>
                         <Box className={classes.elementComment}>
+                             <ChatBubbleRoundedIcon color={data.is_liked ? 'primary' : ''}
+                                                   className={classes.iconComment}/>
+                            <Typography className={classes.numComment}>{data.num_comment}</Typography>
+                        </Box>
+                         <Box className={classes.elementComment}>
+                             <ThumbUpAltRoundedIcon color={data.is_liked ? 'primary' : ''}
+                                                   className={classes.iconComment}/>
                             <Typography className={classes.numComment}>{data.num_like}</Typography>
-                            <ThumbUpAltRoundedIcon color= {data.is_liked?'primary': 'action'}  className={classes.iconComment}/>
                         </Box>
                     </Box>
                 </Box>
-                <Divider/>
             </Box>
+            <Divider/>
+        </Box>
         // </Grow>
     );
 };

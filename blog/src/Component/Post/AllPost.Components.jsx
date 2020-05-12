@@ -40,7 +40,7 @@ const AllPostComponents = () => {
         dispatch(change_page_post(newVal))
     }
     return (
-        <div style={{textAlign: 'center'}}>
+        <div style={{textAlign: 'center', padding :"4rem 2rem 2rem 2rem"}}>
             <HeaderPost/>
             {
                 state.isLoading === true ?

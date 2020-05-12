@@ -32,7 +32,7 @@ def add_comment():
             raise CustomException('Cannot found post', 404)
     db.session.add(comment)
     db.session.commit()
-    ret = comment.to_json(name=resp.json().get('name'), avatar_hash=resp.json().get('avatar_hash'))
+    ret = comment.to_json(resp.json())
     return jsonify(ret), 200
 
 
@@ -54,11 +54,12 @@ def get_comment(post_id):
     if comment is None:
         return jsonify({'message': 'There is some thing wrong'}), 500
     data = resp.json().get('profile')
+    print(data)
     list_comment = []
     data_index = [x.get('user_id') for x in data]
     for element in comment:
         index = data_index.index(element.user_id)
-        json = element.to_json(data[index].get('name'), data[index].get('avatar_hash'))
+        json = element.to_json(data[index])
         list_comment.append(json)
     total = comments_paginate.total
     num_page = total // item_per_page + 1

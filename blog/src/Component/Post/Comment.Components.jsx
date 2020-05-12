@@ -156,7 +156,7 @@ const CommentComponents = ({post_id}) => {
                                         <img className={classes.image} src={item.user_avatar}/>
                                         <div className={classes.textComment}>
                                             <div className={classes.titleComment}>
-                                                <Typography className={classes.name}>{item.user_name}</Typography>
+                                                <Typography className={classes.name}>{item.user_comment.name}</Typography>
                                                 <Typography className={classes.date}>{item.date_comment}</Typography>
                                             </div>
                                             <Typography className={classes.body}>{item.body_html}</Typography>

@@ -30,6 +30,9 @@ const AuthComponent = () => {
                     dispatch(fetch_user(data))
                     setState(false)
                 })
+                .catch(error =>
+                        setState(false)
+                )
         }
         else {
             setState(false)

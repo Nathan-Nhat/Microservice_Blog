@@ -8,9 +8,8 @@ import ProfilePage from "../Pages/ProfilePage";
 import SinglePostPage from "../Pages/SinglePostPage";
 const useStyle = makeStyles({
     container: {
-        marginTop:"2rem",
         width: "90%",
-        maxWidth : "1080px",
+        maxWidth : "1280px",
         margin: "auto"
     },
     textInput: {}

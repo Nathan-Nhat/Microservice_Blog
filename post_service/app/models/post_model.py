@@ -13,29 +13,26 @@ class Post(db.Model):
     comments = db.relationship('Comments', backref='post', lazy='dynamic')
     like = db.relationship('Like', backref='post', lazy='dynamic')
 
-    def to_json_full(self, name, avatar_hash):
+    def to_json_full(self, author):
+        author['num_posts'] = Post.query.filter_by(author_id=author.get('user_id')).count()
         ret = {
             'post_id': self.post_id,
             'title': self.title,
             'body_html': self.body_html,
             'date_post': self.date_post,
-            'author_name': name,
-            'author_avatar': avatar_hash,
-            'author_id': self.author_id,
             'num_comment': self.comments.count(),
-            'num_like': self.like.count()
+            'num_like': self.like.count(),
+            'author' : author
         }
         return ret
 
-    def to_json_summary(self, name, avatar_hash):
+    def to_json_summary(self, author):
         ret = {
             'post_id': self.post_id,
             'title': self.title,
             'date_post': self.date_post,
-            'author_name': name,
-            'author_avatar': avatar_hash,
-            'author_id': self.author_id,
             'num_comment': self.comments.count(),
-            'num_like': self.like.count()
+            'num_like': self.like.count(),
+            'author': author
         }
         return ret

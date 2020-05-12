@@ -7,7 +7,7 @@ import {useDispatch} from "react-redux";
 import {fetch_user, open_notification} from "../redux/Actions/ActionObjects/ActionsObjects";
 import {useSelector} from "react-redux";
 import {Redirect} from 'react-router-dom'
-
+import {useLocation} from 'react-router-dom'
 const useStyle = makeStyles({
     container: {
         display: "flex",
@@ -24,6 +24,7 @@ const LoginPage = () => {
     const classes = useStyle();
     const [state, setState] = useState({username: '', password: ''})
     const history = useHistory()
+    const location = useLocation()
     const handleChange = (e) => {
         let value = e.target.value
         let name = e.target.name
@@ -42,7 +43,10 @@ const LoginPage = () => {
                     name : res.data.name
                 }
                 dispatch(fetch_user(data))
-                history.push('/')
+                if (location.state)
+                    history.push(location.state.nextUrl)
+                else
+                    history.push('/')
                 dispatch(open_notification({message: 'Login Success', type: 'success'}))
             })
             .catch(error => dispatch(open_notification({message: 'Login fail. Please try again.', type: 'error'})))

@@ -24,15 +24,19 @@ def test():
 @post.route('/<post_id>', methods=['GET'])
 def get_post_by_id(post_id):
     post_current = Post.query.filter_by(post_id=post_id).first()
+    cur_user_id = request.args.get('user_current_id')
+    if cur_user_id is None:
+        end_point = '/user_profile?profile_id=' + str(post_current.author_id)
+    else:
+        end_point = '/user_profile?profile_id=' + str(post_current.author_id) + '&my_user_id='+str(cur_user_id)
     with get_connection(post, name='profile') as conn:
-        resp = conn.get(ServiceURL.PROFILE_SERVICE + '/user_profile?profile_id=' + str(post_current.author_id))
+        resp = conn.get(ServiceURL.PROFILE_SERVICE + end_point)
         if resp.status_code != 200:
             raise CustomException('Cannot found post', 404)
     if post_current is None:
         raise CustomException('Cannot found post', 404)
 
-    ret = post_current.to_json_full(resp.json().get('name'), resp.json().get('avatar_hash'))
-    cur_user_id = request.args.get('user_current_id')
+    ret = post_current.to_json_full(resp.json())
     ret['is_liked'] = False
     if cur_user_id is not None:
         like = post_current.like.filter_by(user_id=cur_user_id).first()
@@ -54,7 +58,7 @@ def add_post(user_id):
                     author_id=user_id)
     db.session.add(post_add)
     db.session.commit()
-    return jsonify(post_add.to_json_summary(None, None)), 200
+    return jsonify({'message' : 'Success'}), 200
 
 
 @post.route('/<post_id>', methods=['DELETE'])
@@ -108,7 +112,7 @@ def get_all_post_by_page():
     data_index = [x.get('user_id') for x in data]
     for element in post_paginated:
         index = data_index.index(element.author_id)
-        json = element.to_json_summary(data[index].get('user_name'), data[index].get('user_avatar'))
+        json = element.to_json_summary(data[index])
         json['is_liked'] = False
         current_user_id = request.args.get('user_current_id')
         if current_user_id is not None:
@@ -164,3 +168,10 @@ def get_user_post(user_id):
         'user_id': user_id,
         'posts': list_post
     }), 200
+
+
+@post.route('/<user_id>/total_posts', methods = ['GET'])
+def get_total_post(user_id):
+    total_posts = Post.query.filter_by(author_id=user_id).count()
+    return jsonify({'user_id' : user_id,
+                    'total_posts' : total_posts}), 200

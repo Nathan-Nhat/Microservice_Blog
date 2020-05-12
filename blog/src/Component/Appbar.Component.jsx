@@ -30,6 +30,9 @@ const AppbarComponent = () => {
         if (index === 1) history.push('/login')
         else if (index === 2) history.push('/signup')
         else if (index === 3) history.push('/add_post')
+        else if (index === 4 ) {
+            history.push(`/profile/${id}`)
+        }
         else {
              localStorage.removeItem('jwt')
              localStorage.removeItem('user_id')
@@ -45,7 +48,7 @@ const AppbarComponent = () => {
     const handleHome = () => {
         history.push('/')
     }
-    const {isAuthenticated} = useSelector(state => state.AuthenReducer)
+    const {isAuthenticated, id} = useSelector(state => state.AuthenReducer)
     return (
         <AppBar position="static">
             <Toolbar>
@@ -72,6 +75,9 @@ const AppbarComponent = () => {
                                 Add post
                             </Button>
                             <Button color="inherit" className={classes.link} onClick={(e) => handleClick(e, 4)}>
+                                My Profile
+                            </Button>
+                            <Button color="inherit" className={classes.link} onClick={(e) => handleClick(e, 5)}>
                                 Logout
                             </Button>
                         </div>

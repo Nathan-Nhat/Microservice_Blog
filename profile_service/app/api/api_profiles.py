@@ -7,6 +7,8 @@ from app.helper.Resp_Json import resp_json
 from app.helper.Exception import CustomException
 from app.helper.auth_connector import verify_jwt, Permission
 from flask_cors import cross_origin
+from app.helper.Connection import get_connection
+from app.helper.ServiceURL import ServiceURL
 
 
 @profile.route('/user_profile', methods=['GET'])
@@ -20,18 +22,25 @@ def get_user_profile():
     resp = user_details.to_json()
     if my_user_id is not None:
         my_user = UserDetails.query.filter_by(user_id=my_user_id).first()
-        if my_user is None:
-            return resp_json(resp, 200)
-        if my_user.is_following(user_id):
-            resp['is_followed'] = True
+        if my_user is not None:
+            if my_user.is_following(user_id):
+                resp['is_followed'] = True
+            else:
+                resp['is_followed'] = False
+    with get_connection(profile, name='verify_jwt') as conn:
+        resp_profile = conn.get(ServiceURL.POST_SERVICE + str(user_id) + '/total_posts')
+        print(resp_profile.json())
+        if resp_profile.status_code != 200:
+            resp['total_posts'] = 0
         else:
-            resp['is_followed'] = False
+            resp['total_posts'] = resp_profile.json().get('total_posts')
     return resp_json(resp, 200)
 
 
 @profile.route('/user_profile', methods=['POST'])
-def post_user_profile(user_id):
+def post_user_profile():
     user_details = request.get_json()
+    user_id = user_details.get('profile_id')
     userDetails = UserDetails(user_id=user_id, email=user_details.get('email'), name=user_details.get('name'))
     userDetails.__dict__.update(user_details)
     db.session.add(userDetails)
@@ -93,7 +102,7 @@ def get_list_user():
     if list_profile is None:
         raise CustomException('Error while fetch User Profile', 404)
     return jsonify({
-        'profile': list(map(lambda d: d.to_short_json(), list_profile))}), 200
+        'profile': list(map(lambda d: d.to_json(), list_profile))}), 200
 
 
 @profile.route('/follow', methods=['POST'])
@@ -142,5 +151,3 @@ def get_all_followeds(user_id):
         raise CustomException('Cannot find user', 404)
     ret = list(map(lambda d: d.followed.to_short_json(), user.followed.all()))
     return jsonify(ret), 200
-
-

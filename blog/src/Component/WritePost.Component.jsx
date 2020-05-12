@@ -13,7 +13,7 @@ const useStyle = makeStyles({
     root_container: {
         float: 'left',
         width: "100%",
-        marginBottom: '2rem'
+        margin: '4rem 0 2rem 0'
     },
     inputTitle: {
         fontSize: '2rem',

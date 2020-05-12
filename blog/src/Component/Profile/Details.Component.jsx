@@ -9,9 +9,13 @@ import HomeIcon from '@material-ui/icons/Home';
 import {useSelector} from "react-redux";
 
 const useStyle = makeStyles({
+    rootContainer : {
+        marginTop : '2rem'
+    },
     container: {
         display: "flex",
-        flexDirection: "row"
+        flexDirection: "row",
+        padding : '2rem'
     },
     image: {
         width: "20rem",
@@ -43,8 +47,8 @@ const useStyle = makeStyles({
     },
     followText: {
         lineHeight: '3rem',
-        marginLeft: '2rem'
-    }
+        marginRight: '2rem'
+    },
 })
 const DetailsComponent = ({user_id}) => {
     const classes = useStyle()
@@ -60,27 +64,31 @@ const DetailsComponent = ({user_id}) => {
         number_follower: 0,
         number_followed: 0,
         is_followed: false,
+        number_posts : 0
     })
     const {id, isAuthenticated} = useSelector(state => state.AuthenReducer)
     useEffect(() => {
+        var params = isAuthenticated? {  profile_id: user_id, my_user_id: id} : { profile_id: user_id}
         setProfile({...profile, isLoading: true})
-        API.get_data(URL_PROFILE_SERVICE + '/user_profile', {
-            profile_id: user_id,
-            my_user_id: id
-        }, false)
-            .then(res => setProfile({
-                isLoading: false,
-                firstName: res.data.name.split(' ')[0],
-                fullName: res.data.name,
-                email: res.data.email,
-                address: res.data.address,
-                about_me: res.data.about_me,
-                member_since: res.data.member_since,
-                avatar_hash: res.data.avatar_hash,
-                number_follower: res.data.number_follower,
-                number_followed: res.data.number_followed,
-                is_followed: res.data.is_followed
-            }))
+        API.get_data(URL_PROFILE_SERVICE + '/user_profile', params, false)
+            .then(res => {
+                setProfile({
+                    isLoading: false,
+                    firstName: res.data.name.split(' ')[0],
+                    fullName: res.data.name,
+                    email: res.data.email,
+                    address: res.data.address,
+                    about_me: res.data.about_me,
+                    member_since: res.data.member_since,
+                    avatar_hash: res.data.avatar_hash,
+                    number_follower: res.data.number_follower,
+                    number_followed: res.data.number_followed,
+                    is_followed: res.data.is_followed,
+                    number_posts: res.data.total_posts
+                })
+                console.log(res)
+            }
+            )
             .catch(error => setProfile({...profile, isLoading: false}))
     }, [])
 
@@ -103,7 +111,7 @@ const DetailsComponent = ({user_id}) => {
     }
 
     return (
-        <div>
+        <div className={classes.rootContainer}>
             { profile.isLoading ? null :
                 <div className={classes.container}>
                     <img className={classes.image} src={profile.avatar_hash}/>
@@ -133,15 +141,17 @@ const DetailsComponent = ({user_id}) => {
                                 {
                                     (!isAuthenticated || parseInt(user_id) === id) ? null :
                                         profile.is_followed ?
-                                            <Button onClick={handleUnFollow} variant={'contained'}
+                                            <Button onClick={handleUnFollow} variant={'contained'} style={{marginRight : '2rem'}}
                                                     color='secondary'>Following</Button> :
-                                            <Button onClick={handleFollow} variant={'contained'}
+                                            <Button onClick={handleFollow} variant={'contained'} style={{marginRight : '2rem'}}
                                                     color='primary'>Follow</Button>
                                 }
                                 <Typography className={classes.followText}>Follower
-                                    : {profile.number_follower}</Typography>
+                                    : <i className={classes.number}>{profile.number_follower}</i></Typography>
                                 <Typography className={classes.followText}>Following
-                                    : {profile.number_followed}</Typography>
+                                    : <i>{profile.number_followed}</i></Typography>
+                                <Typography className={classes.followText}>Post
+                                    : <i>{profile.number_posts}</i></Typography>
                             </div>
                         }
 

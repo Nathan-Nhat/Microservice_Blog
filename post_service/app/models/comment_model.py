@@ -11,13 +11,11 @@ class Comments(db.Model):
     user_id = db.Column(db.Integer)
     post_id = db.Column(db.Integer, db.ForeignKey('posts.post_id'))
 
-    def to_json(self, name, avatar_hash):
+    def to_json(self, user_comment):
         return {
             'body_html': self.body_html,
             'date_comment': self.date_comment,
             'disable': self.disable,
-            'user_id': self.user_id,
             'post_id': self.post_id,
-            'user_name': name,
-            'user_avatar': avatar_hash
+            'user_comment': user_comment
         }

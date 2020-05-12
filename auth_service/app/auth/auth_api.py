@@ -44,8 +44,8 @@ def sign_up_user():
                 'name': data.get('name'),
             }
             resp = conn.post(ServiceURL.PROFILE_SERVICE + 'user_profile', json=user_details)
-            if resp.status_code != 200:
-                raise Exception()
+        if resp.status_code != 200:
+            raise Exception()
         return jsonify({
             'username': user.username,
             'roles': user.roles.name
@@ -63,17 +63,14 @@ def authenticate():
     data = request.get_json()
     username = data.get('username')
     password = data.get('password')
-    print(password, username)
     user = User.query.filter_by(username=username).first()
     if user is None:
         return jsonify({'message': 'Invalid Username'}), 403
     if not user.verify_password(password):
-        print(user.verify_password(password))
         return jsonify({'message': 'Invalid Password'}), 403
     jwt = generate_jwt_token(user.id)
     with get_connection(auth, name='auth_service') as conn:
         resp = conn.get(ServiceURL.PROFILE_SERVICE + 'user_profile?profile_id=' + str(user.id))
-        print(user.id)
         if resp.status_code != 200:
             return jsonify({'message': 'Cannot found profile'}), 403
     return jsonify({
@@ -90,7 +87,6 @@ def authenticate():
 def verify_login():
     token = request.args.get('token')
     user_id = request.args.get('user_id')
-    print(token, user_id)
     if user_id is None or token is None:
         return jsonify({
             'message': 'verify Fail'
