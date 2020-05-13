@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {useParams} from 'react-router-dom'
 import {Box, Typography, CircularProgress} from '@material-ui/core'
 import {makeStyles} from "@material-ui/core/styles";
@@ -17,29 +17,30 @@ import GroupAddRoundedIcon from '@material-ui/icons/GroupAddRounded';
 import CreateRoundedIcon from '@material-ui/icons/CreateRounded';
 import * as API from "../ApiCall";
 import {useHistory} from 'react-router-dom'
+
 const useStyle = makeStyles({
     root: {
         display: 'flex',
         flexDirection: 'row',
-        marginTop:'2rem'
+        marginTop: '2rem'
     },
     main: {
         padding: '2rem',
-        width: '80%',
+        width: '75%',
         overflowWrap: 'break-word',
         wordWrap: 'break-word',
         hyphens: 'auto',
     },
     tableContent: {
-        alignSelf : 'flex-start',
+        alignSelf: 'flex-start',
         padding: '2rem',
-        width: "20%",
+        width: "25%",
         overflowWrap: 'break-word',
         wordWrap: 'break-word',
         hyphens: 'auto',
-        float : 'right',
-        position : 'sticky',
-        top : 0
+        float: 'right',
+        position: 'sticky',
+        top: 0
     },
     title: {
         textAlign: 'left',
@@ -105,8 +106,9 @@ const useStyle = makeStyles({
 const SinglePostPage = () => {
     const {post_id} = useParams()
     const [state, setState] = useState({
+        list_contents: [],
         is_followed: false,
-        isLoading: false,
+        isLoading: true,
         data: {
             title: 'Title',
             tag: ['python', 'data science', 'java'],
@@ -124,16 +126,33 @@ const SinglePostPage = () => {
             }
         },
     })
+    useEffect(() => {
+        let list_all = [
+            {
+                element : null,
+                child : []
+            }
+        ]
+        let list_h1 = []
+        if (state.isLoading === false)
+        {
+            let list = Array.from(ref.current.querySelectorAll('h1, h2'))
+            setState({...state, list_contents: list})
+        }
+
+    }, [state.isLoading])
     const {id, isAuthenticated} = useSelector(state => state.AuthenReducer)
     const classes = useStyle()
     const history = useHistory()
+    const ref = useRef('123')
     useEffect(() => {
         setState({...state, isLoading: true})
         let params = isAuthenticated ? {user_current_id: id} : {}
         get_data(URL_POST_SERVICE + `/${post_id}`, params, false)
             .then(res => {
-                console.log(res.data)
+                console.log(ref)
                 setState({
+                    ...state,
                     is_followed: res.data.author.is_followed,
                     isLoading: false,
                     data: {
@@ -198,7 +217,7 @@ const SinglePostPage = () => {
         <div className={classes.root}>
             <div className={classes.main}>
                 {
-                    state.isLoading === true ? <CircularProgress style={{marginTop: "3rem"}}/> :
+                    state.isLoading === true ? null :
                         <Box className={classes.container}>
                             <Box className={classes.author}>
                                 <img className={classes.image} src={state.data.author.avatar_hash}/>
@@ -236,31 +255,27 @@ const SinglePostPage = () => {
                                     return <a key={index} className={classes.tags} key={index}>{item}</a>
                                 })}
                             </Box>
-                            <ReactMarkdown className="markdown" source={state.data.body}
-                                           renderers={{code: CodeBlock}} escapeHtml={false}/>
+                            <div ref={ref}>
+                                <ReactMarkdown className="markdown" source={state.data.body}
+                                               renderers={{code: CodeBlock}} escapeHtml={false}/>
+                            </div>
                         </Box>
                 }
-                <Divider/>
-                <CommentComponents post_id={post_id}/>
+                {state.isLoading? null : <Divider/>}
+                {state.isLoading? null : <CommentComponents post_id={post_id}/>}
             </div>
             <div className={classes.tableContent}>
-                <Typography>TABLE OF CONTENTS
-Have no Table of contents
-
-Announcements
-Hé lộ thông tin về diễn giả thứ hai của sự kiện Viblo Deployment Day
-Viblo team
-
-Công bố những phản hồi đầu tiên của Viblo Technical Survey 2019
-Viblo team
-
-Đăng ký tham gia hội thảo "Practical implementation of recommendation based on machine learning"
-Viblo team
-
-Viblo loves Machine Learning
-Viblo team
-
-Đi tắt, đón đầu những xu hướng công nghệ mới cùng Vietnam Mobile Day 2018</Typography>
+                {
+                    state.list_contents.map((item, index) => {
+                        let ret = item.tagName === 'H1'? <h1 key = {index} onClick={()=>{
+                            item.scrollIntoView({behavior: 'smooth', block :'start'})
+                        }}> {item.textContent}</h1> : <h2 key = {index} onClick={()=>{
+                            item.scrollIntoView({behavior: 'smooth', block :'start'})
+                        }}> {item.textContent}</h2>
+                        return ret
+                    }
+                )
+                }
 
             </div>
         </div>
