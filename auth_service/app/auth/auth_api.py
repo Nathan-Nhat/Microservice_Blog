@@ -9,6 +9,7 @@ from app.helper.validate import email_validation, password_validation
 from flask_cors import cross_origin
 from app.helper.Connection import get_connection
 from app.helper.ServiceURL import ServiceURL
+from app.helper.MailSender import MailSender
 
 
 @auth.route('/sign_up', methods=['POST'])
@@ -46,6 +47,9 @@ def sign_up_user():
             resp = conn.post(ServiceURL.PROFILE_SERVICE + 'user_profile', json=user_details)
         if resp.status_code != 200:
             raise Exception()
+        # Send message to rabbitMQ to send email
+        mail_sender = MailSender(user.id, user.email)
+        mail_sender.send()
         return jsonify({
             'username': user.username,
             'roles': user.roles.name
@@ -73,6 +77,8 @@ def authenticate():
         resp = conn.get(ServiceURL.PROFILE_SERVICE + 'user_profile?profile_id=' + str(user.id))
         if resp.status_code != 200:
             return jsonify({'message': 'Cannot found profile'}), 403
+    if not user.confirmed:
+        return jsonify({'message': 'Your account is not confirmed'}), 403
     return jsonify({
         'jwt': jwt,
         'user_id': user.id,

@@ -10,7 +10,7 @@ class Config:
     ITSDANGEROUS_EXPIRATION = int(os.environ.get('ITSDANGEROUS_EXPIRATION', 3600))  # s
     SECRET_JWT_KEY = os.environ.get('SECRET_JWT_KEY') or 'jwt_trantrungnhat'
     BLOG_ADMIN = os.environ.get('BLOG_ADMIN') or 'trantrungnhat6196@gmail.com'
-    REDIS_URL = 'redis://:lamdengodien@localhost:6379/0'
+    RABBITMQ_URL = 'localhost'
     @staticmethod
     def init_app(app):
         pass

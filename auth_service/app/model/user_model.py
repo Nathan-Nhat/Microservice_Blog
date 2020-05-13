@@ -39,9 +39,9 @@ class User(db.Model):
         return self.roles is not None and self.roles.has_permission(permission)
 
 
-def generate_confirmation_token(user: User, expiration=3600):
+def generate_confirmation_token(user_id, expiration=3600):
     s = Serializer(current_app.config['ITSDANGEROUS_SECRET_KEY'], current_app.config['ITSDANGEROUS_EXPIRATION'])
-    return s.dumps({'confirm': user.id}).decode('utf-8')
+    return s.dumps({'confirm': user_id}).decode('utf-8')
 
 
 def confirm(user: User, token):
