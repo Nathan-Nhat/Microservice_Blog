@@ -20,6 +20,7 @@ def get_user_profile():
     if user_details is None:
         raise CustomException('Cannot found User', status_code=404)
     resp = user_details.to_json()
+    resp['is_followed'] = False
     if my_user_id is not None:
         my_user = UserDetails.query.filter_by(user_id=my_user_id).first()
         if my_user is not None:

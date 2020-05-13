@@ -12,6 +12,7 @@ class Post(db.Model):
     author_id = db.Column(db.Integer)
     comments = db.relationship('Comments', backref='post', lazy='dynamic')
     like = db.relationship('Like', backref='post', lazy='dynamic')
+    num_views = db.Column(db.Integer, default=0)
 
     def to_json_full(self, author):
         author['num_posts'] = Post.query.filter_by(author_id=author.get('user_id')).count()
@@ -22,7 +23,8 @@ class Post(db.Model):
             'date_post': self.date_post,
             'num_comment': self.comments.count(),
             'num_like': self.like.count(),
-            'author' : author
+            'author' : author,
+            'num_views' : self.num_views
         }
         return ret
 
@@ -33,6 +35,7 @@ class Post(db.Model):
             'date_post': self.date_post,
             'num_comment': self.comments.count(),
             'num_like': self.like.count(),
-            'author': author
+            'author': author,
+            'num_views': self.num_views
         }
         return ret

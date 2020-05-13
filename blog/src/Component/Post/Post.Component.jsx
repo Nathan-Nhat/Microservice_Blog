@@ -30,12 +30,12 @@ const useStyle = makeStyles({
         display: "flex",
         marginTop : '0.5rem',
         flexDirection: 'row',
-        opacity : '50%'
     },
     elementComment: {
         display: "flex",
         flexDirection: "row",
-        marginRight: "1rem"
+        marginRight: "1rem",
+        opacity : '50%'
     },
     numComment: {
         fontSize: "1rem",
@@ -43,7 +43,7 @@ const useStyle = makeStyles({
     },
     iconComment: {
         fontSize: "1rem",
-        margin: 'auto'
+        margin: 'auto',
     },
     containerTitle: {
         textAlign: "left",
@@ -113,15 +113,15 @@ const PostComponent = ({data}) => {
                     </Box>
                     <Box className={classes.commentContainer}>
                         <Box className={classes.elementComment}>
-                            <VisibilityRoundedIcon color={data.is_liked ? 'primary' : ''} className={classes.iconComment}/>
-                            <Typography className={classes.numComment}>{99999}</Typography>
+                            <VisibilityRoundedIcon  className={classes.iconComment}/>
+                            <Typography className={classes.numComment}>{data.num_views}</Typography>
                         </Box>
                         <Box className={classes.elementComment}>
-                             <ChatBubbleRoundedIcon color={data.is_liked ? 'primary' : ''}
+                             <ChatBubbleRoundedIcon
                                                    className={classes.iconComment}/>
                             <Typography className={classes.numComment}>{data.num_comment}</Typography>
                         </Box>
-                         <Box className={classes.elementComment}>
+                         <Box className={classes.elementComment} style={data.is_liked?{opacity : '100%'} : {}}>
                              <ThumbUpAltRoundedIcon color={data.is_liked ? 'primary' : ''}
                                                    className={classes.iconComment}/>
                             <Typography className={classes.numComment}>{data.num_like}</Typography>

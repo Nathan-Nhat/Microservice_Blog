@@ -8,7 +8,7 @@ import ProfilePage from "../Pages/ProfilePage";
 import SinglePostPage from "../Pages/SinglePostPage";
 const useStyle = makeStyles({
     container: {
-        width: "80%",
+        width: "70%",
         maxWidth : "1280px",
         margin: "auto"
     },

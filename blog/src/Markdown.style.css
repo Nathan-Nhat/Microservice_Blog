@@ -3,7 +3,9 @@ pre {
   font-size: 0.8rem;
   line-height: 1.7rem;
 }
-
+p {
+  font-size: 1rem;
+}
 blockquote {
   color: #666;
   margin: 0;
@@ -27,6 +29,7 @@ td {
 }
 
 .markdown {
+  margin-top: 2rem;
 }
 .markdown > p img {
   width: 80%;

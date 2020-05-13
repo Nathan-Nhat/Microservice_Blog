@@ -33,9 +33,12 @@ def get_post_by_id(post_id):
         resp = conn.get(ServiceURL.PROFILE_SERVICE + end_point)
         if resp.status_code != 200:
             raise CustomException('Cannot found post', 404)
+    print(resp.json())
     if post_current is None:
         raise CustomException('Cannot found post', 404)
-
+    post_current.num_views += 1
+    db.session.add(post_current)
+    db.session.commit()
     ret = post_current.to_json_full(resp.json())
     ret['is_liked'] = False
     if cur_user_id is not None:
@@ -146,7 +149,7 @@ def unlike_post(post_id, user_id):
     post_like = Post.query.filter_by(post_id=post_id).first()
     if post_like is None:
         raise CustomException('Not found post', 404)
-    like = post_like.like.query.filter_by(user_id=user_id).first()
+    like = post_like.like.filter_by(user_id=user_id).first()
     if like is not None:
         db.session.delete(like)
         db.session.commit()

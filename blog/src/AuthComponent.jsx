@@ -11,6 +11,7 @@ import WritePostComponent from "./Component/WritePost.Component";
 import Notification from "./Component/Notifycation.Component";
 import {MuiThemeProvider} from "@material-ui/core/styles";
 import {useSelector} from "react-redux";
+import CircularProgress from '@material-ui/core/CircularProgress';
 
 const AuthComponent = () => {
     const [state, setState] = React.useState(true)
@@ -42,7 +43,9 @@ const AuthComponent = () => {
     return (
         <div>
             {state === true ?
-                <img src={'https://thumbs.gfycat.com/AssuredZealousAmericanmarten-size_restricted.gif'}/> :
+                <div style={{width: "100vw", height : '100vh'}}>
+                    <CircularProgress style={{margin : "auto"}}/>
+                </div> :
                 <MuiThemeProvider theme={defaultTheme}>
                     <Router>
                         <AppbarComponent/>

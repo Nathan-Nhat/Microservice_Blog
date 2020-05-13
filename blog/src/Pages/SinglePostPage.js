@@ -17,6 +17,7 @@ import GroupAddRoundedIcon from '@material-ui/icons/GroupAddRounded';
 import CreateRoundedIcon from '@material-ui/icons/CreateRounded';
 import * as API from "../ApiCall";
 import {useHistory} from 'react-router-dom'
+import PostRightComponent from "../Component/Post/PostRight.Component";
 
 const useStyle = makeStyles({
     root: {
@@ -31,24 +32,14 @@ const useStyle = makeStyles({
         wordWrap: 'break-word',
         hyphens: 'auto',
     },
-    tableContent: {
-        alignSelf: 'flex-start',
-        padding: '2rem',
-        width: "25%",
-        overflowWrap: 'break-word',
-        wordWrap: 'break-word',
-        hyphens: 'auto',
-        float: 'right',
-        position: 'sticky',
-        top: 0
-    },
     title: {
         textAlign: 'left',
-        fontWeight: "bold"
+        fontWeight: "bold",
+        fontSize: '2.5rem',
     },
     tagsContainer: {
         textAlign: "left",
-        marginTop: "2rem"
+        marginTop: "2rem",
     },
     tags: {
         fontSize: '0.8rem',
@@ -101,7 +92,6 @@ const useStyle = makeStyles({
         flexDirection: 'row',
         marginRight: '1rem'
     },
-
 })
 const SinglePostPage = () => {
     const {post_id} = useParams()
@@ -127,15 +117,7 @@ const SinglePostPage = () => {
         },
     })
     useEffect(() => {
-        let list_all = [
-            {
-                element : null,
-                child : []
-            }
-        ]
-        let list_h1 = []
-        if (state.isLoading === false)
-        {
+        if (state.isLoading === false) {
             let list = Array.from(ref.current.querySelectorAll('h1, h2'))
             setState({...state, list_contents: list})
         }
@@ -212,12 +194,13 @@ const SinglePostPage = () => {
             })
             .catch(error => console.log(error))
     }
+
     return (
         // <Fade in={true}>
-        <div className={classes.root}>
-            <div className={classes.main}>
-                {
-                    state.isLoading === true ? null :
+        <div>
+            {state.isLoading === true ? null :
+                <div className={classes.root}>
+                    <div className={classes.main}>
                         <Box className={classes.container}>
                             <Box className={classes.author}>
                                 <img className={classes.image} src={state.data.author.avatar_hash}/>
@@ -248,8 +231,8 @@ const SinglePostPage = () => {
                                 <div style={{flexGrow: 1}}></div>
                                 <Typography style={{opacity: "50%"}}>{state.data.date_post}</Typography>
                             </Box>
-                            <Typography color="primary" variant={'h3'}
-                                        className={classes.title}>{state.data.title}</Typography>
+                            <Typography
+                                className={classes.title}>{state.data.title}</Typography>
                             <Box className={classes.tagsContainer}>
                                 {state.data.tag.map((item, index) => {
                                     return <a key={index} className={classes.tags} key={index}>{item}</a>
@@ -260,24 +243,11 @@ const SinglePostPage = () => {
                                                renderers={{code: CodeBlock}} escapeHtml={false}/>
                             </div>
                         </Box>
-                }
-                {state.isLoading? null : <Divider/>}
-                {state.isLoading? null : <CommentComponents post_id={post_id}/>}
-            </div>
-            <div className={classes.tableContent}>
-                {
-                    state.list_contents.map((item, index) => {
-                        let ret = item.tagName === 'H1'? <h1 key = {index} onClick={()=>{
-                            item.scrollIntoView({behavior: 'smooth', block :'start'})
-                        }}> {item.textContent}</h1> : <h2 key = {index} onClick={()=>{
-                            item.scrollIntoView({behavior: 'smooth', block :'start'})
-                        }}> {item.textContent}</h2>
-                        return ret
-                    }
-                )
-                }
-
-            </div>
+                        <Divider/>
+                        <CommentComponents post_id={post_id}/>
+                    </div>
+                    <PostRightComponent parentData={state} post_id={post_id}/>
+                </div>}
         </div>
         // </Fade>
     );

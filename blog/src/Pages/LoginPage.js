@@ -49,7 +49,7 @@ const LoginPage = () => {
                     history.push('/')
                 dispatch(open_notification({message: 'Login Success', type: 'success'}))
             })
-            .catch(error => dispatch(open_notification({message: 'Login fail. Please try again.', type: 'error'})))
+            .catch(error => dispatch(open_notification({message: 'Fail when login. Try again later', type: 'error'})))
     }
     const {isAuthenticated} = useSelector(state => state.AuthenReducer)
     return (
