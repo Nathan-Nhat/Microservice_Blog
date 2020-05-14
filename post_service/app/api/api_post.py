@@ -65,13 +65,14 @@ def add_post(user_id):
 
 
 @post.route('/<post_id>', methods=['DELETE'])
-def delete_post(post_id):
+@verify_jwt(blueprint=post, permissions=[Permission.WRITE])
+def delete_post(post_id, user_id):
     post_del = Post.query.filter_by(post_id=post_id).first()
     if post_del is None:
         raise CustomException('Cannot found post', 404)
     db.session.delete(post_del)
     db.session.commit()
-    return jsonify(post_del.to_json(None, None)), 200
+    return jsonify({'message' : 'Delete Success'}), 200
 
 
 @post.route('/', methods=['PUT'])
@@ -137,8 +138,8 @@ def get_all_post_by_page():
 
 
 @post.route('/<post_id>/like', methods=['POST'])
-@verify_jwt(blueprint=post, permissions=[Permission.FOLLOW])
 @cross_origin(origins=['http://localhost:3000'])
+@verify_jwt(blueprint=post, permissions=[Permission.FOLLOW])
 def like_post(post_id, user_id):
     post_liked = Post.query.filter_by(post_id=post_id).first()
     if post_liked is None:
@@ -165,6 +166,7 @@ def unlike_post(post_id, user_id):
 
 
 @post.route('/<user_id>/posts', methods=['GET'])
+@cross_origin(origins=['http://localhost:3000'])
 def get_user_post(user_id):
     with get_connection(post, name='profile') as conn:
         resp = conn.get(ServiceURL.PROFILE_SERVICE + '/user_profile?profile_id=' + str(user_id))
@@ -173,9 +175,14 @@ def get_user_post(user_id):
     posts = Post.query.filter_by(author_id=user_id).all()
     if posts is None:
         return jsonify({'message': 'User have no post'}), 404
-    list_post = list(map(lambda d: d.to_json_summary(resp.json().get('name'), resp.json().get('avatar_hash')), posts))
+    list_post = list(map(lambda d: d.to_json_little(), posts))
+    with get_connection(post, name='profile') as conn:
+        resp = conn.get(ServiceURL.PROFILE_SERVICE + 'user_profile?profile_id=' + str(user_id))
+        if resp.status_code != 200:
+            raise CustomException('Cannot found post', 404)
+    user = resp.json()
     return jsonify({
-        'user_id': user_id,
+        'user': user,
         'posts': list_post
     }), 200
 

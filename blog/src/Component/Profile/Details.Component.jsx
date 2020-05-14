@@ -150,7 +150,6 @@ const DetailsComponent = ({user_id}) => {
                             since {profile.member_since.substr(0, 10)}</Typography>
                         {
                             <div style={{marginTop: '1rem', display: 'flex', flexDirection: 'row'}}>
-                                {console.log(user_id, id, isAuthenticated)}
                                 {
                                     (!isAuthenticated || parseInt(user_id) === id) ? null :
                                         profile.is_followed ?

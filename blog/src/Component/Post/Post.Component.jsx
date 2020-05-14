@@ -9,6 +9,15 @@ import '../../Markdown.style.css'
 import Grow from '@material-ui/core/Grow';
 import VisibilityRoundedIcon from '@material-ui/icons/VisibilityRounded';
 import moment from "moment";
+import {useSelector} from "react-redux";
+import {IconButton} from '@material-ui/core';
+import EditRoundedIcon from '@material-ui/icons/EditRounded';
+import DeleteForeverRoundedIcon from '@material-ui/icons/DeleteForeverRounded';
+import {green} from '@material-ui/core/colors';
+import {useHistory} from 'react-router-dom'
+import * as API from '../../ApiCall'
+import {URL_POST_SERVICE} from "../../Constants";
+
 const useStyle = makeStyles({
     container: {
         display: "flex",
@@ -28,14 +37,14 @@ const useStyle = makeStyles({
     },
     commentContainer: {
         display: "flex",
-        marginTop : '0.5rem',
+        marginTop: '0.5rem',
         flexDirection: 'row',
     },
     elementComment: {
         display: "flex",
         flexDirection: "row",
         marginRight: "1rem",
-        opacity : '50%'
+        opacity: '50%'
     },
     numComment: {
         fontSize: "1rem",
@@ -78,61 +87,97 @@ const useStyle = makeStyles({
         }
     },
     author: {
-        display : 'flex',
-        flexDirection : 'row',
+        display: 'flex',
+        flexDirection: 'row',
     },
     writer: {
-        fontSize: '1rem',
+        fontSize: '0.8rem',
         color: 'blue',
         textDecoration: "None",
+        lineHeight: '2.1rem',
+        marginRight: '1rem',
         '&:hover': {
             cursor: 'pointer'
         }
     },
 
 })
-const PostComponent = ({data}) => {
+const PostComponent = ({post, user}) => {
     const classes = useStyle(theme)
+    const {id, isAuthenticated} = useSelector(state => state.AuthenReducer)
+    const history = useHistory()
+    const [state, setState] = React.useState({
+        isDeleted: false
+    })
+    const handleEdit = () => {
+        history.push(`/edit_post/${post.post_id}`)
+    }
+    const handleDelete = () => {
+        API.delete_data(URL_POST_SERVICE + `/${post.post_id}`, {}, true)
+            .then(res => {
+                console.log(res)
+                setState({isDeleted: true})
+            })
+    }
     return (
         // <Grow in={true}>
         <Box>
-            <Box className={classes.container}>
-                <img className={classes.image} src={data.author.avatar_hash}/>
-                <Box className={classes.detail}>
-                    <div align='left' className={classes.author}>
-                        <NavLink className={classes.writer}
-                                 to={`/profile/${data.author.user_id}`}>{data.author.name}</NavLink>
-                        <div style={{flexGrow : 1}}></div>
-                        <Typography style = {{fontSize : '0.9rem', fontStyle : 'italic'}}>{moment(data.date_post).fromNow()}</Typography>
-                    </div>
-                    <Box className={classes.containerTitle}>
-                        <NavLink className={classes.title}
-                                 to={`/post/${data.post_id}`}>{data.title}</NavLink>
-                    </Box>
-                    <Box className={classes.tagsContainer}>
-                        {['python', 'data', 'font-end'].map((item, index) => {
-                            return <a key={index} className={classes.tags} key={index}>{item}</a>
-                        })}
-                    </Box>
-                    <Box className={classes.commentContainer}>
-                        <Box className={classes.elementComment}>
-                            <VisibilityRoundedIcon  className={classes.iconComment}/>
-                            <Typography className={classes.numComment}>{data.num_views}</Typography>
+            { state.isDeleted? null :
+                <Box>
+                    <Box className={classes.container}>
+                        <img className={classes.image} src={user.avatar_hash}/>
+                        <Box className={classes.detail}>
+                            <div align='left' className={classes.author}>
+                                <NavLink className={classes.writer}
+                                         to={`/profile/${user.user_id}`}>{user.name}</NavLink>
+                                {isAuthenticated && id === user.user_id ?
+                                    <Box>
+                                        <IconButton style={{padding: '0.3rem', marginRight: '0.5rem'}}
+                                                    onClick={handleEdit}>
+                                            <EditRoundedIcon style={{fontSize: '1.4rem', color: green[500]}}/>
+                                        </IconButton>
+                                        <IconButton style={{padding: '0.3rem', marginRight: '0.5rem'}}
+                                                    onClick={handleDelete}>
+                                            <DeleteForeverRoundedIcon color='secondary' style={{fontSize: '1.4rem'}}/>
+                                        </IconButton>
+                                    </Box> : null
+                                }
+                                <div style={{flexGrow: 1}}></div>
+                                <Typography style={{
+                                    fontSize: '0.8rem',
+                                    fontStyle: 'italic'
+                                }}>{moment(post.date_post).fromNow()}</Typography>
+                            </div>
+                            <Box className={classes.containerTitle}>
+                                <NavLink className={classes.title}
+                                         to={`/post/${post.post_id}`}>{post.title}</NavLink>
+                            </Box>
+                            <Box className={classes.tagsContainer}>
+                                {['python', 'data', 'font-end'].map((item, index) => {
+                                    return <a key={index} className={classes.tags} key={index}>{item}</a>
+                                })}
+                            </Box>
+                            <Box className={classes.commentContainer}>
+                                <Box className={classes.elementComment}>
+                                    <VisibilityRoundedIcon className={classes.iconComment}/>
+                                    <Typography className={classes.numComment}>{post.num_views}</Typography>
+                                </Box>
+                                <Box className={classes.elementComment}>
+                                    <ChatBubbleRoundedIcon
+                                        className={classes.iconComment}/>
+                                    <Typography className={classes.numComment}>{post.num_comment}</Typography>
+                                </Box>
+                                <Box className={classes.elementComment} style={post.is_liked ? {opacity: '100%'} : {}}>
+                                    <ThumbUpAltRoundedIcon color={post.is_liked ? 'primary' : ''}
+                                                           className={classes.iconComment}/>
+                                    <Typography className={classes.numComment}>{post.num_like}</Typography>
+                                </Box>
+                            </Box>
                         </Box>
-                        <Box className={classes.elementComment}>
-                             <ChatBubbleRoundedIcon
-                                                   className={classes.iconComment}/>
-                            <Typography className={classes.numComment}>{data.num_comment}</Typography>
-                        </Box>
-                         <Box className={classes.elementComment} style={data.is_liked?{opacity : '100%'} : {}}>
-                             <ThumbUpAltRoundedIcon color={data.is_liked ? 'primary' : ''}
-                                                   className={classes.iconComment}/>
-                            <Typography className={classes.numComment}>{data.num_like}</Typography>
-                        </Box>
                     </Box>
+                    <Divider/>
                 </Box>
-            </Box>
-            <Divider/>
+            }
         </Box>
         // </Grow>
     );

@@ -4,7 +4,7 @@ import {URL_AUTH_SERVICE} from "./Constants";
 import {fetch_user} from "./redux/Actions/ActionObjects/ActionsObjects";
 import {useDispatch} from "react-redux";
 import {theme as defaultTheme} from "./Themes";
-import {BrowserRouter as Router, Route} from "react-router-dom";
+import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
 import AppbarComponent from "./Component/Appbar.Component";
 import MainComponent from "./Component/Main.Component";
 import WritePostComponent from "./Component/WritePost.Component";
@@ -13,6 +13,7 @@ import {MuiThemeProvider} from "@material-ui/core/styles";
 import {useSelector} from "react-redux";
 import CircularProgress from '@material-ui/core/CircularProgress';
 import EditPostComponent from "./Component/EditPost.Component";
+
 const AuthComponent = () => {
     const [state, setState] = React.useState(true)
     React.useEffect(() => {
@@ -32,10 +33,9 @@ const AuthComponent = () => {
                     setState(false)
                 })
                 .catch(error =>
-                        setState(false)
+                    setState(false)
                 )
-        }
-        else {
+        } else {
             setState(false)
         }
     }, [])
@@ -43,15 +43,17 @@ const AuthComponent = () => {
     return (
         <div>
             {state === true ?
-                <div style={{width: "100vw", height : '100vh'}}>
-                    <CircularProgress style={{margin : "auto"}}/>
+                <div style={{width: "100vw", height: '100vh'}}>
+                    <CircularProgress style={{margin: "auto"}}/>
                 </div> :
                 <MuiThemeProvider theme={defaultTheme}>
                     <Router>
                         <AppbarComponent/>
                         <MainComponent/>
-                        <Route path='/add_post' component={WritePostComponent}/>
-                        <Route path = '/edit_post/:post_id' component={EditPostComponent} />
+                        <Switch>
+                            <Route path='/add_post' component={WritePostComponent}/>
+                            <Route path='/edit_post/:post_id' component={EditPostComponent}/>
+                        </Switch>
                     </Router>
                     <Notification/>
                 </MuiThemeProvider>

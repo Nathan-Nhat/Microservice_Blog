@@ -13,9 +13,7 @@ const AllPostComponents = () => {
     const [state, setState] = useState({
         isLoading: true,
         posts: [{
-            title: "Title",
-            author_id: 123,
-            date_post: '06/01/1996'
+            author : null
         }],
         page: 0,
         total_pages: 1,
@@ -27,13 +25,13 @@ const AllPostComponents = () => {
         let params = isAuthenticated ? {type: request_post.type, page :request_post.page, user_current_id : id} : {type: request_post.type, page :request_post.page}
         get_data(URL_POST_SERVICE + `/get_all`, params, false)
             .then(res => {
+                console.log(res)
                 setState({
                     isLoading: false,
                     posts: res.data.Post,
                     page: res.data.page,
                     total_pages: res.data.total_pages
                 })
-                console.log(res)
             })
     }, [request_post])
     const handleChange = (e, newVal) => {
@@ -52,7 +50,7 @@ const AllPostComponents = () => {
                         <Box>
                             {
                                 state.posts.map((item, index) => {
-                                    return <PostComponent data={item} key={index}/>
+                                    return <PostComponent post={item} user={item.author}  key={index}/>
                                 })
                             }
                         </Box>

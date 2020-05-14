@@ -18,6 +18,7 @@ import CreateRoundedIcon from '@material-ui/icons/CreateRounded';
 import * as API from "../ApiCall";
 import {useHistory} from 'react-router-dom'
 import PostRightComponent from "../Component/Post/PostRight.Component";
+import VisibilityIcon from '@material-ui/icons/Visibility';
 
 const useStyle = makeStyles({
     root: {
@@ -27,7 +28,6 @@ const useStyle = makeStyles({
     },
     main: {
         padding: '2rem',
-        width: '75%',
         overflowWrap: 'break-word',
         wordWrap: 'break-word',
         hyphens: 'auto',
@@ -106,13 +106,14 @@ const SinglePostPage = () => {
             date_post: '20/3/2020',
             num_like: 0,
             num_comment: 0,
+            num_views: 0,
             is_liked: false,
             author: {
                 user_id: 0,
                 name: 'N/A',
                 avatar_hash: null,
                 number_follower: 0,
-                number_posts: 0
+                number_posts: 0,
             }
         },
     })
@@ -145,6 +146,7 @@ const SinglePostPage = () => {
                         is_liked: res.data.is_liked,
                         num_comment: res.data.num_comment,
                         num_like: res.data.num_like,
+                        num_views: res.data.num_views,
                         author: {
                             user_id: res.data.author.user_id,
                             name: res.data.author.name,
@@ -209,7 +211,7 @@ const SinglePostPage = () => {
                                         <NavLink className={classes.name}
                                                  to={`/profile/${state.data.author.user_id}`}>{state.data.author.name}</NavLink>
                                         {parseInt(state.data.author.user_id) === id ? null :
-                                            state.is_followed === false || !isAuthenticated?
+                                            state.is_followed === false || !isAuthenticated ?
                                                 <Button variant={'outlined'} className={classes.followBtn}
                                                         onClick={handleFollow}>Follow</Button> :
                                                 <Button variant={'contained'} color='primary'
@@ -229,7 +231,14 @@ const SinglePostPage = () => {
                                     </Box>
                                 </Box>
                                 <div style={{flexGrow: 1}}></div>
-                                <Typography style={{opacity: "50%"}}>{state.data.date_post}</Typography>
+                                <div>
+                                    <Typography style={{opacity: "50%", textAlign :"right"}}>{state.data.date_post}</Typography>
+                                    <div style={{display : 'flex', flexDirection: "row", opacity: "50%"}}>
+                                        <div style={{flexGrow : 1}}></div>
+                                        <VisibilityIcon style = {{marginRight :"0.3rem"}}/>
+                                        <Typography>{state.data.num_views}</Typography>
+                                    </div>
+                                </div>
                             </Box>
                             <Typography
                                 className={classes.title}>{state.data.title}</Typography>

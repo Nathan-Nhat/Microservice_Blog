@@ -1,9 +1,11 @@
 import React from 'react';
-
-const SpecificDetailsComponents = () => {
+import HeaderDetails from './HeaderDetails.Components'
+import BodyDetailsComponents from "./BodyDetails.Components";
+const SpecificDetailsComponents = ({user_id}) => {
     return (
         <div>
-            123
+            <HeaderDetails user_id = {user_id}/>
+            <BodyDetailsComponents user_id = {user_id}/>
         </div>
     );
 };

@@ -29,3 +29,13 @@ export const open_profile_popup = ()=>({
     type : Actions.OPEN_PROFILE_POPUP
 })
 
+export const fetch_user_details = (data) => ({
+    type : Actions.FETCH_USER_DETAILS,
+    data : data
+})
+
+export const fetch_user_details_success = (data) => ({
+    type : Actions.FETCH_USER_DETAILS_SUCCESS,
+    data : data
+})
+

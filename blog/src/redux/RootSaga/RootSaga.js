@@ -2,28 +2,29 @@ import {fork, take, call, takeEvery, put, takeLatest} from 'redux-saga/effects'
 import * as Actions from '../Actions/ActionConstant/ActionConstants'
 import {get_data} from "../../ApiCall";
 import {URL_POST_SERVICE} from "../../Constants";
+import {fetch_user_details_success, open_notification} from "../Actions/ActionObjects/ActionsObjects";
 
 /*=============Authentication Saga================*/
-function* fetchPost(action){
+function* fetchUserDetails(action){
     // user login
     console.log("user login");
     try {
-        const res = call(get_data, URL_POST_SERVICE + `/get_all?page=${action.data.page}&items_per_page=${action.data.item_per_page}`, false)
-        console.log(res)
+        if (action.data.type == 0) {
+            const res = yield call(get_data, URL_POST_SERVICE + `/${action.data.user_id}/posts`, {},false)
+            yield put(fetch_user_details_success(res.data))
+        }
     } catch (e) {
-        console.log(e)
+        yield put(open_notification({message : 'Error when fetch user post', type: 'error'}))
     }
 }
 
-function* watchFetchPost(){
-    yield takeEvery(Actions.FETCH_POST, fetchPost);
+function* watchFetchUserDetails() {
+    yield takeEvery(Actions.FETCH_USER_DETAILS, fetchUserDetails)
 }
-
-
 /*==============Root Saga================*/
 function* rootSaga(){
     console.log('This is root saga');
-    yield fork(watchFetchPost);
+    yield fork(watchFetchUserDetails)
 }
 
 export default rootSaga;

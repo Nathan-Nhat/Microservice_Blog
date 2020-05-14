@@ -6,11 +6,10 @@ import SpecificDetailsComponents from "../Component/Profile/SpecificDetails.Comp
 
 const ProfilePage = () => {
     const {userId} = useParams()
-    console.log(userId)
     return (
         <div>
             <DetailsComponent user_id={userId} ></DetailsComponent>
-            <SpecificDetailsComponents/>
+            <SpecificDetailsComponents user_id = {userId}/>
         </div>
     );
 };

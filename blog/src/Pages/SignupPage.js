@@ -31,9 +31,9 @@ const LoginPage = () => {
     const handleClick = (e) => {
         axios.post(URL_AUTH_SERVICE + '/sign_up', state)
             .then(res => {
-                dispatch(open_notification(res.data.message, 'success'))
+                dispatch(open_notification({message :'Sign up success,a mail is sent to your email to verify your account. Please check!', type : 'success'}))
             })
-            .catch(err => open_notification('Fail when sign up', 'error'))
+            .catch(err => dispatch(open_notification({message : 'Fail when sign up', type : 'error'})))
     }
     const {isAuthenticated} = useSelector(state => state.AuthenReducer)
     return (
