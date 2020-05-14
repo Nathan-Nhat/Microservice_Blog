@@ -22,3 +22,10 @@ export const open_notification = (data)=>({
 export const close_notification = ()=>({
     type : Actions.CLOSE_NOTIF
 })
+export const close_profile_popup = ()=>({
+    type : Actions.CLOSE_PROFILE_POPUP
+})
+export const open_profile_popup = ()=>({
+    type : Actions.OPEN_PROFILE_POPUP
+})
+

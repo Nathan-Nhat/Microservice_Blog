@@ -33,29 +33,32 @@ def sign_up_user():
         resp.status_code = 403
         return resp
     user = User(username=data.get('username'), email=data.get('email'), password=data.get('password'))
-    db.session.add(user)
     try:
+        # fake confirm first
+        user.confirmed = 1
+        db.session.add(user)
         db.session.commit()
-        # send_mail
         # add user profile
         with get_connection(auth, name='auth_service') as conn:
             user_details = {
-                'user_id': user.id,
+                'profile_id': user.id,
                 'email': user.email,
                 'name': data.get('name'),
             }
             resp = conn.post(ServiceURL.PROFILE_SERVICE + 'user_profile', json=user_details)
         if resp.status_code != 200:
+            print('Error when create user profile')
             raise Exception()
         # Send message to rabbitMQ to send email
-        mail_sender = MailSender(user.id, user.email)
-        mail_sender.send()
+        # mail_sender = MailSender(user.id, user.email)
+        # mail_sender.send()
         return jsonify({
             'username': user.username,
             'roles': user.roles.name
         }), 200
-    except Exception as e:
+    except Exception:
         db.session.rollback()
+        raise
         return jsonify({
             'message': 'There is some error',
         }), 500

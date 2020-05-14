@@ -1,15 +1,16 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {makeStyles} from "@material-ui/core/styles";
 import ReactMarkdown from "react-markdown/with-html";
 import CodeBlock from "../Helper/CodeBlock";
 import './MarkdownPost.css'
 import {Button} from "@material-ui/core";
-import {post_data} from "../ApiCall";
+import {get_data, put_data} from "../ApiCall";
 import {URL_POST_SERVICE} from "../Constants";
 import {useDispatch, useSelector} from "react-redux";
 import {open_notification} from "../redux/Actions/ActionObjects/ActionsObjects";
-import AuthenReducer from "../redux/Reducer/ChildReducers/AuthenReducer";
 import {Redirect} from 'react-router-dom'
+import {useParams} from 'react-router-dom'
+
 const useStyle = makeStyles({
     root_container: {
         float: 'left',
@@ -50,18 +51,6 @@ const useStyle = makeStyles({
         padding: '1rem',
         height: '42rem + 2px'
     },
-    markdown: {
-        border: '1px solid #9494b8',
-        borderLeft: '0px',
-        width: '50%',
-        padding: '1rem',
-        overflowWrap: 'break-word',
-        wordWrap: 'break-word',
-        hyphens: 'auto',
-        height: '40rem',
-        boxSizing: 'content-box',
-        overflow: 'auto',
-    },
     button_save: {
         float: "right"
     }
@@ -72,7 +61,7 @@ const initState = {
     body: '',
     isLoading: false
 }
-const WritePostComponent = () => {
+const EditPostComponent = () => {
     const classes = useStyle()
     const [state, setState] = useState(initState)
     const handleChange = (e) => {
@@ -84,10 +73,12 @@ const WritePostComponent = () => {
         })
     }
     const dispatch = useDispatch()
-    const {isAuthenticated, id} = useSelector(state=>state.AuthenReducer)
+    const {isAuthenticated, id} = useSelector(state => state.AuthenReducer)
+    const {post_id} = useParams()
     const handleSave = () => {
         setState({...state, isLoading: true})
         const data = {
+            post_id: post_id,
             title: state.title,
             body: state.body,
             author_id: localStorage.getItem('user_id')
@@ -96,7 +87,7 @@ const WritePostComponent = () => {
             dispatch(open_notification({message: "Write something", type: 'error'}))
             return
         }
-        post_data(URL_POST_SERVICE + `/`, {}, data, true)
+        put_data(URL_POST_SERVICE + `/`, {}, data, true)
             .then(res => {
                 console.log(res)
                 setState({...state, isLoading: false})
@@ -107,28 +98,40 @@ const WritePostComponent = () => {
                 dispatch(open_notification({message: "Save post fail. Try again", type: 'error'}))
             })
     }
+
+    React.useEffect(() => {
+        get_data(URL_POST_SERVICE + `/${post_id}`, {}, false)
+            .then(res => {
+                setState({
+                    post_id: post_id,
+                    title: res.data.title,
+                    body: res.data.body_html,
+                    author_id: res.data.author.user_id,
+                })
+            })
+    }, [])
     return (
         <div className={classes.root_container}>
             {
-                !isAuthenticated? <Redirect to={'/'}/>:
-                <div style={{padding: '0 2rem 2rem 2rem'}}>
-                    <input className={classes.inputTitle} placeholder={`Title`} name='title' value={state.title}
-                           onChange={handleChange}></input>
-                    <input name='tag' className={classes.tags} placeholder={`Input Tags`} value={state.tag}
-                           onChange={handleChange}/>
-                    <div className={classes.bodyContianer}>
+                !isAuthenticated ? <Redirect to={'/'}/> :
+                    <div style={{padding: '0 2rem 2rem 2rem'}}>
+                        <input className={classes.inputTitle} placeholder={`Title`} name='title' value={state.title}
+                               onChange={handleChange}></input>
+                        <input name='tag' className={classes.tags} placeholder={`Input Tags`} value={state.tag}
+                               onChange={handleChange}/>
+                        <div className={classes.bodyContianer}>
                         <textarea name='body' className={classes.body_html} placeholder={`Body`} value={state.body}
-                                  onChange={handleChange}></textarea>
-                        <ReactMarkdown className= "markdown_write" source={state.body}
-                                       escapeHtml={false} renderers={{code: CodeBlock}}/>
+                                  onChange={handleChange}/>
+                            <ReactMarkdown className="markdown_write" source={state.body}
+                                           escapeHtml={false} renderers={{code: CodeBlock}}/>
+                        </div>
+                        <Button variant={'contained'} color={'primary'} className={classes.button_save}
+                                onClick={handleSave} C>Save</Button>
                     </div>
-                    <Button variant={'contained'} color={'primary'} className={classes.button_save}
-                            onClick={handleSave} C>Save</Button>
-                </div>
             }
         </div>
     );
 };
 
-export default WritePostComponent;
+export default EditPostComponent;
 

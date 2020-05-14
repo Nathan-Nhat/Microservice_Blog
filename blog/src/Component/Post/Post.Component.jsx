@@ -8,7 +8,7 @@ import {theme} from "../../Themes";
 import '../../Markdown.style.css'
 import Grow from '@material-ui/core/Grow';
 import VisibilityRoundedIcon from '@material-ui/icons/VisibilityRounded';
-
+import moment from "moment";
 const useStyle = makeStyles({
     container: {
         display: "flex",
@@ -78,9 +78,11 @@ const useStyle = makeStyles({
         }
     },
     author: {
-        fontSize: '0.9rem'
+        display : 'flex',
+        flexDirection : 'row',
     },
     writer: {
+        fontSize: '1rem',
         color: 'blue',
         textDecoration: "None",
         '&:hover': {
@@ -97,11 +99,12 @@ const PostComponent = ({data}) => {
             <Box className={classes.container}>
                 <img className={classes.image} src={data.author.avatar_hash}/>
                 <Box className={classes.detail}>
-                    <Typography align='left' className={classes.author}>
+                    <div align='left' className={classes.author}>
                         <NavLink className={classes.writer}
-                                 to={`/profile/${data.author.user_id}`}>{data.author.name}</NavLink> write at
-                        date {data.date_post}
-                    </Typography>
+                                 to={`/profile/${data.author.user_id}`}>{data.author.name}</NavLink>
+                        <div style={{flexGrow : 1}}></div>
+                        <Typography style = {{fontSize : '0.9rem', fontStyle : 'italic'}}>{moment(data.date_post).fromNow()}</Typography>
+                    </div>
                     <Box className={classes.containerTitle}>
                         <NavLink className={classes.title}
                                  to={`/post/${data.post_id}`}>{data.title}</NavLink>

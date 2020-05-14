@@ -1,21 +1,23 @@
 import React, {useState, useEffect} from 'react';
 import {makeStyles} from "@material-ui/core/styles";
-import {Box, Typography, Button} from "@material-ui/core";
+import {Box, Typography, Button, Divider} from "@material-ui/core";
 import * as API from '../../ApiCall'
 import {URL_PROFILE_SERVICE} from '../../Constants'
 import PersonRoundedIcon from '@material-ui/icons/PersonRounded';
 import EmailRoundedIcon from '@material-ui/icons/EmailRounded';
 import HomeIcon from '@material-ui/icons/Home';
-import {useSelector} from "react-redux";
+import {useSelector, useDispatch} from "react-redux";
+import {open_profile_popup} from "../../redux/Actions/ActionObjects/ActionsObjects";
+import FormDialog from "./EditDialog.Component";
 
 const useStyle = makeStyles({
-    rootContainer : {
-        marginTop : '2rem'
+    rootContainer: {
+        marginTop: '2rem'
     },
     container: {
         display: "flex",
         flexDirection: "row",
-        padding : '2rem'
+        padding: '2rem'
     },
     image: {
         width: "20rem",
@@ -52,6 +54,7 @@ const useStyle = makeStyles({
 })
 const DetailsComponent = ({user_id}) => {
     const classes = useStyle()
+    const dispatch = useDispatch()
     const [profile, setProfile] = useState({
         isLoading: true,
         firstName: 'Anonymous',
@@ -64,34 +67,43 @@ const DetailsComponent = ({user_id}) => {
         number_follower: 0,
         number_followed: 0,
         is_followed: false,
-        number_posts : 0
+        number_posts: 0
     })
     const {id, isAuthenticated} = useSelector(state => state.AuthenReducer)
     useEffect(() => {
-        var params = isAuthenticated? {  profile_id: user_id, my_user_id: id} : { profile_id: user_id}
+        var params = isAuthenticated ? {profile_id: user_id, my_user_id: id} : {profile_id: user_id}
         setProfile({...profile, isLoading: true})
         API.get_data(URL_PROFILE_SERVICE + '/user_profile', params, false)
             .then(res => {
-                setProfile({
-                    isLoading: false,
-                    firstName: res.data.name.split(' ')[0],
-                    fullName: res.data.name,
-                    email: res.data.email,
-                    address: res.data.address,
-                    about_me: res.data.about_me,
-                    member_since: res.data.member_since,
-                    avatar_hash: res.data.avatar_hash,
-                    number_follower: res.data.number_follower,
-                    number_followed: res.data.number_followed,
-                    is_followed: res.data.is_followed,
-                    number_posts: res.data.total_posts
-                })
-                console.log(res)
-            }
+                    setProfile({
+                        user_id: user_id,
+                        isLoading: false,
+                        firstName: res.data.name.split(' ')[0],
+                        fullName: res.data.name,
+                        email: res.data.email,
+                        address: res.data.address,
+                        about_me: res.data.about_me,
+                        member_since: res.data.member_since,
+                        avatar_hash: res.data.avatar_hash,
+                        number_follower: res.data.number_follower,
+                        number_followed: res.data.number_followed,
+                        is_followed: res.data.is_followed,
+                        number_posts: res.data.total_posts
+                    })
+                    console.log(res)
+                }
             )
             .catch(error => setProfile({...profile, isLoading: false}))
     }, [])
 
+    const changeProfile = (data) => {
+        setProfile({
+            ...profile,
+            address: data.address,
+            about_me: data.about_me,
+            fullName: data.fullName,
+        })
+    }
     const handleFollow = () => {
         API.post_data(URL_PROFILE_SERVICE + '/follow', {user_follow: user_id}, null, true)
             .then(res => setProfile({
@@ -112,7 +124,8 @@ const DetailsComponent = ({user_id}) => {
 
     return (
         <div className={classes.rootContainer}>
-            { profile.isLoading ? null :
+            {profile.isLoading ? null :
+                <div>
                 <div className={classes.container}>
                     <img className={classes.image} src={profile.avatar_hash}/>
                     <Box className={classes.boxDetails}>
@@ -141,9 +154,11 @@ const DetailsComponent = ({user_id}) => {
                                 {
                                     (!isAuthenticated || parseInt(user_id) === id) ? null :
                                         profile.is_followed ?
-                                            <Button onClick={handleUnFollow} variant={'contained'} style={{marginRight : '2rem'}}
+                                            <Button onClick={handleUnFollow} variant={'contained'}
+                                                    style={{marginRight: '2rem'}}
                                                     color='secondary'>Following</Button> :
-                                            <Button onClick={handleFollow} variant={'contained'} style={{marginRight : '2rem'}}
+                                            <Button onClick={handleFollow} variant={'contained'}
+                                                    style={{marginRight: '2rem'}}
                                                     color='primary'>Follow</Button>
                                 }
                                 <Typography className={classes.followText}>Follower
@@ -157,9 +172,13 @@ const DetailsComponent = ({user_id}) => {
 
                         {
                             parseInt(user_id) === id ?
-                                <Button className={classes.button} variant='outlined'>Edit Profile</Button> : null
+                                <Button className={classes.button} variant='outlined'
+                                        onClick={() => dispatch(open_profile_popup())}>Edit Profile</Button> : null
                         }
                     </Box>
+                    <FormDialog data={profile} profileChange={changeProfile}/>
+                </div>
+                    <Divider style = {{marginTop : "2rem"}}/>
                 </div>
             }
         </div>

@@ -28,7 +28,7 @@ def get_post_by_id(post_id):
     if cur_user_id is None:
         end_point = '/user_profile?profile_id=' + str(post_current.author_id)
     else:
-        end_point = '/user_profile?profile_id=' + str(post_current.author_id) + '&my_user_id='+str(cur_user_id)
+        end_point = '/user_profile?profile_id=' + str(post_current.author_id) + '&my_user_id=' + str(cur_user_id)
     with get_connection(post, name='profile') as conn:
         resp = conn.get(ServiceURL.PROFILE_SERVICE + end_point)
         if resp.status_code != 200:
@@ -61,7 +61,7 @@ def add_post(user_id):
                     author_id=user_id)
     db.session.add(post_add)
     db.session.commit()
-    return jsonify({'message' : 'Success'}), 200
+    return jsonify({'message': 'Success'}), 200
 
 
 @post.route('/<post_id>', methods=['DELETE'])
@@ -75,15 +75,22 @@ def delete_post(post_id):
 
 
 @post.route('/', methods=['PUT'])
-def update_post():
+@cross_origin(origins=['http://localhost:3000'])
+@verify_jwt(blueprint=post, permissions=[Permission.WRITE])
+def update_post(user_id):
     post_details = request.get_json()
-    query = Post.query.filter_by(post_id=post_details['post_id'])
-    post_update = query.first()
+    if post_details.get('author_id') != user_id:
+        raise CustomException('You dont have permission to change this post', 403)
+    post_update = Post.query.filter_by(post_id=post_details.get('post_id')).first()
     if post_update is None:
         raise CustomException('Cannot found post', 404)
-    query.update(post_details)
+    post_update.title = post_details.get('title')
+    post_update.body_html = post_details.get('body')
+    html = markdown(post_details.get('body'))
+    text = '. '.join(BeautifulSoup(html).find_all(text=True))
+    post_update.body = text
     db.session.commit()
-    return jsonify(post_update.to_json(None, None)), 200
+    return jsonify({'message': 'Change post success'}), 200
 
 
 @post.route('/get_all', methods=['GET'])
@@ -143,8 +150,8 @@ def like_post(post_id, user_id):
 
 
 @post.route('/<post_id>/like', methods=['DELETE'])
-@verify_jwt(blueprint=post, permissions=[Permission.FOLLOW])
 @cross_origin(origins=['http://localhost:3000'])
+@verify_jwt(blueprint=post, permissions=[Permission.FOLLOW])
 def unlike_post(post_id, user_id):
     post_like = Post.query.filter_by(post_id=post_id).first()
     if post_like is None:
@@ -173,8 +180,8 @@ def get_user_post(user_id):
     }), 200
 
 
-@post.route('/<user_id>/total_posts', methods = ['GET'])
+@post.route('/<user_id>/total_posts', methods=['GET'])
 def get_total_post(user_id):
     total_posts = Post.query.filter_by(author_id=user_id).count()
-    return jsonify({'user_id' : user_id,
-                    'total_posts' : total_posts}), 200
+    return jsonify({'user_id': user_id,
+                    'total_posts': total_posts}), 200

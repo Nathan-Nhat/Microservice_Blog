@@ -43,23 +43,29 @@ def post_user_profile():
     user_details = request.get_json()
     user_id = user_details.get('profile_id')
     userDetails = UserDetails(user_id=user_id, email=user_details.get('email'), name=user_details.get('name'))
-    userDetails.__dict__.update(user_details)
+    userDetails.avatar_hash = 'https://www.w3schools.com/w3images/avatar2.png'
     db.session.add(userDetails)
     db.session.commit()
     return resp_json(userDetails.to_json(), 200)
 
 
 @profile.route('/user_profile', methods=['PUT'])
+@cross_origin(origins=['http://localhost:3000'])
 @verify_jwt(blueprint=profile, permissions=[Permission.WRITE])
 def put_user_profile(user_id):
     user_details = request.get_json()
     if user_details is None or user_id is None:
         raise CustomException('Invalid User', status_code=404)
+    if int(user_details.get('user_id')) != user_id:
+        raise CustomException('You dont have permission to change this profile', 403)
     query = UserDetails.query.filter_by(user_id=user_id)
     userDetails = query.first()
     if userDetails is None:
         raise CustomException('Cannot found User', status_code=404)
-    query.update(user_details)
+    userDetails.name = user_details.get('name')
+    userDetails.about_me = user_details.get('about_me')
+    userDetails.address = user_details.get('address')
+    userDetails.avatar_hash = 'https://www.w3schools.com/w3images/avatar2.png'
     db.session.commit()
     return jsonify(userDetails.to_json()), 200
 

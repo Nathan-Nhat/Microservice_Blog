@@ -9,8 +9,8 @@ import * as API from "../../ApiCall";
 
 const useStyle = makeStyles({
     tableContent: {
-        minWidth : '300px',
-        maxWidth :'300px',
+        minWidth : '250px',
+        maxWidth :'250px',
         alignSelf: 'flex-start',
         padding: '2rem 2rem',
         overflowWrap: 'break-word',

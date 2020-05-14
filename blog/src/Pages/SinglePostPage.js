@@ -132,7 +132,7 @@ const SinglePostPage = () => {
         let params = isAuthenticated ? {user_current_id: id} : {}
         get_data(URL_POST_SERVICE + `/${post_id}`, params, false)
             .then(res => {
-                console.log(ref)
+                console.log(res)
                 setState({
                     ...state,
                     is_followed: res.data.author.is_followed,
@@ -209,7 +209,7 @@ const SinglePostPage = () => {
                                         <NavLink className={classes.name}
                                                  to={`/profile/${state.data.author.user_id}`}>{state.data.author.name}</NavLink>
                                         {parseInt(state.data.author.user_id) === id ? null :
-                                            state.is_followed === false ?
+                                            state.is_followed === false || !isAuthenticated?
                                                 <Button variant={'outlined'} className={classes.followBtn}
                                                         onClick={handleFollow}>Follow</Button> :
                                                 <Button variant={'contained'} color='primary'

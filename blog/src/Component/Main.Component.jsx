@@ -9,7 +9,7 @@ import SinglePostPage from "../Pages/SinglePostPage";
 const useStyle = makeStyles({
     container: {
         width: "70%",
-        maxWidth : "1280px",
+        maxWidth : "1378px",
         margin: "auto"
     },
     textInput: {}

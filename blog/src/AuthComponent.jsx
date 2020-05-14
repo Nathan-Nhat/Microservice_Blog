@@ -12,7 +12,7 @@ import Notification from "./Component/Notifycation.Component";
 import {MuiThemeProvider} from "@material-ui/core/styles";
 import {useSelector} from "react-redux";
 import CircularProgress from '@material-ui/core/CircularProgress';
-
+import EditPostComponent from "./Component/EditPost.Component";
 const AuthComponent = () => {
     const [state, setState] = React.useState(true)
     React.useEffect(() => {
@@ -51,6 +51,7 @@ const AuthComponent = () => {
                         <AppbarComponent/>
                         <MainComponent/>
                         <Route path='/add_post' component={WritePostComponent}/>
+                        <Route path = '/edit_post/:post_id' component={EditPostComponent} />
                     </Router>
                     <Notification/>
                 </MuiThemeProvider>

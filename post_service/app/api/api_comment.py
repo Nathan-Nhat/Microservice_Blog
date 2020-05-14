@@ -10,10 +10,13 @@ from flask import jsonify
 from flask_cors import cross_origin
 from app.helper.Exception import CustomException
 from flask_moment import datetime
+from app.helper.auth_connector import verify_jwt
+from app.helper.auth_connector import Permission
 
 @post.route('/comments', methods=['POST'])
 @cross_origin(origins=['http://localhost:3000'])
-def add_comment():
+@verify_jwt(blueprint=post, permissions=[Permission.COMMENT])
+def add_comment(user_id):
     data = request.get_json()
     body = data.get('body')
     html = markdown(body)
@@ -24,7 +27,7 @@ def add_comment():
         body_html=body,
         post_id=data.get('post_id'),
         date_comment=datetime.utcnow(),
-        user_id=1
+        user_id=user_id
     )
     with get_connection(post, name='profile') as conn:
         resp = conn.get(ServiceURL.PROFILE_SERVICE + 'user_profile?profile_id=' + str(comment.user_id))

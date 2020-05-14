@@ -5,6 +5,8 @@ import {URL_POST_SERVICE} from "../../Constants";
 import {Typography, makeStyles, Divider} from "@material-ui/core";
 import {useSelector} from "react-redux";
 import {NavLink} from 'react-router-dom';
+import moment from "moment";
+
 const useStyle = makeStyles({
     container: {},
     commentContainer: {
@@ -58,9 +60,9 @@ const useStyle = makeStyles({
     name: {
         color: 'blue',
         fontWeight: 'bold',
-        '&:hover': {
-            cursor: 'pointer'
-        }
+    },
+    navLink: {
+        textDecoration: 'none'
     }
 
 })
@@ -86,7 +88,7 @@ const CommentComponents = ({post_id}) => {
             body: state.comment,
             post_id: post_id,
         }
-        post_data(URL_POST_SERVICE + '/comments', {},data, true)
+        post_data(URL_POST_SERVICE + '/comments', {}, data, true)
             .then(res => {
                 console.log(res.data)
                 var new_list = state.list_comment
@@ -100,7 +102,7 @@ const CommentComponents = ({post_id}) => {
     }
     const {isAuthenticated} = useSelector(state => state.AuthenReducer)
     React.useEffect(() => {
-        get_data(URL_POST_SERVICE + `/comments/${post_id}`, {page : state.page, item_per_page : 5}, false)
+        get_data(URL_POST_SERVICE + `/comments/${post_id}`, {page: state.page, item_per_page: 5}, false)
             .then(res => {
                 let isDone = false
                 if (state.page === 0 && res.data.total === 1) isDone = true
@@ -115,7 +117,7 @@ const CommentComponents = ({post_id}) => {
     }, [])
     const handlePage = (e) => {
         let newVal = state.page + 1
-        get_data(URL_POST_SERVICE + `/comments/${post_id}`, {page : newVal, item_per_page : 5},false)
+        get_data(URL_POST_SERVICE + `/comments/${post_id}`, {page: newVal, item_per_page: 5}, false)
             .then(res => {
                 let newList = state.list_comment.concat(res.data.comments)
                 let isDone = false
@@ -134,16 +136,16 @@ const CommentComponents = ({post_id}) => {
         <div className={classes.container}>
             <Typography variant={'h5'}>Comments</Typography>
             <div className={classes.commentContainer}>
-                { isAuthenticated === true?
-                <div>
-                    <textarea className={classes.text_area} value={state.comment} name='comment' onChange={handleChange}
-                          placeholder={'Leave a comment here...'}></textarea>
+                {isAuthenticated === true ?
                     <div>
-                        <Button color='primary' className={classes.addButton} variant={'contained'}
-                                onClick={addComment}>Add
-                            comment</Button>
-                    </div>
-                </div> :
+                    <textarea className={classes.text_area} value={state.comment} name='comment' onChange={handleChange}
+                              placeholder={'Leave a comment here...'}></textarea>
+                        <div>
+                            <Button color='primary' className={classes.addButton} variant={'contained'}
+                                    onClick={addComment}>Add
+                                comment</Button>
+                        </div>
+                    </div> :
                     <Typography>Please <NavLink to={'/login'}>login</NavLink> to leave a comment!</Typography>
                 }
                 <div>
@@ -153,11 +155,13 @@ const CommentComponents = ({post_id}) => {
                                 <div key={index}>
                                     <Divider/>
                                     <div className={classes.wrapComment}>
-                                        <img className={classes.image} src={item.user_avatar}/>
+                                        <img className={classes.image} src={item.user_comment.avatar_hash}/>
                                         <div className={classes.textComment}>
                                             <div className={classes.titleComment}>
-                                                <Typography className={classes.name}>{item.user_comment.name}</Typography>
-                                                <Typography className={classes.date}>{item.date_comment}</Typography>
+                                                <Typography className={classes.name}><NavLink className = {classes.navLink}
+                                                    to={`/profile/${item.user_comment.user_id}`}>{item.user_comment.name}</NavLink></Typography>
+                                                <Typography
+                                                    className={classes.date}>{moment(item.date_comment).fromNow()}</Typography>
                                             </div>
                                             <Typography className={classes.body}>{item.body_html}</Typography>
                                         </div>
@@ -167,13 +171,13 @@ const CommentComponents = ({post_id}) => {
                         })
                     }
                     <Divider/>
-                                    {
-                    state.isFinished ? <Box>
-                            <Typography className={classes.loadMore}> </Typography>
-                        </Box> :
-                        <Box>
-                            <Typography className={classes.loadMore} onClick={handlePage}>Load more...</Typography>
-                        </Box>}
+                    {
+                        state.isFinished ? <Box>
+                                <Typography className={classes.loadMore}> </Typography>
+                            </Box> :
+                            <Box>
+                                <Typography className={classes.loadMore} onClick={handlePage}>Load more...</Typography>
+                            </Box>}
                 </div>
             </div>
         </div>

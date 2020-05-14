@@ -1,0 +1,51 @@
+pre {
+    border: 1px solid #ccc;
+    font-size: 0.8rem;
+    line-height: 1.7rem;
+}
+
+p {
+    font-size: 1rem;
+}
+
+blockquote {
+    color: #666;
+    margin: 0;
+    padding-left: 3em;
+    border-left: 0.5em #eee solid;
+}
+
+tr {
+    border-top: 1px solid #c6cbd1;
+    background: #fff;
+}
+
+th,
+td {
+    padding: 6px 13px;
+    border: 1px solid #dfe2e5;
+}
+
+.markdown_write > table tr:nth-child(2n) {
+    background: #f6f8fa;
+}
+
+.markdown_write {
+    border: 1px solid #9494b8;
+    border-left: 0px;
+    width: 50%;
+    padding: 1rem;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    hyphens: auto;
+    height: 40rem;
+    /*box-sizing: content-box;*/
+    overflow: auto;
+}
+
+.markdown_write > p img {
+    width: 80%;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}

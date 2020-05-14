@@ -4,7 +4,8 @@ import axios from 'axios'
 import {URL_AUTH_SERVICE} from '../Constants'
 import {useSelector} from "react-redux";
 import {Redirect} from "react-router-dom";
-
+import {useDispatch}from  'react-redux'
+import {open_notification} from "../redux/Actions/ActionObjects/ActionsObjects";
 const useStyle = makeStyles({
     container: {
         display: "flex",
@@ -20,6 +21,7 @@ const useStyle = makeStyles({
 })
 const LoginPage = () => {
     const classes = useStyle();
+    const dispatch = useDispatch()
     const [state, setState] = useState({username: '', password: '', name: '', email: ''})
     const handleChange = (e) => {
         let value = e.target.value
@@ -29,8 +31,9 @@ const LoginPage = () => {
     const handleClick = (e) => {
         axios.post(URL_AUTH_SERVICE + '/sign_up', state)
             .then(res => {
-
+                dispatch(open_notification(res.data.message, 'success'))
             })
+            .catch(err => open_notification('Fail when sign up', 'error'))
     }
     const {isAuthenticated} = useSelector(state => state.AuthenReducer)
     return (
