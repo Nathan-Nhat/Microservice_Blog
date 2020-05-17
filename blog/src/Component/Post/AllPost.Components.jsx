@@ -7,22 +7,27 @@ import {CircularProgress, Box} from '@material-ui/core';
 import {useSelector, useDispatch} from "react-redux";
 import Pagination from '@material-ui/lab/Pagination';
 import {change_page_post} from "../../redux/Actions/ActionObjects/ActionsObjects";
+import {Divider} from "@material-ui/core";
 
 const AllPostComponents = () => {
     const request_post = useSelector(state => state.RequestPostReducer)
     const [state, setState] = useState({
         isLoading: true,
         posts: [{
-            author : null
+            author: null
         }],
         page: 0,
         total_pages: 1,
     })
     const dispatch = useDispatch()
-    const {id, isAuthenticated} = useSelector(state=>state.AuthenReducer)
+    const {id, isAuthenticated} = useSelector(state => state.AuthenReducer)
     useEffect(() => {
         setState({...state, isLoading: true})
-        let params = isAuthenticated ? {type: request_post.type, page :request_post.page, user_current_id : id} : {type: request_post.type, page :request_post.page}
+        let params = isAuthenticated ? {
+            type: request_post.type,
+            page: request_post.page,
+            user_current_id: id
+        } : {type: request_post.type, page: request_post.page}
         get_data(URL_POST_SERVICE + `/get_all`, params, false)
             .then(res => {
                 console.log(res)
@@ -38,7 +43,7 @@ const AllPostComponents = () => {
         dispatch(change_page_post(newVal))
     }
     return (
-        <div style={{textAlign: 'center', padding :"4rem 2rem 2rem 2rem"}}>
+        <div style={{textAlign: 'center', padding: "4rem 2rem 2rem 2rem"}}>
             <HeaderPost/>
             {
                 state.isLoading === true ?
@@ -50,7 +55,10 @@ const AllPostComponents = () => {
                         <Box>
                             {
                                 state.posts.map((item, index) => {
-                                    return <PostComponent post={item} user={item.author}  key={index}/>
+                                    return <div key={index}>
+                                        <PostComponent post={item} user={item.author}/>
+                                        <Divider/>
+                                    </div>
                                 })
                             }
                         </Box>

@@ -30,7 +30,6 @@ def get_user_profile():
                 resp['is_followed'] = False
     with get_connection(profile, name='verify_jwt') as conn:
         resp_profile = conn.get(ServiceURL.POST_SERVICE + str(user_id) + '/total_posts')
-        print(resp_profile.json())
         if resp_profile.status_code != 200:
             resp['total_posts'] = 0
         else:
@@ -142,16 +141,23 @@ def delete_follow(user_id):
     }), 200
 
 
-@profile.route('/follow/<user_id>/followers', methods=['GET'])
+@profile.route('/<user_id>/followers', methods=['GET'])
 def get_all_followers(user_id):
     user = UserDetails.query.filter_by(user_id=user_id).first()
     if user is None:
         raise CustomException('Cannot find user', 404)
-    ret = list(map(lambda d: d.follower.to_short_json(), user.followers.all()))
-    return jsonify(ret), 200
+    user_followers = user.followers.paginate(0, 19, error_out=False)
+    ret = list(map(lambda d: d.follower.to_short_json(), user_followers.items))
+    total_followers = user_followers.total
+    return jsonify({
+        'user_id': user_id,
+        'user_name': user.name,
+        'followers': ret,
+        'total_followers': total_followers
+    }), 200
 
 
-@profile.route('/follow/<user_id>/followeds', methods=['GET'])
+@profile.route('/<user_id>/followeds', methods=['GET'])
 def get_all_followeds(user_id):
     user = UserDetails.query.filter_by(user_id=user_id).first()
     if user is None:

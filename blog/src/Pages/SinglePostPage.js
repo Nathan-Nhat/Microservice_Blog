@@ -101,7 +101,7 @@ const SinglePostPage = () => {
         isLoading: true,
         data: {
             title: 'Title',
-            tag: ['python', 'data science', 'java'],
+            tag: [],
             body: 'Body',
             date_post: '20/3/2020',
             num_like: 0,
@@ -140,7 +140,7 @@ const SinglePostPage = () => {
                     isLoading: false,
                     data: {
                         title: res.data.title,
-                        tag: ['python', 'data science', 'java'],
+                        tag: res.data.tags,
                         body: res.data.body_html,
                         date_post: res.data.date_post,
                         is_liked: res.data.is_liked,
@@ -244,7 +244,7 @@ const SinglePostPage = () => {
                                 className={classes.title}>{state.data.title}</Typography>
                             <Box className={classes.tagsContainer}>
                                 {state.data.tag.map((item, index) => {
-                                    return <a key={index} className={classes.tags} key={index}>{item}</a>
+                                    return <a key={index} className={classes.tags} key={index} onClick={()=>{history.push(`/tag/${item.tag_id}`)}}>{item.tag_name}</a>
                                 })}
                             </Box>
                             <div ref={ref}>

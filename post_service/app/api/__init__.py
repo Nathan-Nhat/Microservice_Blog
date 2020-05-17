@@ -6,4 +6,5 @@ create_connection(post, name='verify_jwt', timeout=10)
 create_connection(post, name='profile', timeout=10)
 from app.api.api_post import *
 from app.api.api_comment import *
+from app.api.api_tags import *
 from app.error.errors import *

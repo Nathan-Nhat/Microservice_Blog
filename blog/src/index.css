@@ -21,3 +21,6 @@ a:hover {
 a::selection{
   text-decoration: none;
 }
+textarea{
+  resize: none;
+}

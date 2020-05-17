@@ -59,7 +59,8 @@ const initState = {
     title: '',
     tag: '',
     body: '',
-    isLoading: false
+    isLoading: false,
+    tags :[]
 }
 const EditPostComponent = () => {
     const classes = useStyle()
@@ -104,6 +105,7 @@ const EditPostComponent = () => {
             .then(res => {
                 setState({
                     post_id: post_id,
+                    tags : res.data.tags,
                     title: res.data.title,
                     body: res.data.body_html,
                     author_id: res.data.author.user_id,
@@ -117,7 +119,7 @@ const EditPostComponent = () => {
                     <div style={{padding: '0 2rem 2rem 2rem'}}>
                         <input className={classes.inputTitle} placeholder={`Title`} name='title' value={state.title}
                                onChange={handleChange}></input>
-                        <input name='tag' className={classes.tags} placeholder={`Input Tags`} value={state.tag}
+                        <input name='tag' className={classes.tags} placeholder={`Input Tags`} value={state.tags}
                                onChange={handleChange}/>
                         <div className={classes.bodyContianer}>
                         <textarea name='body' className={classes.body_html} placeholder={`Body`} value={state.body}

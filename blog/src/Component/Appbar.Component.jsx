@@ -5,8 +5,10 @@ import {makeStyles} from "@material-ui/core/styles";
 import {useHistory} from 'react-router-dom'
 import {useSelector, useDispatch} from "react-redux";
 import {fetch_user} from "../redux/Actions/ActionObjects/ActionsObjects";
-import {Input, InputAdornment, Divider} from "@material-ui/core";
+import {Input, InputAdornment, Divider, Tooltip} from "@material-ui/core";
 import SearchIcon from '@material-ui/icons/Search';
+import {withStyles} from "@material-ui/core";
+import SubdirectoryArrowRightRoundedIcon from '@material-ui/icons/SubdirectoryArrowRightRounded';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -29,19 +31,36 @@ const useStyles = makeStyles((theme) => ({
     search: {
         marginLeft: '0.7rem',
         borderRadius: '2rem',
-        color:'white',
+        color: 'white',
         backgroundColor: 'rgba(255, 255, 255, .1)',
-        width : '15rem',
+        width: '15rem',
+        paddingRight : '1rem',
         '&:hover': {
             backgroundColor: 'rgba(255, 255, 255, .3)'
         }
     }
 }));
 
+export const HtmlTooltip = withStyles((theme) => ({
+    tooltip: {
+        backgroundColor: '#f5f5f9',
+        color: 'rgba(0, 0, 0, 0.87)',
+        maxWidth: 220,
+        fontSize: theme.typography.pxToRem(12),
+        border: '1px solid #dadde9',
+    },
+    arrow: {
+        color: "#f5f5f9"
+    }
+}))(Tooltip);
+
 const AppbarComponent = () => {
     const classes = useStyles();
     const history = useHistory()
     const dispatch = useDispatch()
+    const [state, setState] = React.useState({
+        search: ''
+    })
 
     async function handleClick(e, index) {
         e.preventDefault()
@@ -66,6 +85,20 @@ const AppbarComponent = () => {
     const handleHome = () => {
         history.push('/')
     }
+    const handleKeyDown = (e) => {
+        if (e.key === 'Enter') {
+            history.push(`/search?query=${state.search}`)
+            setState({...state, search: ''})
+        }
+    }
+    const handleChange = (e) => {
+        let name = e.target.name
+        let val = e.target.value
+        setState({
+            ...state,
+            [name]: val
+        })
+    }
     const {isAuthenticated, id} = useSelector(state => state.AuthenReducer)
     return (
         <AppBar position="static" style={{boxShadow: 'none'}}>
@@ -74,12 +107,33 @@ const AppbarComponent = () => {
                                                          style={{color: "white", fontWeight: "bold"}}>Blog</Typography></Button>
                 <Divider orientation={'vertical'} flexItem={true}
                          style={{width: '2px', margin: '0.5rem 0.5rem 0.5rem 0.5rem'}}/>
-                <Input className={classes.search}
-                       id="input-with-icon-textfield" disableUnderline
-                       startAdornment={(<InputAdornment>
-                           <SearchIcon style={{marginLeft: '0.5rem', marginRight: '0.5rem', color: 'white'}}/>
-                       </InputAdornment>)}
-                />
+
+                <HtmlTooltip disableHoverListener arrow={true}
+                             title={
+                                 <React.Fragment>
+                                     <Typography style={{fontSize: '0.7rem'}}>{`Press `}
+                                         <div style={{
+                                             border: "1px solid #888a8c",
+                                             padding: '0 0.5rem 0 0.5rem',
+                                             borderRadius: '3px',
+                                             display : 'inline-block'
+                                         }}>
+                                                 <SubdirectoryArrowRightRoundedIcon style={{fontSize : '0.7rem', paddingRight : '0.3rem'}}/>
+                                                 Enter
+                                         </div>
+                                         {` to search`}</Typography>
+                                 </React.Fragment>
+                             }
+                >
+                    <Input className={classes.search} onKeyDown={handleKeyDown}
+                           id="input-with-icon-textfield" disableUnderline
+                           onChange={handleChange}
+                           name="search" value={state.search}
+                           startAdornment={(<InputAdornment>
+                               <SearchIcon style={{marginLeft: '0.5rem', marginRight: '0.5rem', color: 'white'}}/>
+                           </InputAdornment>)}
+                    />
+                </HtmlTooltip>
                 <div className={classes.title}>
                 </div>
                 {

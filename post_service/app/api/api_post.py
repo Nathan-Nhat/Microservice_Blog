@@ -14,7 +14,7 @@ from app.helper.ServiceURL import ServiceURL
 from bs4 import BeautifulSoup
 from markdown import markdown
 from app.models.like_model import Like
-
+from app.models.tag_model import Tags, Tag_post
 
 @post.route('/test')
 def test():
@@ -33,7 +33,6 @@ def get_post_by_id(post_id):
         resp = conn.get(ServiceURL.PROFILE_SERVICE + end_point)
         if resp.status_code != 200:
             raise CustomException('Cannot found post', 404)
-    print(resp.json())
     if post_current is None:
         raise CustomException('Cannot found post', 404)
     post_current.num_views += 1
@@ -59,8 +58,23 @@ def add_post(user_id):
                     body=text,
                     date_post=datetime.utcnow(),
                     author_id=user_id)
-    db.session.add(post_add)
-    db.session.commit()
+    tags = post_details.get('tags')
+    tag_arr = tags.split(',')
+    try:
+        for tag_name in tag_arr:
+            tag_target = Tags.query.filter_by(name=tag_name).first()
+            if tag_target is None:
+                tag_insert = Tags(name=tag_name)
+                db.session.add(tag_insert)
+                db.session.flush()
+                post_add.tags.append(tag_insert)
+            else:
+                post_add.tags.append(tag_target)
+        db.session.add(post_add)
+        db.session.flush()
+        db.session.commit()
+    except:
+        db.session.rollback()
     return jsonify({'message': 'Success'}), 200
 
 
@@ -72,7 +86,7 @@ def delete_post(post_id, user_id):
         raise CustomException('Cannot found post', 404)
     db.session.delete(post_del)
     db.session.commit()
-    return jsonify({'message' : 'Delete Success'}), 200
+    return jsonify({'message': 'Delete Success'}), 200
 
 
 @post.route('/', methods=['PUT'])
@@ -168,14 +182,16 @@ def unlike_post(post_id, user_id):
 @post.route('/<user_id>/posts', methods=['GET'])
 @cross_origin(origins=['http://localhost:3000'])
 def get_user_post(user_id):
+    page = int(request.args.get('page', '0'))
+    itemPerPage = 10
     with get_connection(post, name='profile') as conn:
         resp = conn.get(ServiceURL.PROFILE_SERVICE + '/user_profile?profile_id=' + str(user_id))
         if resp.status_code != 200:
             raise CustomException('Cannot found user', 404)
-    posts = Post.query.filter_by(author_id=user_id).all()
+    posts = Post.query.filter_by(author_id=user_id).paginate(page, itemPerPage, error_out=False)
     if posts is None:
         return jsonify({'message': 'User have no post'}), 404
-    list_post = list(map(lambda d: d.to_json_little(), posts))
+    list_post = list(map(lambda d: d.to_json_little(), posts.items))
     with get_connection(post, name='profile') as conn:
         resp = conn.get(ServiceURL.PROFILE_SERVICE + 'user_profile?profile_id=' + str(user_id))
         if resp.status_code != 200:
@@ -183,7 +199,10 @@ def get_user_post(user_id):
     user = resp.json()
     return jsonify({
         'user': user,
-        'posts': list_post
+        'posts': list_post,
+        'page' : page,
+        'itemPerPage' : itemPerPage,
+        'total_post' : posts.total
     }), 200
 
 
@@ -192,3 +211,41 @@ def get_total_post(user_id):
     total_posts = Post.query.filter_by(author_id=user_id).count()
     return jsonify({'user_id': user_id,
                     'total_posts': total_posts}), 200
+
+
+@post.route('/search')
+def search_post():
+    type = request.args.get('type')
+    key_word = request.args.get('key_word')
+    page = int(request.args.get('page', '0'))
+    itemPerPage = 20
+    if type == 'title':
+        posts = Post.query.filter(Post.title.like(f'%{key_word}%')).paginate(page, itemPerPage, error_out=False)
+    else:
+        posts = Post.query.filter(db.or_(Post.body.like(f'%{key_word}%'), Post.title.like(f'%{key_word}%'))).paginate(page, itemPerPage, error_out=False)
+    post_paginated = posts.items
+    total = posts.total
+    num_page = total // itemPerPage + 1
+    list = [str(x.author_id) for x in post_paginated]
+    str_list = ','.join(set(list))
+    with get_connection(post, name='profile') as conn:
+        resp = conn.get(ServiceURL.PROFILE_SERVICE + 'list_user_profile?list=' + str_list)
+        if resp.status_code != 200:
+            raise CustomException('Cannot found post', 404)
+    data = resp.json().get('profile')
+    list_post = []
+    data_index = [x.get('user_id') for x in data]
+    for element in post_paginated:
+        index = data_index.index(element.author_id)
+        json = element.to_json_summary(data[index])
+        json['is_liked'] = False
+        current_user_id = request.args.get('user_current_id')
+        if current_user_id is not None:
+            like = element.like.filter_by(user_id=current_user_id).first()
+            if like is not None:
+                json['is_liked'] = True
+        list_post.append(json)
+    return jsonify({'Post': list_post,
+                    'page': page,
+                    'itemPerPage': itemPerPage,
+                    'total_pages': num_page}), 200

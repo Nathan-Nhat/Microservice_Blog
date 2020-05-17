@@ -153,8 +153,8 @@ const PostComponent = ({post, user}) => {
                                          to={`/post/${post.post_id}`}>{post.title}</NavLink>
                             </Box>
                             <Box className={classes.tagsContainer}>
-                                {['python', 'data', 'font-end'].map((item, index) => {
-                                    return <a key={index} className={classes.tags} key={index}>{item}</a>
+                                {post.tags.map((item, index) => {
+                                    return <a key={index} className={classes.tags} key={index} onClick={()=>{history.push(`/tag/${item.tag_id}`)}}>{item.tag_name}</a>
                                 })}
                             </Box>
                             <Box className={classes.commentContainer}>
@@ -175,7 +175,6 @@ const PostComponent = ({post, user}) => {
                             </Box>
                         </Box>
                     </Box>
-                    <Divider/>
                 </Box>
             }
         </Box>

@@ -1,5 +1,6 @@
 from app import db
 from flask_moment import datetime
+from app.models.tag_model import Tag_post
 
 
 class Post(db.Model):
@@ -11,8 +12,12 @@ class Post(db.Model):
     date_post = db.Column(db.DateTime, index=True, default=datetime.utcnow())
     author_id = db.Column(db.Integer)
     comments = db.relationship('Comments', backref='post', lazy='dynamic')
-    like = db.relationship('Like',  cascade="all, delete-orphan", backref="items", lazy='dynamic',)
+    like = db.relationship('Like', cascade="all, delete-orphan", backref="items", lazy='dynamic', )
     num_views = db.Column(db.Integer, default=0)
+    tags = db.relationship('Tags',
+                           secondary='tag_post',
+                           backref=db.backref('post', lazy='dynamic'),
+                           lazy='dynamic')
 
     def to_json_little(self):
         return {
@@ -21,7 +26,8 @@ class Post(db.Model):
             'date_post': self.date_post,
             'num_comment': self.comments.count(),
             'num_like': self.like.count(),
-            'num_views': self.num_views
+            'num_views': self.num_views,
+            'tags': list(map(lambda d : {'tag_name' : d.name, 'tag_id' : d.tag_id},self.tags.all()))
         }
 
     def to_json_full(self, author):
@@ -34,7 +40,8 @@ class Post(db.Model):
             'num_comment': self.comments.count(),
             'num_like': self.like.count(),
             'author': author,
-            'num_views': self.num_views
+            'num_views': self.num_views,
+            'tags': list(map(lambda d : {'tag_name' : d.name, 'tag_id' : d.tag_id},self.tags.all()))
         }
         return ret
 
@@ -46,6 +53,7 @@ class Post(db.Model):
             'num_comment': self.comments.count(),
             'num_like': self.like.count(),
             'author': author,
-            'num_views': self.num_views
+            'num_views': self.num_views,
+            'tags': list(map(lambda d : {'tag_name' : d.name, 'tag_id' : d.tag_id},self.tags.all()))
         }
         return ret

@@ -1,11 +1,9 @@
 import React from 'react';
-import HeaderDetails from './HeaderDetails.Components'
-import BodyDetailsComponents from "./BodyDetails.Components";
+import PostUserComponent from "./PostUser.Component";
 const SpecificDetailsComponents = ({user_id}) => {
     return (
         <div>
-            <HeaderDetails user_id = {user_id}/>
-            <BodyDetailsComponents user_id = {user_id}/>
+            <PostUserComponent user_id = {user_id}/>
         </div>
     );
 };
