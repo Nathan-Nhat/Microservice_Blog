@@ -54,48 +54,34 @@ const useStyle = makeStyles({
         padding: '1rem',
         height: '42rem + 2px'
     },
-    markdown: {
-        border: '1px solid #9494b8',
-        borderLeft: '0px',
-        width: '50%',
-        padding: '1rem',
-        overflowWrap: 'break-word',
-        wordWrap: 'break-word',
-        hyphens: 'auto',
-        height: '40rem',
-        boxSizing: 'content-box',
-        overflow: 'auto',
-    },
     button_save: {
         float: "right"
     },
-    hintElement: {
+    hintElementFocus: {
         display: 'flex',
         flexDirection: 'row',
         padding: '0.7rem',
-    },
-     hintElementFocus: {
-        display: 'flex',
-        flexDirection: 'row',
-        padding: '0.7rem',
-         backgroundColor : '#42a5f5'
+        '&:hover': {
+            backgroundColor: '#42a5f5',
+            cursor : 'pointer'
+        }
     }
 })
-const initState = {
-    title: '',
-    tag: '',
-    tags: [],
-    body: '',
-    isLoading: false,
-    isFocusedTags: false
-}
+
 var timeout = null
 const WritePostComponent = () => {
     const classes = useStyle()
-    const [state, setState] = useState(initState)
+    const [state, setState] = useState({
+        title: '',
+        tag: '',
+        tags: [],
+        body: '',
+        isLoading: false,
+        isFocusedTags: false
+    })
     const [hint, setHint] = useState({
         tags: [],
-        current_index: -1
+        is_focusing: false
     })
     const handleChange = (e) => {
         var name = e.target.name
@@ -147,7 +133,10 @@ const WritePostComponent = () => {
         setState({...state, isFocusedTags: true})
     }
     const handleBlur = () => {
-        setState({...state, isFocusedTags: false})
+        if (hint.is_focusing)
+            setState({...state, isFocusedTags: true})
+        else
+            setState({...state, isFocusedTags: false})
 
     }
     const handleKeyDown = (e) => {
@@ -159,10 +148,6 @@ const WritePostComponent = () => {
             }
             setState({...state, tag: '', tags: cur_tags, isFocusedTags: false})
         }
-        else if (e.key == 'ArrowDown') {
-            console.log(hint.current_index)
-            setHint({...hint, current_index: hint.current_index + 1})
-        }
     }
     const handleDeleteTags = (index) => {
         let cur_tags = state.tags
@@ -173,6 +158,13 @@ const WritePostComponent = () => {
         })
     }
 
+    const handleClickHint = (name)=>{
+        let cur_tags = state.tags
+            if (!cur_tags.includes(name)) {
+                cur_tags.push(name)
+            }
+            setState({...state, tag: '', tags: cur_tags, isFocusedTags: false})
+    }
     React.useEffect(() => {
         return () => {
             clearTimeout(timeout)
@@ -215,12 +207,17 @@ const WritePostComponent = () => {
                                                 return (
                                                     <div key={index}
                                                          onMouseEnter={() => {
-                                                             setHint({...hint, current_index: index})
+                                                             setHint({...hint, is_focusing: true})
                                                          }}
+                                                         onMouseLeave={()=>{
+                                                             setHint({...hint, is_focusing: false})
+                                                         }}
+                                                         onClick={()=>handleClickHint(tag.tag_name)}
                                                     >
                                                         <Divider/>
                                                         {console.log(hint.current_index)}
-                                                        <div className={index === hint.current_index?classes.hintElementFocus : classes.hintElement}>
+                                                        <div
+                                                            className={classes.hintElementFocus}>
                                                             <img
                                                                 style={{
                                                                     width: '2rem',

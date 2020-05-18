@@ -56,8 +56,8 @@ const HeaderPost = () => {
     return (
         <div>
             <AntTabs value={selected} onChange={handleChange}>
-                <AntTab label={'Popular Posts'}></AntTab>
                 <AntTab label={'New Posts'}></AntTab>
+                {/*<AntTab label={''}></AntTab>*/}
             </AntTabs>
         </div>
     );
