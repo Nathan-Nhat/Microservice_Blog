@@ -105,7 +105,7 @@ const AppbarComponent = () => {
             <Toolbar className={classes.toolbar}>
                 <Button onClick={handleHome}><Typography variant="h5"
                                                          style={{color: "white", fontWeight: "bold"}}>Blog</Typography></Button>
-                <Divider orientation={'vertical'} flexItem={true}
+                <Divider orientation={'vertical'} flexItem={true} light={true}
                          style={{width: '2px', margin: '0.5rem 0.5rem 0.5rem 0.5rem'}}/>
 
                 <HtmlTooltip disableHoverListener arrow={true}

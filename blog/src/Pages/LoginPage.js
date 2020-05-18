@@ -1,28 +1,93 @@
 import React, {useState} from 'react';
-import {TextField, makeStyles, Paper, Typography, Button} from "@material-ui/core";
+import {TextField, makeStyles, Paper, Typography, Button, Divider} from "@material-ui/core";
 import axios from 'axios'
 import {URL_AUTH_SERVICE} from '../Constants'
 import {useHistory} from 'react-router-dom'
 import {useDispatch} from "react-redux";
 import {fetch_user, open_notification} from "../redux/Actions/ActionObjects/ActionsObjects";
 import {useSelector} from "react-redux";
-import {Redirect} from 'react-router-dom'
-import {useLocation} from 'react-router-dom'
-const useStyle = makeStyles({
+import {useLocation, NavLink, Redirect} from 'react-router-dom'
+import DialogTitle from "@material-ui/core/DialogTitle";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogActions from "@material-ui/core/DialogActions";
+import Dialog from "@material-ui/core/Dialog";
+import SendIcon from '@material-ui/icons/Send';
+import {post_data} from "../ApiCall";
+
+const useStyle = makeStyles(theme => ({
     container: {
         display: "flex",
         flexDirection: "column",
-        margin: "2rem auto",
-        width: "70%",
-        padding: "2rem",
+        margin: "6rem auto",
+        width: "100%",
+        maxWidth: '25rem',
         '&>*': {
-            marginTop: '2rem'
+            marginTop: '1rem'
         }
     },
-})
+    input: {
+        borderRadius: 'none',
+    },
+    buttonLogin: {
+        boxShadow: 'none',
+        '&:hover': {
+            boxShadow: 'none'
+        },
+        marginBottom: '1rem'
+    },
+    title: {
+        width: '100%',
+        textAlign: 'center',
+        marginBottom: '1rem'
+    },
+    moreOption: {
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center'
+    },
+    toSignup: {
+        textAlign: 'center'
+    },
+    forgotPassword: {
+        textAlign: 'center',
+        color: theme.palette.primary.dark,
+        '&:hover': {
+            cursor: 'pointer',
+            color: theme.palette.primary.light
+        }
+    },
+    responseSuccess: {
+        fontStyle: 'italic',
+        border: '1px solid green',
+        color: 'green',
+        fontSize: '0.8rem',
+        padding: '0.6rem',
+        borderRadius: '1rem',
+        marginBottom: '1rem',
+        wordWrap : 'break'
+    },
+    responseFail: {
+        fontStyle: 'italic',
+        border: '1px solid red',
+        color: 'red',
+        fontSize: '0.8rem',
+        padding: '0.6rem',
+        borderRadius: '1rem',
+        marginBottom: '1rem'
+    }
+}))
+
+
 const LoginPage = () => {
     const classes = useStyle();
-    const [state, setState] = useState({username: '', password: ''})
+    const [state, setState] = useState({
+        username: '',
+        password: '',
+        isOpen: false,
+        emailPass: '',
+        isSent: 0,
+        resMessage: ''
+    })
     const history = useHistory()
     const location = useLocation()
     const handleChange = (e) => {
@@ -38,9 +103,9 @@ const LoginPage = () => {
                 localStorage.setItem('user_id', res.data.user_id)
                 let data = {
                     isAuthenticated: true,
-                    id : res.data.user_id,
-                    email : res.data.user_email,
-                    name : res.data.name
+                    id: res.data.user_id,
+                    email: res.data.user_email,
+                    name: res.data.name
                 }
                 dispatch(fetch_user(data))
                 if (location.state)
@@ -49,25 +114,100 @@ const LoginPage = () => {
                     history.push('/')
                 dispatch(open_notification({message: 'Login Success', type: 'success'}))
             })
-            .catch(error => dispatch(open_notification({message: 'Fail when login. Try again later', type: 'error'})))
+            .catch(error => dispatch(open_notification({message: error.response.data.message, type: 'error'})))
     }
     const {isAuthenticated} = useSelector(state => state.AuthenReducer)
+    const handleForgotPass = () => {
+        setState({...state, isOpen: true})
+    }
+    const handleClose = () => {
+        setState({...state, isOpen: false, isSent: 0})
+    }
+    const handleSendPass = () => {
+        let data = {
+            email: state.emailPass
+        }
+        post_data(URL_AUTH_SERVICE + '/reset_password', {}, data, false)
+            .then(res => {
+                setState({
+                    ...state,
+                    isSent: 1
+                })
+            })
+            .catch(error => {
+                setState({
+                    ...state,
+                    isSent: 2
+                })
+            })
+    }
     return (
         <div>
             {
-                isAuthenticated === false?
-                < Paper className={classes.container}>
-                    <Typography variant={"h6"}>Login</Typography>
-                    <TextField required id="username" label="Username" type="text" name='username'
-                    onChange={handleChange}/>
-                    <TextField required id="password" label="Password" type="password" name='password'
-                    onChange={handleChange}/>
-                    <Button variant="contained" color="primary" onClick={handleClick}
-                    className={classes.button}> Login</Button>
-                </Paper> : <Redirect to='/' />
-                }
-                </div>
-                );
-                };
+                isAuthenticated === false ?
+                    < div className={classes.container}>
+                        <Typography variant={"h5"} className={classes.title}>LOGIN</Typography>
+                        <TextField required id="username" label="Username" type="text" name='username'
+                                   variant={'outlined'} className={classes.input}
+                                   onChange={handleChange}/>
+                        <TextField required id="password" label="Password" type="password" name='password'
+                                   variant={'outlined'} className={classes.input}
+                                   onChange={handleChange}/>
+                        <Button variant="contained" color="primary" onClick={handleClick}
+                                className={classes.buttonLogin}> Login</Button>
+                        <Divider variant={'middle'}/>
+                        <div className={classes.moreOption}>
+                            <Typography className={classes.toSignup}>Don't have account yet? Click <NavLink
+                                to={'/signup'}>Sign
+                                up</NavLink></Typography>
+                            <Typography className={classes.forgotPassword} onClick={handleForgotPass}>Forgot
+                                password?</Typography>
+                        </div>
+                        <Dialog open={state.isOpen} onClose={handleClose} aria-labelledby="form-dialog-title" >
+                            <DialogTitle id="form-dialog-forgot_password">Forgot Password</DialogTitle>
+                            <DialogContent style={{maxWidth : '20rem'}}>
+                                <div >
+                                    {
+                                        state.isSent === 0 ? null :
+                                            state.isSent === 1 ?
+                                                <Typography className={classes.responseSuccess}>
+                                                    An email reset password was sent to your email. Please check your
+                                                    email
+                                                </Typography> :
+                                                <Typography className={classes.responseFail}>
+                                                    Error when sending email.Please try again
+                                                </Typography>
+                                    }
+                                </div>
+                                <div className={classes.main}>
+                                    <TextField
+                                        autoFocus
+                                        margin="dense"
+                                        label="Email"
+                                        type="email"
+                                        value={state.emailPass}
+                                        name='emailPass'
+                                        onChange={handleChange}
+                                        fullWidth
+                                    />
+                                    <Button style={{width: '100%', marginTop: '1rem'}} color='primary'
+                                            variant={'contained'} className={classes.buttonLogin}
+                                            onClick={handleSendPass}>
+                                        <SendIcon style={{marginRight: '1rem'}}/>
+                                        Send
+                                    </Button>
+                                </div>
+                            </DialogContent>
+                            <DialogActions>
+                                <Button onClick={handleClose} color="primary">
+                                    Cancel
+                                </Button>
+                            </DialogActions>
+                        </Dialog>
+                    </div> : <Redirect to='/'/>
+            }
+        </div>
+    );
+};
 
-                export default LoginPage;
+export default LoginPage;

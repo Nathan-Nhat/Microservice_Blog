@@ -21,11 +21,11 @@ const useStyle = makeStyles({
         top: 0,
         display: 'flex',
         flexDirection: 'column',
-        opacity :"80%"
+        height :'100vh'
     },
     header1: {
         fontSize :"0.9rem",
-        marginTop: '1rem',
+        marginTop: '0.5rem',
         '&:hover': {
             cursor: 'pointer',
             color: 'blue'
@@ -42,7 +42,9 @@ const useStyle = makeStyles({
         paddingLeft: '1rem'
     },
     bodyContent: {
-        padding: "0.6rem 1rem"
+        padding: "0.6rem 1rem",
+        height : '100%',
+        overflow : 'auto'
     },
     likeCmt: {
         display: 'flex',

@@ -10,14 +10,26 @@ const useStyle = makeStyles({
     container: {
         display: "flex",
         flexDirection: "column",
-        margin: "2rem auto",
-        width: "70%",
-        padding: "2rem",
+        margin: "6rem auto",
+        width: "100%",
+        maxWidth: '25rem',
         '&>*': {
-            marginTop: '2rem'
+            marginTop: '1rem'
         }
     },
-    textInput: {}
+     title: {
+        width: '100%',
+        textAlign: 'center',
+        marginBottom: '1rem'
+    },
+    textInput: {},
+     buttonSignup: {
+        boxShadow: 'none',
+        '&:hover': {
+            boxShadow: 'none'
+        },
+        marginBottom: '1rem'
+    },
 })
 const LoginPage = () => {
     const classes = useStyle();
@@ -40,18 +52,18 @@ const LoginPage = () => {
         <div>
             {
                 isAuthenticated === false ?
-                    <Paper className={classes.container}>
-                        <Typography variant={"h6"}>Sign up</Typography>
-                        <TextField required id="standard-required" label="Username" type="text" name='username'
+                    <div className={classes.container}>
+                        <Typography variant={"h6"} className={classes.title}>SIGN UP</Typography>
+                        <TextField required id="standard-required" label="Username" type="text" name='username' variant={'outlined'}
                                    onChange={handleChange}/>
-                        <TextField required id="standard-required" label="Name" type="text" name='name'
+                        <TextField required id="standard-required" label="Name" type="text" name='name' variant={'outlined'}
                                    onChange={handleChange}/>
-                        <TextField required id="standard-required" label="Email" type="email" name='email'
+                        <TextField required id="standard-required" label="Email" type="email" name='email' variant={'outlined'}
                                    onChange={handleChange}/>
-                        <TextField required id="standard-required" label="Password" type="password" name='password'
+                        <TextField required id="standard-required" label="Password" type="password" name='password' variant={'outlined'}
                                    onChange={handleChange}/>
-                        <Button variant="contained" color="primary" onClick={handleClick}> Sign up</Button>
-                    </Paper>
+                        <Button variant="contained" color="primary" onClick={handleClick} className={classes.buttonSignup}> Sign up</Button>
+                    </div>
                     : <Redirect to='/'/>
             }
         </div>

@@ -41,7 +41,7 @@ const PostUserComponent = ({user_id}) => {
                 state.isLoading === true ?
                     null
                     :
-                    <Box style={{textAlign: 'center', width: '70%', margin: "2rem auto"}}>
+                    <Box style={{textAlign: 'center', width: '90%', margin: "2rem auto"}}>
                         <Box>
                             {
                                 state.posts.map((item, index) => {
