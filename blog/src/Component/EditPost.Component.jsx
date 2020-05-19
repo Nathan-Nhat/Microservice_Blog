@@ -90,13 +90,12 @@ const EditPostComponent = () => {
             [name]: value
         })
     }
-    React.useEffect(() => {
+    useEffect(() => {
         clearTimeout(timeout)
         if (state.tag === '') {
             setHint({...hint, tags: []})
         } else {
             timeout = setTimeout(() => {
-                console.log(state.tag)
                 get_data(URL_POST_SERVICE + '/tags', {query_tag: state.tag}, false)
                     .then(res => setHint({
                         ...hint,
@@ -106,7 +105,7 @@ const EditPostComponent = () => {
         }
     }, [state.tag])
     const dispatch = useDispatch()
-    const {isAuthenticated, id} = useSelector(state => state.AuthenReducer)
+    const {isAuthenticated} = useSelector(state => state.AuthenReducer)
     const {post_id} = useParams()
     const handleSave = () => {
         setState({...state, isLoading: true})
@@ -123,12 +122,10 @@ const EditPostComponent = () => {
         }
         put_data(URL_POST_SERVICE + `/`, {}, data, true)
             .then(res => {
-                console.log(res)
                 setState({...state, isLoading: false})
                 dispatch(open_notification({message: "Save post successful", type: 'success'}))
             })
             .catch(error => {
-                console.log(error)
                 dispatch(open_notification({message: "Save post fail. Try again", type: 'error'}))
             })
     }
@@ -159,8 +156,7 @@ const EditPostComponent = () => {
 
     }
     const handleKeyDown = (e) => {
-        console.log(e.key)
-        if (e.key == 'Enter') {
+        if (e.key === 'Enter') {
             let cur_tags = state.tags
             if (!cur_tags.includes(state.tag)) {
                 cur_tags.push(state.tag)
@@ -229,10 +225,9 @@ const EditPostComponent = () => {
                                                          onClick={()=>handleClickHint(tag.tag_name)}
                                                     >
                                                         <Divider/>
-                                                        {console.log(hint.current_index)}
                                                         <div
                                                             className={classes.hintElementFocus}>
-                                                            <img
+                                                            <img alt={''}
                                                                 style={{
                                                                     width: '2rem',
                                                                     height: '2rem',
@@ -250,7 +245,7 @@ const EditPostComponent = () => {
                                             })
                                         }
                                         <Divider/>
-                                    </div> : null
+                                    </div> : <div></div>
                             }
                             <div style={{display: 'flex', flexDirection: 'row'}}>
                                 {

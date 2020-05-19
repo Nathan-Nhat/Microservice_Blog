@@ -66,7 +66,6 @@ const TagFollowPage = () => {
     const handleChange = (e, newVal) => {
         get_data(URL_POST_SERVICE + `/tags/${tag_id}/post`, {page: newVal}, false)
             .then(res => {
-                console.log(res)
                 setState({
                     ...state,
                     tag_id: res.data.tag_id,
@@ -86,7 +85,6 @@ const TagFollowPage = () => {
         setState({...state, isLoading: true})
         get_data(URL_POST_SERVICE + `/tags/${tag_id}/post`, param, false)
             .then(res => {
-                console.log(res)
                 setState({
                     ...state,
                     isLoading: false,
@@ -116,11 +114,11 @@ const TagFollowPage = () => {
     const classes = useStyle()
     return (
         <div>
-            {state.isLoading ? null :
+            {state.isLoading ? <div></div> :
                 <div className={classes.root}>
                     <Box className={classes.follow}>
                         <div className={classes.tagsContainer}>
-                            <img className={classes.tagImage} src={state.url_image}/>
+                            <img className={classes.tagImage} src={state.url_image} alt={''}/>
                             <div style={{display: 'inline-grid', gridTemplateColumns: "auto auto auto"}}>
                                 <Typography className={classes.tagName}>{state.tag_name}</Typography>
                                 <Typography className={classes.followerText}><a

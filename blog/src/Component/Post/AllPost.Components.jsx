@@ -8,9 +8,19 @@ import {useSelector, useDispatch} from "react-redux";
 import Pagination from '@material-ui/lab/Pagination';
 import {change_page_post} from "../../redux/Actions/ActionObjects/ActionsObjects";
 import {Divider} from "@material-ui/core";
+import {makeStyles} from "@material-ui/core/styles";
+import {useMediaQuery} from "@material-ui/core";
+import {theme} from "../../Themes";
 
+const useStyle = makeStyles({
+    root: {
+        textAlign: 'center',
+        padding: props => props.isMobile? "2rem 1rem 1rem 1rem" : '4rem 2rem 2rem 2rem'}
+})
 const AllPostComponents = () => {
     const request_post = useSelector(state => state.RequestPostReducer)
+    const isMobile = useMediaQuery(theme.breakpoints.down('md'))
+    const classes = useStyle({isMobile})
     const [state, setState] = useState({
         isLoading: true,
         posts: [{
@@ -30,7 +40,6 @@ const AllPostComponents = () => {
         } : {type: request_post.type, page: request_post.page}
         get_data(URL_POST_SERVICE + `/get_all`, params, false)
             .then(res => {
-                console.log(res)
                 setState({
                     isLoading: false,
                     posts: res.data.Post,
@@ -43,7 +52,7 @@ const AllPostComponents = () => {
         dispatch(change_page_post(newVal))
     }
     return (
-        <div style={{textAlign: 'center', padding: "4rem 2rem 2rem 2rem"}}>
+        <div className={classes.root}>
             <HeaderPost/>
             {
                 state.isLoading === true ?

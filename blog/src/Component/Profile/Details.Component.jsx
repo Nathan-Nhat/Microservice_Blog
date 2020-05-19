@@ -117,7 +117,6 @@ const DetailsComponent = ({user_id}) => {
                         is_followed: res.data.is_followed,
                         number_posts: res.data.total_posts
                     })
-                    console.log(res)
                 }
             )
             .catch(error => setProfile({...profile, isLoading: false}))
@@ -151,11 +150,11 @@ const DetailsComponent = ({user_id}) => {
 
     return (
         <div className={classes.rootContainer}>
-            {profile.isLoading ? null :
+            {profile.isLoading ? <div></div> :
                 <div>
                     <div className={classes.container}>
                         <div className={classes.imageContainer}>
-                            <img className={classes.image} src={profile.avatar_hash}/>
+                            <img className={classes.image} src={profile.avatar_hash} alt={''}/>
                             <div className={classes.followContainer}>
                                 <div className={classes.followText}>
                                     <Typography style={{fontSize: '0.7rem'}}>FOLLOWERS</Typography>
@@ -184,7 +183,7 @@ const DetailsComponent = ({user_id}) => {
                                 <Typography variant='h4' align='left'
                                             className={classes.nameText}>{profile.fullName}</Typography>
                                 {
-                                    (!isAuthenticated || parseInt(user_id) === id) ? null :
+                                    (!isAuthenticated || parseInt(user_id) === id) ? <div></div> :
                                         profile.is_followed ?
                                             <Button variant={'contained'} className={classes.followBtnProfile}
                                                     color={"primary"}
@@ -210,7 +209,7 @@ const DetailsComponent = ({user_id}) => {
                             {
                                 parseInt(user_id) === id ?
                                     <Button className={classes.button} variant='outlined'
-                                            onClick={() => dispatch(open_profile_popup())}>Edit Profile</Button> : null
+                                            onClick={() => dispatch(open_profile_popup())}>Edit Profile</Button> : <div></div>
                             }
                             <Divider style={{marginTop :"1rem"}}/>
                             <FollowerComponents user_id={user_id}/>

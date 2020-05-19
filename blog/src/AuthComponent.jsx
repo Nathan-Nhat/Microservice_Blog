@@ -10,19 +10,16 @@ import MainComponent from "./Component/Main.Component";
 import WritePostComponent from "./Component/WritePost.Component";
 import Notification from "./Component/Notifycation.Component";
 import {MuiThemeProvider} from "@material-ui/core/styles";
-import {useSelector} from "react-redux";
 import CircularProgress from '@material-ui/core/CircularProgress';
 import EditPostComponent from "./Component/EditPost.Component";
 
 const AuthComponent = () => {
     const [state, setState] = React.useState(true)
     React.useEffect(() => {
-        console.log(localStorage.getItem('jwt'))
         if (localStorage.getItem('jwt') !== null) {
             setState(true)
             get_data(URL_AUTH_SERVICE + '/verify_login', {}, true)
                 .then(res => {
-                    console.log(res)
                     let data = {
                         isAuthenticated: true,
                         id: res.data.user_id,

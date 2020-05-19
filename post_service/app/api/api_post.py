@@ -91,7 +91,7 @@ def delete_post(post_id, user_id):
 
 
 @post.route('/', methods=['PUT'])
-@cross_origin(origins=['http://localhost:3000'])
+@cross_origin(origins=[ServiceURL.FRONT_END_SERVER])
 @verify_jwt(blueprint=post, permissions=[Permission.WRITE])
 def update_post(user_id):
     post_details = request.get_json()
@@ -127,7 +127,7 @@ def update_post(user_id):
 
 
 @post.route('/get_all', methods=['GET'])
-@cross_origin(origins=['http://localhost:3000'])
+@cross_origin(origins=[ServiceURL.FRONT_END_SERVER])
 def get_all_post_by_page():
     page = request.args.get('page') or '0'
     page = int(page)
@@ -170,7 +170,7 @@ def get_all_post_by_page():
 
 
 @post.route('/<post_id>/like', methods=['POST'])
-@cross_origin(origins=['http://localhost:3000'])
+@cross_origin(origins=[ServiceURL.FRONT_END_SERVER])
 @verify_jwt(blueprint=post, permissions=[Permission.FOLLOW])
 def like_post(post_id, user_id):
     post_liked = Post.query.filter_by(post_id=post_id).first()
@@ -182,8 +182,9 @@ def like_post(post_id, user_id):
     return jsonify({'message': 'Like Success'})
 
 
+
 @post.route('/<post_id>/like', methods=['DELETE'])
-@cross_origin(origins=['http://localhost:3000'])
+@cross_origin(origins=[ServiceURL.FRONT_END_SERVER])
 @verify_jwt(blueprint=post, permissions=[Permission.FOLLOW])
 def unlike_post(post_id, user_id):
     post_like = Post.query.filter_by(post_id=post_id).first()
@@ -198,7 +199,7 @@ def unlike_post(post_id, user_id):
 
 
 @post.route('/<user_id>/posts', methods=['GET'])
-@cross_origin(origins=['http://localhost:3000'])
+@cross_origin(origins=[ServiceURL.FRONT_END_SERVER])
 def get_user_post(user_id):
     page = int(request.args.get('page', '0'))
     itemPerPage = 10

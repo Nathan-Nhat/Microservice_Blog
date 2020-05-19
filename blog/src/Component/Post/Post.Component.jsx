@@ -6,7 +6,6 @@ import ThumbUpAltRoundedIcon from '@material-ui/icons/ThumbUpAltRounded';
 import {NavLink} from "react-router-dom";
 import {theme} from "../../Themes";
 import '../../Markdown.style.css'
-import Grow from '@material-ui/core/Grow';
 import VisibilityRoundedIcon from '@material-ui/icons/VisibilityRounded';
 import moment from "moment";
 import {useSelector} from "react-redux";
@@ -17,18 +16,19 @@ import {green} from '@material-ui/core/colors';
 import {useHistory} from 'react-router-dom'
 import * as API from '../../ApiCall'
 import {URL_POST_SERVICE} from "../../Constants";
+import {useMediaQuery} from "@material-ui/core";
 
 const useStyle = makeStyles({
     container: {
         display: "flex",
         flexDirection: "row",
-        padding: "1rem 1rem 0.5rem 1rem"
+        padding: "1rem 0.5rem 0.5rem 0.5rem"
     },
     image: {
-        width: "3rem",
-        height: "3rem",
+        width: props => props.isMobile ? '2.5rem' : "3rem",
+        height: props => props.isMobile ? '2.5rem' : "3rem",
         borderRadius: "50%",
-        margin: "1rem"
+        marginRight: '0.5rem'
     },
     detail: {
         width: "100%",
@@ -56,10 +56,11 @@ const useStyle = makeStyles({
     },
     containerTitle: {
         textAlign: "left",
+        marginTop : '0.2rem'
     },
     title: {
         // fontWeight: "bold",
-        fontSize: "1.3rem",
+        fontSize: "1.1rem",
         color: 'black',
         textDecoration: "None",
         '&:hover': {
@@ -88,22 +89,26 @@ const useStyle = makeStyles({
     },
     author: {
         display: 'flex',
-        flexDirection: 'row',
+        flexDirection: props => props.isMobile?'column' : 'row',
     },
     writer: {
         fontSize: '0.9rem',
         color: 'blue',
         textDecoration: "None",
-        lineHeight: '2.1rem',
         marginRight: '1rem',
         '&:hover': {
             cursor: 'pointer'
         }
     },
+    namecontainer : {
+        display : 'flex',
+        flexDirection : 'row'
+    }
 
 })
 const PostComponent = ({post, user}) => {
-    const classes = useStyle(theme)
+    const isMobile = useMediaQuery(theme.breakpoints.down('md'))
+    const classes = useStyle({isMobile})
     const {id, isAuthenticated} = useSelector(state => state.AuthenReducer)
     const history = useHistory()
     const [state, setState] = React.useState({
@@ -115,37 +120,40 @@ const PostComponent = ({post, user}) => {
     const handleDelete = () => {
         API.delete_data(URL_POST_SERVICE + `/${post.post_id}`, {}, true)
             .then(res => {
-                console.log(res)
                 setState({isDeleted: true})
             })
     }
     return (
-        // <Grow in={true}>
         <Box>
-            { state.isDeleted? null :
+            {state.isDeleted ? <div></div> :
                 <Box>
                     <Box className={classes.container}>
-                        <img className={classes.image} src={user.avatar_hash}/>
+                        <img className={classes.image} src={user.avatar_hash} alt={''}/>
                         <Box className={classes.detail}>
                             <div align='left' className={classes.author}>
-                                <NavLink className={classes.writer}
-                                         to={`/profile/${user.user_id}`}>{user.name}</NavLink>
-                                {isAuthenticated && id === user.user_id ?
-                                    <Box>
-                                        <IconButton style={{padding: '0.3rem', marginRight: '0.5rem'}}
-                                                    onClick={handleEdit}>
-                                            <EditRoundedIcon style={{fontSize: '1.4rem', color: green[500]}}/>
-                                        </IconButton>
-                                        <IconButton style={{padding: '0.3rem', marginRight: '0.5rem'}}
-                                                    onClick={handleDelete}>
-                                            <DeleteForeverRoundedIcon color='secondary' style={{fontSize: '1.4rem'}}/>
-                                        </IconButton>
-                                    </Box> : null
+                                <div className={classes.namecontainer}>
+                                    <NavLink className={classes.writer}
+                                             to={`/profile/${user.user_id}`}>{user.name}</NavLink>
+                                    {isAuthenticated && id === user.user_id ?
+                                        <Box>
+                                            <IconButton style={{padding: '0rem', marginRight: '0.5rem'}}
+                                                        onClick={handleEdit}>
+                                                <EditRoundedIcon style={{fontSize: '1rem', color: green[500]}}/>
+                                            </IconButton>
+                                            <IconButton style={{padding: '0rem', marginRight: '0.5rem'}}
+                                                        onClick={handleDelete}>
+                                                <DeleteForeverRoundedIcon color='secondary'
+                                                                          style={{fontSize: '1rem'}}/>
+                                            </IconButton>
+                                        </Box> : null
+                                    }
+                                </div>
+                                {isMobile ? null :
+                                    <div style={{flexGrow: 1}}></div>
                                 }
-                                <div style={{flexGrow: 1}}></div>
                                 <Typography style={{
                                     fontSize: '0.8rem',
-                                    fontStyle: 'italic'
+                                    opacity : '50%'
                                 }}>{moment(post.date_post).fromNow()}</Typography>
                             </div>
                             <Box className={classes.containerTitle}>
@@ -154,7 +162,9 @@ const PostComponent = ({post, user}) => {
                             </Box>
                             <Box className={classes.tagsContainer}>
                                 {post.tags.map((item, index) => {
-                                    return <a key={index} className={classes.tags} key={index} onClick={()=>{history.push(`/tag/${item.tag_id}`)}}>{item.tag_name}</a>
+                                    return <a key={index} className={classes.tags} key={index} onClick={() => {
+                                        history.push(`/tag/${item.tag_id}`)
+                                    }}>{item.tag_name}</a>
                                 })}
                             </Box>
                             <Box className={classes.commentContainer}>
@@ -168,7 +178,7 @@ const PostComponent = ({post, user}) => {
                                     <Typography className={classes.numComment}>{post.num_comment}</Typography>
                                 </Box>
                                 <Box className={classes.elementComment} style={post.is_liked ? {opacity: '100%'} : {}}>
-                                    <ThumbUpAltRoundedIcon color={post.is_liked ? 'primary' : ''}
+                                    <ThumbUpAltRoundedIcon color={post.is_liked ? 'primary' : 'inherit'}
                                                            className={classes.iconComment}/>
                                     <Typography className={classes.numComment}>{post.num_like}</Typography>
                                 </Box>
@@ -178,7 +188,6 @@ const PostComponent = ({post, user}) => {
                 </Box>
             }
         </Box>
-        // </Grow>
     );
 };
 

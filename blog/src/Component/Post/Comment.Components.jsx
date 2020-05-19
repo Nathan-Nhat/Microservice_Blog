@@ -90,7 +90,6 @@ const CommentComponents = ({post_id}) => {
         }
         post_data(URL_POST_SERVICE + '/comments', {}, data, true)
             .then(res => {
-                console.log(res.data)
                 var new_list = state.list_comment
                 new_list.unshift(res.data)
                 setState({
@@ -112,7 +111,6 @@ const CommentComponents = ({post_id}) => {
                         list_comment: res.data.comments
                     }
                 )
-                console.log(res.data)
             })
     }, [])
     const handlePage = (e) => {
@@ -129,7 +127,6 @@ const CommentComponents = ({post_id}) => {
                         list_comment: newList
                     }
                 )
-                console.log(res.data)
             })
     }
     return (
@@ -155,7 +152,7 @@ const CommentComponents = ({post_id}) => {
                                 <div key={index}>
                                     <Divider/>
                                     <div className={classes.wrapComment}>
-                                        <img className={classes.image} src={item.user_comment.avatar_hash}/>
+                                        <img className={classes.image} src={item.user_comment.avatar_hash} alt={''}/>
                                         <div className={classes.textComment}>
                                             <div className={classes.titleComment}>
                                                 <Typography className={classes.name}><NavLink className = {classes.navLink}

@@ -14,7 +14,7 @@ from app.helper.auth_connector import verify_jwt
 from app.helper.auth_connector import Permission
 
 @post.route('/comments', methods=['POST'])
-@cross_origin(origins=['http://localhost:3000'])
+@cross_origin(origins=[ServiceURL.FRONT_END_SERVER])
 @verify_jwt(blueprint=post, permissions=[Permission.COMMENT])
 def add_comment(user_id):
     data = request.get_json()
@@ -40,7 +40,7 @@ def add_comment(user_id):
 
 
 @post.route('/comments/<post_id>')
-@cross_origin(origins=['http://localhost:3000'])
+@cross_origin(origins=[ServiceURL.FRONT_END_SERVER])
 def get_comment(post_id):
     page = int(request.args.get('page', '0'))
     item_per_page = int(request.args.get('item_per_page', '20'))

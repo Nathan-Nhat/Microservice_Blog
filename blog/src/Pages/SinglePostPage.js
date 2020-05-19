@@ -10,7 +10,6 @@ import '../Markdown.style.css'
 import CodeBlock from "../Helper/CodeBlock";
 import CommentComponents from "../Component/Post/Comment.Components";
 import Divider from "@material-ui/core/Divider";
-import Fade from '@material-ui/core/Fade';
 import {Button} from "@material-ui/core";
 import {useSelector} from "react-redux";
 import GroupAddRoundedIcon from '@material-ui/icons/GroupAddRounded';
@@ -19,15 +18,17 @@ import * as API from "../ApiCall";
 import {useHistory} from 'react-router-dom'
 import PostRightComponent from "../Component/Post/PostRight.Component";
 import VisibilityIcon from '@material-ui/icons/Visibility';
+import {useMediaQuery} from "@material-ui/core";
+import {theme} from "../Themes";
 
 const useStyle = makeStyles({
     root: {
         display: 'flex',
         flexDirection: 'row',
-        marginTop: '2rem',
+        marginTop: props => props.isMobile? '1rem' : '2rem',
     },
     main: {
-        padding: '2rem',
+        padding: props => props.isMobile ? '1rem' : '2rem',
         overflowWrap: 'break-word',
         wordWrap: 'break-word',
         hyphens: 'auto',
@@ -35,7 +36,7 @@ const useStyle = makeStyles({
     title: {
         textAlign: 'left',
         fontWeight: "bold",
-        fontSize: '2.5rem',
+        fontSize: '2rem',
     },
     tagsContainer: {
         textAlign: "left",
@@ -55,23 +56,26 @@ const useStyle = makeStyles({
     },
     author: {
         display: "flex",
-        flexDirection: "row",
+        flexDirection: props => props.isMobile ? 'column' : "row",
         marginBottom: '3rem'
     },
     image: {
-        width: "3rem",
-        height: "3rem",
+        width: '3rem',
+        height: '3rem',
         borderRadius: "50%",
-        marginRight: "1rem"
+        marginRight: props => props.isMobile ? "0.5rem" : '1rem',
+        gridRowStart: 1,
+        gridRowEnd: 3
     },
 
     body: {
         marginTop: "2.5rem",
         textAlign: "left"
     },
-    authorDetails: {
-        display: 'flex',
-        flexDirection: 'column'
+    authorButton: {
+        display: 'inline-grid',
+        gridTemplateColumns: 'auto auto auto',
+        alignSelf: 'flex-start'
     },
     name: {
         textDecoration: 'None',
@@ -92,8 +96,14 @@ const useStyle = makeStyles({
         flexDirection: 'row',
         marginRight: '1rem'
     },
+    datePost: {
+        opacity: "50%",
+        textAlign: props => props.isMobile? 'left' : "right",
+        marginTop: props => props.isMobile? '1rem' : "0"
+    }
 })
 const SinglePostPage = () => {
+    const isMobile = useMediaQuery(theme.breakpoints.down('md'))
     const {post_id} = useParams()
     const [state, setState] = useState({
         list_contents: [],
@@ -125,7 +135,7 @@ const SinglePostPage = () => {
 
     }, [state.isLoading])
     const {id, isAuthenticated} = useSelector(state => state.AuthenReducer)
-    const classes = useStyle()
+    const classes = useStyle({isMobile})
     const history = useHistory()
     const ref = useRef('123')
     useEffect(() => {
@@ -133,7 +143,6 @@ const SinglePostPage = () => {
         let params = isAuthenticated ? {user_current_id: id} : {}
         get_data(URL_POST_SERVICE + `/${post_id}`, params, false)
             .then(res => {
-                console.log(res)
                 setState({
                     ...state,
                     is_followed: res.data.author.is_followed,
@@ -174,14 +183,14 @@ const SinglePostPage = () => {
                     },
                     is_followed: true
                 }))
-                .catch(error => console.log(error))
+                .catch(error => {
+                })
         }
     }
 
     const handleUnFollow = () => {
         API.delete_data(URL_PROFILE_SERVICE + '/follow', {user_follow: state.data.author.user_id}, true)
             .then(res => {
-                console.log(res)
                 setState({
                     ...state,
                     data: {
@@ -194,31 +203,30 @@ const SinglePostPage = () => {
                     is_followed: false
                 })
             })
-            .catch(error => console.log(error))
+            .catch(error => {
+            })
     }
 
     return (
-        // <Fade in={true}>
         <div>
-            {state.isLoading === true ? null :
+            {state.isLoading === true ? <div></div> :
                 <div className={classes.root}>
                     <div className={classes.main}>
                         <Box className={classes.container}>
                             <Box className={classes.author}>
-                                <img className={classes.image} src={state.data.author.avatar_hash}/>
-                                <Box className={classes.authorDetails}>
-                                    <Box>
-                                        <NavLink className={classes.name}
-                                                 to={`/profile/${state.data.author.user_id}`}>{state.data.author.name}</NavLink>
-                                        {parseInt(state.data.author.user_id) === id ? null :
-                                            state.is_followed === false || !isAuthenticated ?
-                                                <Button variant={'outlined'} className={classes.followBtn}
-                                                        onClick={handleFollow}>Follow</Button> :
-                                                <Button variant={'contained'} color='primary'
-                                                        className={classes.followBtn}
-                                                        onClick={handleUnFollow}>Following</Button>
-                                        }
-                                    </Box>
+                                <Box className={classes.authorButton}>
+                                    <img className={classes.image} src={state.data.author.avatar_hash} alt={''}/>
+                                    <NavLink className={classes.name}
+                                             to={`/profile/${state.data.author.user_id}`}>{state.data.author.name}</NavLink>
+                                    {parseInt(state.data.author.user_id) === id ? <div></div> :
+                                        state.is_followed === false || !isAuthenticated ?
+                                            <Button variant={'outlined'} className={classes.followBtn}
+                                                    onClick={handleFollow}>Follow</Button> :
+                                            <Button variant={'contained'} color='primary'
+                                                    className={classes.followBtn}
+                                                    onClick={handleUnFollow}>Following</Button>
+                                    }
+
                                     <Box style={{display: 'flex', flexDirection: 'row', opacity: '50%'}}>
                                         <Box className={classes.followGrp}>
                                             <GroupAddRoundedIcon style={{marginRight: '0.2rem'}}/>
@@ -230,12 +238,16 @@ const SinglePostPage = () => {
                                         </Box>
                                     </Box>
                                 </Box>
-                                <div style={{flexGrow: 1}}></div>
+                                {
+                                    isMobile ? null :
+                                        <div style={{flexGrow: 1}}></div>
+                                }
                                 <div>
-                                    <Typography style={{opacity: "50%", textAlign :"right"}}>{state.data.date_post}</Typography>
-                                    <div style={{display : 'flex', flexDirection: "row", opacity: "50%"}}>
-                                        <div style={{flexGrow : 1}}></div>
-                                        <VisibilityIcon style = {{marginRight :"0.3rem"}}/>
+                                    <Typography
+                                        className={classes.datePost}>{state.data.date_post}</Typography>
+                                    <div style={{display: 'flex', flexDirection: "row", opacity: "50%"}}>
+                                        {isMobile? null : <div style={{flexGrow: 1}}></div>}
+                                        <VisibilityIcon style={{marginRight: "0.3rem"}}/>
                                         <Typography>{state.data.num_views}</Typography>
                                     </div>
                                 </div>
@@ -244,7 +256,9 @@ const SinglePostPage = () => {
                                 className={classes.title}>{state.data.title}</Typography>
                             <Box className={classes.tagsContainer}>
                                 {state.data.tag.map((item, index) => {
-                                    return <a key={index} className={classes.tags} key={index} onClick={()=>{history.push(`/tag/${item.tag_id}`)}}>{item.tag_name}</a>
+                                    return <a key={index} className={classes.tags} key={index} onClick={() => {
+                                        history.push(`/tag/${item.tag_id}`)
+                                    }}>{item.tag_name}</a>
                                 })}
                             </Box>
                             <div ref={ref}>
@@ -255,10 +269,12 @@ const SinglePostPage = () => {
                         <Divider/>
                         <CommentComponents post_id={post_id}/>
                     </div>
-                    <PostRightComponent parentData={state} post_id={post_id}/>
+                    {
+                        isMobile ? null :
+                            <PostRightComponent parentData={state} post_id={post_id}/>
+                    }
                 </div>}
         </div>
-        // </Fade>
     );
 };
 

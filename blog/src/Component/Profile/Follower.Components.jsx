@@ -49,12 +49,11 @@ const FollowerComponents = ({user_id}) => {
                     // number_follower: 300,
                     user_name: res.data.user_name
                 })
-                console.log(res)
             })
     }, [user_id])
     return (
         <div style={{marginTop: '1rem'}}>
-            {state.isLoading ? null :
+            {state.isLoading ? <div></div> :
                 <div>
                     <Typography
                         style={{marginBottom: "0.2rem", opacity : '70%'}}>{`${state.number_follower} people following ${state.user_name}`}</Typography>
@@ -62,7 +61,7 @@ const FollowerComponents = ({user_id}) => {
                         {
                             state.followers.map((item, index) => {
                                 return <Tooltip title={`${item.user_name}`} interactive key={index} >
-                                    <img className={classes.followerAvatar} src={item.user_avatar}
+                                    <img alt = {''} className={classes.followerAvatar} src={item.user_avatar}
                                          onClick={() => {
                                              history.push(`/profile/${item.user_id}`)
                                          }}/>
@@ -70,7 +69,7 @@ const FollowerComponents = ({user_id}) => {
                             })
                         }
                         {
-                            state.number_follower - 19 < 0? null:
+                            state.number_follower - 19 < 0? <div></div>:
                             <Tooltip title={`${state.number_follower - 19} other peoples`} interactive>
                                 <MoreHorizIcon className={classes.moreButton}/>
                             </Tooltip>

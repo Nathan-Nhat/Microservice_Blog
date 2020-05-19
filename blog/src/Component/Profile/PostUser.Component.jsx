@@ -15,7 +15,6 @@ const PostUserComponent = ({user_id}) => {
         setState({...state, isLoading: true})
         get_data(URL_POST_SERVICE + `/${user_id}/posts`, {page: 0}, false)
             .then(res => {
-                console.log(res)
                 setState({
                     isLoading: false,
                     posts: res.data.posts,
@@ -27,7 +26,6 @@ const PostUserComponent = ({user_id}) => {
         setState({...state, isLoading: true})
         get_data(URL_POST_SERVICE + `/${user_id}/posts`, {page: newVal}, false)
             .then(res => {
-                console.log(res)
                 setState({
                     isLoading: false,
                     posts: res.data.posts,

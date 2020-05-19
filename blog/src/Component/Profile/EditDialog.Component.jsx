@@ -35,9 +35,9 @@ export default function FormDialog({data, profileChange}) {
     const dispatch = useDispatch()
     const [state, setState] = React.useState({
         fullName: data.fullName,
-        email: data.email,
-        about_me: data.about_me,
-        address: data.address,
+        email: data.email ,
+        about_me: data.about_me ,
+        address: data.address ,
         avatar_hash: data.avatar_hash
     })
     const handleClose = () => {
@@ -71,7 +71,7 @@ export default function FormDialog({data, profileChange}) {
             <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
                 <DialogTitle id="form-dialog-title">Profile</DialogTitle>
                 <DialogContent className={classes.contents}>
-                    <img className={classes.image} src={state.avatar_hash}/>
+                    <img className={classes.image} src={state.avatar_hash} alt={''}/>
                     <Divider orientation={'vertical'} flexItem={true} style={{margin: '0 1rem 0 1rem'}}></Divider>
                     <div className={classes.main}>
                         <TextField

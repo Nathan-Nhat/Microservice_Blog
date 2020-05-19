@@ -11,7 +11,7 @@ import {open_notification} from "../redux/Actions/ActionObjects/ActionsObjects";
 import {Redirect} from 'react-router-dom'
 import {Input} from '@material-ui/core'
 import SearchIcon from "@material-ui/icons/Search";
-import {Typography, Divider} from "@material-ui/core";
+import {Typography} from "@material-ui/core";
 import CloseRoundedIcon from '@material-ui/icons/CloseRounded';
 
 const useStyle = makeStyles({
@@ -54,7 +54,7 @@ const useStyle = makeStyles({
         padding: '1rem',
         height: '42rem + 2px'
     },
-    button_save: {
+    buttonSave: {
         float: "right"
     },
     hintElementFocus: {
@@ -98,7 +98,6 @@ const WritePostComponent = () => {
             setHint({...hint, tags: []})
         } else {
             timeout = setTimeout(() => {
-                console.log(state.tag)
                 get_data(URL_POST_SERVICE + '/tags', {query_tag: state.tag}, false)
                     .then(res => setHint({
                         ...hint,
@@ -108,7 +107,7 @@ const WritePostComponent = () => {
         }
     }, [state.tag])
     const dispatch = useDispatch()
-    const {isAuthenticated, id} = useSelector(state => state.AuthenReducer)
+    const {isAuthenticated} = useSelector(state => state.AuthenReducer)
     const handleSave = () => {
         setState({...state, isLoading: true})
         const data = {
@@ -123,12 +122,10 @@ const WritePostComponent = () => {
         }
         post_data(URL_POST_SERVICE + `/`, {}, data, true)
             .then(res => {
-                console.log(res)
                 setState({...state, isLoading: false})
                 dispatch(open_notification({message: "Save post successful", type: 'success'}))
             })
             .catch(error => {
-                console.log(error)
                 dispatch(open_notification({message: "Save post fail. Try again", type: 'error'}))
             })
     }
@@ -143,7 +140,7 @@ const WritePostComponent = () => {
 
     }
     const handleKeyDown = (e) => {
-        if (e.key == 'Enter') {
+        if (e.key === 'Enter') {
             let cur_tags = state.tags
             if (!cur_tags.includes(state.tag)) {
                 cur_tags.push(state.tag)
@@ -218,7 +215,7 @@ const WritePostComponent = () => {
                                                     >
                                                         <div
                                                             className={classes.hintElementFocus}>
-                                                            <img
+                                                            <img alt={''}
                                                                 style={{
                                                                     width: '2rem',
                                                                     height: '2rem',
@@ -235,7 +232,7 @@ const WritePostComponent = () => {
                                                 )
                                             })
                                         }
-                                    </div> : null
+                                    </div> : <div></div>
                             }
                             <div style={{display: 'flex', flexDirection: 'row'}}>
                                 {
@@ -273,7 +270,7 @@ const WritePostComponent = () => {
                             <ReactMarkdown className="markdown_write" source={state.body}
                                            escapeHtml={false} renderers={{code: CodeBlock}}/>
                         </div>
-                        <Button variant={'contained'} color={'primary'} className={classes.button_save}
+                        <Button variant={'contained'} color={'primary'} className={classes.buttonSave}
                                 onClick={handleSave} C>Save</Button>
                     </div>
             }

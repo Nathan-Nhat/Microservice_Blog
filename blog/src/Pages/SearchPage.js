@@ -13,7 +13,6 @@ import {HtmlTooltip} from "../Component/Appbar.Component";
 const covert_to_search = (text, page) => {
     if (text === '') return
     let array = text.split(':', 2)
-    console.log(array)
     let param = {}
     if (array[0] === 'title') {
         param = {type: 'title', key_word: array[1], page: page}
@@ -68,7 +67,6 @@ const SearchPage = () => {
         let param = covert_to_search(state.queryWord, newVal)
         get_data(URL_POST_SERVICE + '/search', param, false)
             .then(res => {
-                console.log(res)
                 setState({
                     ...state,
                     stateLoading: stateLoading.LOADED,
@@ -89,7 +87,6 @@ const SearchPage = () => {
             setState({...state, stateLoading: stateLoading.LOADING})
             get_data(URL_POST_SERVICE + '/search', param, false)
                 .then(res => {
-                    console.log(res)
                     setState({
                         ...state,
                         stateLoading: stateLoading.LOADED,
@@ -113,10 +110,8 @@ const SearchPage = () => {
     }
     React.useEffect(() => {
             let param = covert_to_search(queryString.parse(location.search).query, 0)
-            console.log(state.queryWord)
             get_data(URL_POST_SERVICE + '/search', param, false)
                 .then(res => {
-                    console.log(res)
                     setState({
                         ...state,
                         queryWord: queryString.parse(location.search).query,
@@ -168,14 +163,13 @@ const SearchPage = () => {
                 </HtmlTooltip>
                 <div style={{padding: '2rem 1rem'}}>
                     {
-                        state.stateLoading === stateLoading.INIT ? null :
+                        state.stateLoading === stateLoading.INIT ? <div></div> :
                             state.stateLoading === stateLoading.LOADING ?
                                 <div style={{height: '100vh'}}>
                                     <CircularProgress style={{marginTop: '3rem'}}/>
                                 </div>
                                 :
                                 <Box style={{textAlign: 'center'}}>
-                                    {console.log(state)}
                                     <Box>
                                         {
                                             state.result.posts.map((item, index) => {

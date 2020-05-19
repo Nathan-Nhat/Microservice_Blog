@@ -1,6 +1,6 @@
-import React, {useState} from 'react';
-import {TextField, makeStyles, Paper, Typography, Button} from "@material-ui/core";
-import {BrowserRouter as Router, Switch, Route} from "react-router-dom";
+import React from 'react';
+import {makeStyles} from "@material-ui/core";
+import {Switch, Route} from "react-router-dom";
 import LoginPage from "../Pages/LoginPage";
 import SignupPage from '../Pages/SignupPage'
 import MainPage from "../Pages/MainPage";
@@ -9,16 +9,20 @@ import SinglePostPage from "../Pages/SinglePostPage";
 import SearchPage from "../Pages/SearchPage";
 import TagFollowPage from '../Pages/TagFollowPage'
 import ChangePasswordPage from '../Pages/ChangePasswordPage'
+import {useMediaQuery} from "@material-ui/core";
+import {theme} from "../Themes";
+
 const useStyle = makeStyles({
     container: {
-        width: "70%",
+        width: props => props.isMobile?"100%" : '70%',
         maxWidth : "1378px",
         margin: "auto"
     },
     textInput: {}
 })
 const MainComponent = () => {
-    const classes = useStyle()
+    const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
+    const classes = useStyle({isMobile})
     return (
         <div className={classes.container}>
             <Switch>

@@ -16,7 +16,6 @@ const AuthenReducer = (state = initialState, action) => {
                 name : action.data.name,
                 email: action.data.email
             }
-            console.log(state)
             return state;
         default:
             return state;

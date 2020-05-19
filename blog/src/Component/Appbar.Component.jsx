@@ -9,13 +9,15 @@ import {Input, InputAdornment, Divider, Tooltip} from "@material-ui/core";
 import SearchIcon from '@material-ui/icons/Search';
 import {withStyles} from "@material-ui/core";
 import SubdirectoryArrowRightRoundedIcon from '@material-ui/icons/SubdirectoryArrowRightRounded';
+import {useMediaQuery} from "@material-ui/core";
+import {theme} from "../Themes";
 
 const useStyles = makeStyles((theme) => ({
     root: {
         flexGrow: 1,
     },
     toolbar: {
-        width: "70%",
+        width: props => props.isMobile ? '100%' : "70%",
         maxWidth: "1378px",
         margin: "auto"
     },
@@ -34,10 +36,13 @@ const useStyles = makeStyles((theme) => ({
         color: 'white',
         backgroundColor: 'rgba(255, 255, 255, .1)',
         width: '15rem',
-        paddingRight : '1rem',
+        paddingRight: '1rem',
         '&:hover': {
             backgroundColor: 'rgba(255, 255, 255, .3)'
         }
+    },
+    loginButton : {
+        display : props => props.isMobile? 'none': ''
     }
 }));
 
@@ -55,7 +60,8 @@ export const HtmlTooltip = withStyles((theme) => ({
 }))(Tooltip);
 
 const AppbarComponent = () => {
-    const classes = useStyles();
+    const isMobile = useMediaQuery(theme.breakpoints.down("sm"))
+    const classes = useStyles({isMobile});
     const history = useHistory()
     const dispatch = useDispatch()
     const [state, setState] = React.useState({
@@ -105,8 +111,6 @@ const AppbarComponent = () => {
             <Toolbar className={classes.toolbar}>
                 <Button onClick={handleHome}><Typography variant="h5"
                                                          style={{color: "white", fontWeight: "bold"}}>Blog</Typography></Button>
-                <Divider orientation={'vertical'} flexItem={true} light={true}
-                         style={{width: '2px', margin: '0.5rem 0.5rem 0.5rem 0.5rem'}}/>
 
                 <HtmlTooltip disableHoverListener arrow={true}
                              title={
@@ -116,10 +120,11 @@ const AppbarComponent = () => {
                                              border: "1px solid #888a8c",
                                              padding: '0 0.5rem 0 0.5rem',
                                              borderRadius: '3px',
-                                             display : 'inline-block'
+                                             display: 'inline-block'
                                          }}>
-                                                 <SubdirectoryArrowRightRoundedIcon style={{fontSize : '0.7rem', paddingRight : '0.3rem'}}/>
-                                                 Enter
+                                             <SubdirectoryArrowRightRoundedIcon
+                                                 style={{fontSize: '0.7rem', paddingRight: '0.3rem'}}/>
+                                             Enter
                                          </div>
                                          {` to search`}</Typography>
                                  </React.Fragment>
@@ -136,30 +141,31 @@ const AppbarComponent = () => {
                 </HtmlTooltip>
                 <div className={classes.title}>
                 </div>
-                {
-                    isAuthenticated === false ?
-                        <div>
-                            <Button color="inherit" className={classes.link} onClick={(e) => handleClick(e, 1)}>
-                                Login
-                            </Button>
-                            <Button color="inherit" className={classes.link} onClick={(e) => handleClick(e, 2)}>
-                                Sign up
-                            </Button>
-                        </div> :
-                        <div>
-                            <Button color="inherit" variant={'outlined'} className={classes.link}
-                                    onClick={(e) => handleClick(e, 3)}>
-                                Add post
-                            </Button>
-                            <Button color="inherit" className={classes.link} onClick={(e) => handleClick(e, 4)}>
-                                My Profile
-                            </Button>
-                            <Button color="inherit" className={classes.link} onClick={(e) => handleClick(e, 5)}>
-                                Logout
-                            </Button>
-                        </div>
-                }
-
+                <div className={classes.loginButton}>
+                    {
+                        isAuthenticated === false ?
+                            <div>
+                                <Button color="inherit" className={classes.link} onClick={(e) => handleClick(e, 1)}>
+                                    Login
+                                </Button>
+                                <Button color="inherit" className={classes.link} onClick={(e) => handleClick(e, 2)}>
+                                    Sign up
+                                </Button>
+                            </div> :
+                            <div>
+                                <Button color="inherit" variant={'outlined'} className={classes.link}
+                                        onClick={(e) => handleClick(e, 3)}>
+                                    Add post
+                                </Button>
+                                <Button color="inherit" className={classes.link} onClick={(e) => handleClick(e, 4)}>
+                                    My Profile
+                                </Button>
+                                <Button color="inherit" className={classes.link} onClick={(e) => handleClick(e, 5)}>
+                                    Logout
+                                </Button>
+                            </div>
+                    }
+                </div>
             </Toolbar>
         </AppBar>
     );

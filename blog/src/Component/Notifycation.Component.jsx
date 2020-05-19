@@ -9,15 +9,14 @@ function Alert(props) {
     return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
-const useStyles = makeStyles((theme) => ({
-    root: {},
-}));
+// const useStyles = makeStyles((theme) => ({
+//     root: {},
+// }));
 
 export default function CustomizedSnackbars({message, type}) {
-    const classes = useStyles();
+    // const classes = useStyles();
     const data = useSelector(state => state.NotifyReducer)
     const dispatch = useDispatch()
-    console.log(data)
     const handleClose = (event, reason) => {
         if (reason === 'clickaway') {
             return;

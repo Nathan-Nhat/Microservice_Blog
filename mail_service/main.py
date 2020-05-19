@@ -30,10 +30,3 @@ if __name__ == '__main__':
     worker2.start()
     worker3.start()
     worker4.start()
-    while True:
-        if keyboard.is_pressed('x'):
-            worker1.worker.stop_consume()
-            worker2.worker.stop_consume()
-            worker3.worker.stop_consume()
-            worker4.worker.stop_consume()
-            break
