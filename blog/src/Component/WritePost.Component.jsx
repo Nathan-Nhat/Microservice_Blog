@@ -63,7 +63,7 @@ const useStyle = makeStyles({
         padding: '0.7rem',
         '&:hover': {
             backgroundColor: '#42a5f5',
-            cursor : 'pointer'
+            cursor: 'pointer'
         }
     }
 })
@@ -93,16 +93,19 @@ const WritePostComponent = () => {
         )
     }
     React.useEffect(() => {
-        if (state.tag === '') return
         clearTimeout(timeout)
-        timeout = setTimeout(() => {
-            if (state.tag !== '') {
+        if (state.tag === '') {
+            setHint({...hint, tags: []})
+        } else {
+            timeout = setTimeout(() => {
+                console.log(state.tag)
                 get_data(URL_POST_SERVICE + '/tags', {query_tag: state.tag}, false)
                     .then(res => setHint({
+                        ...hint,
                         tags: res.data.tags
                     }))
-            }
-        }, 0)
+            }, 2000)
+        }
     }, [state.tag])
     const dispatch = useDispatch()
     const {isAuthenticated, id} = useSelector(state => state.AuthenReducer)
@@ -140,7 +143,6 @@ const WritePostComponent = () => {
 
     }
     const handleKeyDown = (e) => {
-        console.log(e.key)
         if (e.key == 'Enter') {
             let cur_tags = state.tags
             if (!cur_tags.includes(state.tag)) {
@@ -158,12 +160,12 @@ const WritePostComponent = () => {
         })
     }
 
-    const handleClickHint = (name)=>{
+    const handleClickHint = (name) => {
         let cur_tags = state.tags
-            if (!cur_tags.includes(name)) {
-                cur_tags.push(name)
-            }
-            setState({...state, tag: '', tags: cur_tags, isFocusedTags: false})
+        if (!cur_tags.includes(name)) {
+            cur_tags.push(name)
+        }
+        setState({...state, tag: '', tags: cur_tags, isFocusedTags: false})
     }
     React.useEffect(() => {
         return () => {
@@ -198,7 +200,7 @@ const WritePostComponent = () => {
                                         width: '100%',
                                         zIndex: 999,
                                         position: 'absolute',
-                                        backgroundColor: 'white',
+                                        backgroundColor: '#dedede',
                                         display: 'flex',
                                         flexDirection: 'column',
                                     }}>
@@ -209,13 +211,11 @@ const WritePostComponent = () => {
                                                          onMouseEnter={() => {
                                                              setHint({...hint, is_focusing: true})
                                                          }}
-                                                         onMouseLeave={()=>{
+                                                         onMouseLeave={() => {
                                                              setHint({...hint, is_focusing: false})
                                                          }}
-                                                         onClick={()=>handleClickHint(tag.tag_name)}
+                                                         onClick={() => handleClickHint(tag.tag_name)}
                                                     >
-                                                        <Divider/>
-                                                        {console.log(hint.current_index)}
                                                         <div
                                                             className={classes.hintElementFocus}>
                                                             <img
@@ -235,7 +235,6 @@ const WritePostComponent = () => {
                                                 )
                                             })
                                         }
-                                        <Divider/>
                                     </div> : null
                             }
                             <div style={{display: 'flex', flexDirection: 'row'}}>

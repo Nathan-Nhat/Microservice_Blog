@@ -24,7 +24,7 @@ const useStyle = makeStyles({
     root: {
         display: 'flex',
         flexDirection: 'row',
-        marginTop: '2rem'
+        marginTop: '2rem',
     },
     main: {
         padding: '2rem',

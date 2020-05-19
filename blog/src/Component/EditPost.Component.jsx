@@ -90,17 +90,20 @@ const EditPostComponent = () => {
             [name]: value
         })
     }
-   React.useEffect(() => {
-        if (state.tag === '') return
+    React.useEffect(() => {
         clearTimeout(timeout)
-        timeout = setTimeout(() => {
-            if (state.tag !== '') {
+        if (state.tag === '') {
+            setHint({...hint, tags: []})
+        } else {
+            timeout = setTimeout(() => {
+                console.log(state.tag)
                 get_data(URL_POST_SERVICE + '/tags', {query_tag: state.tag}, false)
                     .then(res => setHint({
+                        ...hint,
                         tags: res.data.tags
                     }))
-            }
-        }, 0)
+            }, 2000)
+        }
     }, [state.tag])
     const dispatch = useDispatch()
     const {isAuthenticated, id} = useSelector(state => state.AuthenReducer)
@@ -209,7 +212,7 @@ const EditPostComponent = () => {
                                         width: '100%',
                                         zIndex: 999,
                                         position: 'absolute',
-                                        backgroundColor: 'white',
+                                        backgroundColor: '#dedede',
                                         display: 'flex',
                                         flexDirection: 'column',
                                     }}>
