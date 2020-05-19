@@ -91,7 +91,7 @@ const useStyle = makeStyles({
         flexDirection: 'row',
     },
     writer: {
-        fontSize: '0.8rem',
+        fontSize: '0.9rem',
         color: 'blue',
         textDecoration: "None",
         lineHeight: '2.1rem',

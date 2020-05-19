@@ -10,6 +10,7 @@ from flask_cors import cross_origin
 from app.helper.Connection import get_connection
 from app.helper.ServiceURL import ServiceURL
 from app.helper.MailSender import MailSender
+from app.model.user_model import confirm
 
 
 @auth.route('/sign_up', methods=['POST'])
@@ -122,3 +123,41 @@ def verify_login():
         'user_name': resp.json().get('name'),
         'user_email': resp.json().get('email')
     }), 200
+
+
+@auth.route('/reset_password', methods=['POST'])
+def reset_password():
+    email = request.get_json().get('email')
+    if email is None:
+        return jsonify({'message': 'Not found email'}), 404
+    user = User.query.filter_by(email=email).first()
+    if user is None:
+        return jsonify({'message': 'Not found user'}), 404
+    data = {
+        'user_email': email,
+        'user_id': user.id,
+        'user_name': user.username
+    }
+    mail_sender = MailSender(exchange='mail_service', routing_key='forgot_password.reset', data=data)
+    mail_sender.send()
+    return jsonify({'message': 'An email is sent to your mail. Please check'}), 200
+
+
+@auth.route('/change_password', methods=['POST'])
+def confirm_token_reset_pass():
+    token = request.get_json().get('token')
+    user_id = request.get_json().get('user_id')
+    password = request.get_json().get('password')
+    if token is None:
+        return jsonify({'message': 'Invalid token'}), 403
+    if not password_validation(password):
+        return jsonify({'message': 'Password is Invalid'}), 404
+    user = User.query.filter_by(id=user_id).first()
+    if user is None and not confirm(user, token):
+        return jsonify({'message': 'There was an error when confirming user'}), 403
+    user.password = request.get_json().get('password')
+    db.session.add(user)
+    db.session.commit()
+    return jsonify({
+        'message': 'Change success'
+    })

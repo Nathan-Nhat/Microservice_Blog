@@ -8,6 +8,7 @@ import ProfilePage from "../Pages/ProfilePage";
 import SinglePostPage from "../Pages/SinglePostPage";
 import SearchPage from "../Pages/SearchPage";
 import TagFollowPage from '../Pages/TagFollowPage'
+import ChangePasswordPage from '../Pages/ChangePasswordPage'
 const useStyle = makeStyles({
     container: {
         width: "70%",
@@ -28,6 +29,7 @@ const MainComponent = () => {
                 <Route path='/post/:post_id' component={SinglePostPage}/>
                 <Route path={'/search'} component={SearchPage} />
                 <Route path={'/tag/:tag_id'} component={TagFollowPage} />
+                <Route path={'/change_password'} component={ChangePasswordPage} />
             </Switch>
 
         </div>

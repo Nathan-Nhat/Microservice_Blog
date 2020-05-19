@@ -3,13 +3,11 @@ import {useLocation} from 'react-router-dom'
 import queryString from 'query-string'
 import {Box, CircularProgress, Divider, Input, InputAdornment, Typography} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
-import SearchIcon from "@material-ui/icons/Search";
 import SubdirectoryArrowRightRoundedIcon from '@material-ui/icons/SubdirectoryArrowRightRounded';
 import {get_data} from "../ApiCall";
 import {URL_POST_SERVICE} from "../Constants";
 import PostComponent from "../Component/Post/Post.Component";
 import Pagination from "@material-ui/lab/Pagination";
-import {Paper} from "@material-ui/core";
 import {HtmlTooltip} from "../Component/Appbar.Component";
 
 const covert_to_search = (text, page) => {
