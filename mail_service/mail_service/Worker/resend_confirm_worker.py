@@ -2,40 +2,39 @@ import smtplib, ssl
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from config import Config
-import pika
 import json
 from mail_service.Worker import Worker
 
 
-class ForgotPassWorker(Worker):
+class ResendConfirmWorker(Worker):
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs, callback=forgot_pass_callback)
+        super().__init__(*args, **kwargs, callback=resend_confirm_callback)
 
 
-def forgot_pass_callback(ch, method, properties, body):
+def resend_confirm_callback(ch, method, properties, body):
     data = json.loads(body)
     sender_email = Config.EMAIL_SENDER
     receiver_email = data.get('user_email')
     password = Config.EMAIL_PASSWORD
 
     message = MIMEMultipart("alternative")
-    message["Subject"] = "Password reset"
+    message["Subject"] = "Confirm user"
     message["From"] = 'SUPPORT BLOG TTN'
     message["To"] = receiver_email
 
     # Create the plain-text and HTML version of your message
     text = f"""\
         Hello {data.get('user_name')},
-        This email to perform that you want to reset your password. Please click in
+        This email to perform that you need to confirm your account. Please click in
         the address bellow to continue
-        http://google.com
+        http://localhost:5000/api/v1/auth/confirm?token={data.get('token')}&user_id={data.get('user_id')}
     """
     html = f"""\
     <html>
       <body>
         <h2>Hello {data.get('user_name')},</h2>
-        <p>This email to perform that you want to reset your password. Please 
-        click <a href = 'http://localhost:3000/change_password?token={data.get('token')}&user_id={data.get('user_id')}'>
+        <p>This email to perform that you want to confirm your account. Please 
+        click <a href = 'http://localhost:5000/api/v1/auth/confirm?token={data.get('token')}&user_id={data.get('user_id')}'>
             HERE</a> to continue </p>
       </body>
     </html>

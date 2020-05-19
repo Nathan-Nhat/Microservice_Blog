@@ -26,6 +26,3 @@ class MailSender(object):
         self.channel.basic_publish(exchange=self.exchange, routing_key=self.routing_key, body=data)
         self.connection.close()
 
-    def __del__(self):
-        if self.connection:
-            self.connection.close()

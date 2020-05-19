@@ -153,7 +153,7 @@ def confirm_token_reset_pass():
     if not password_validation(password):
         return jsonify({'message': 'Password is Invalid'}), 404
     user = User.query.filter_by(id=user_id).first()
-    if user is None and not confirm(user, token):
+    if user is None or not confirm(user, token):
         return jsonify({'message': 'There was an error when confirming user'}), 403
     user.password = request.get_json().get('password')
     db.session.add(user)
