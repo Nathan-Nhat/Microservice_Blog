@@ -1,0 +1,31 @@
+version: '3.0'
+services:
+  auth_service:
+    image: auth_service:tag
+    build:
+        context: ./auth_service
+        dockerfile: Dockerfile
+    container_name : auth_service
+    ports:
+    - "5000:5000"
+  profile_service:
+    image: profile_service:tag
+    build:
+        context: ./profile_service
+        dockerfile: Dockerfile
+    container_name : profile_service
+    ports:
+    - "5001:5001"
+  post_service:
+    image: post_service:tag
+    build:
+        context: ./post_service
+        dockerfile: Dockerfile
+    container_name : post_service
+    ports:
+    - "5002:5002"
+  mysql:
+    image: mysql
+    environment:
+        - DATABASE_HOST=mysql
+        - MYSQL_ROOT_PASSWORD=Wakerjacob@90
