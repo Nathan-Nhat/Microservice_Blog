@@ -3,7 +3,7 @@ import pika
 
 class Worker(object):
     def __init__(self, exchange=None, queue=None, routing_key=None, callback=None):
-        self.connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
+        self.connection = pika.BlockingConnection(pika.ConnectionParameters(host='rabbitmq'))
         self.channel = self.connection.channel()
         self.callback = callback
         self.channel.exchange_declare(exchange=exchange, exchange_type='topic')

@@ -23,7 +23,7 @@ const useStyle = makeStyles({
     tagImage: {
         fontSize: '4rem',
         color: 'red',
-        paddingRight: '3rem',
+        marginRight: '3rem',
         width: '4rem',
         height: '4rem',
         borderRadius: '50%'

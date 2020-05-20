@@ -31,7 +31,7 @@ const useStyle = makeStyles({
         '&:hover': {
             boxShadow: 'none'
         },
-        paddingBottom: '1rem'
+        marginBottom: '1rem'
     },
 })
 const LoginPage = () => {

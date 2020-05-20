@@ -25,7 +25,7 @@ const useStyles = makeStyles((theme) => ({
         flexGrow: 1,
     },
     link: {
-        paddingRight: "1rem"
+        marginRight: "1rem"
     },
     search: {
         marginLeft : '2rem',

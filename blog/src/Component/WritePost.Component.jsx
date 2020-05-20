@@ -109,6 +109,10 @@ const WritePostComponent = () => {
     const dispatch = useDispatch()
     const {isAuthenticated} = useSelector(state => state.AuthenReducer)
     const handleSave = () => {
+        if (state.tags.length === 0){
+            dispatch(open_notification({message:'You need to put at least 1 tags.', type : 'error'}))
+            return;
+        }
         setState({...state, isLoading: true})
         const data = {
             title: state.title,
@@ -244,7 +248,7 @@ const WritePostComponent = () => {
                                             border: '1px solid red',
                                             padding: '0.3rem',
                                             borderRadius: '0.3rem',
-                                            paddingLeft: '0.3rem'
+                                            marginRight: '0.3rem'
                                         }}>
                                             <Typography style={{
                                                 fontSize: '0.8rem',

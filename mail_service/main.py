@@ -30,3 +30,4 @@ if __name__ == '__main__':
     worker2.start()
     worker3.start()
     worker4.start()
+    print('Running mail service')

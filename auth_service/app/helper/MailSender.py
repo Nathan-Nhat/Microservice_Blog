@@ -9,7 +9,7 @@ class MailSender(object):
         self.user_id = data.get('user_id')
         self.user_name = data.get('user_name')
         self.token = generate_confirmation_token(self.user_id)
-        self.connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
+        self.connection = pika.BlockingConnection(pika.ConnectionParameters(host='rabbitmq'))
         self.channel = self.connection.channel()
         self.exchange = exchange
         self.routing_key = routing_key

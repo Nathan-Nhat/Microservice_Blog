@@ -1,31 +1,69 @@
 version: '3.0'
 services:
+  rabbitmq:
+    image: rabbitmq:3.8.3
+    container_name: rabbitmq
   auth_service:
-    image: auth_service:tag
+    image: auth_service:1.0
     build:
         context: ./auth_service
         dockerfile: Dockerfile
     container_name : auth_service
     ports:
     - "5000:5000"
+    depends_on:
+    - mysql
+    - rabbitmq
+    volumes:
+    - ./auth_service:/usr/src/app
   profile_service:
-    image: profile_service:tag
+    image: profile_service:1.0
     build:
         context: ./profile_service
         dockerfile: Dockerfile
     container_name : profile_service
     ports:
     - "5001:5001"
+    depends_on:
+    - mysql
+    volumes:
+    - ./profile_service:/usr/src/app
   post_service:
-    image: post_service:tag
+    image: post_service:1.0
     build:
         context: ./post_service
         dockerfile: Dockerfile
     container_name : post_service
     ports:
     - "5002:5002"
+    depends_on:
+    - mysql
+    volumes:
+    - ./post_service:/usr/src/app
+  mail_service:
+    image: mail_service:1.0
+    build:
+        context: ./mail_service
+        dockerfile: Dockerfile
+    container_name : mail_service
+    depends_on:
+    - rabbitmq
   mysql:
-    image: mysql
+    image: mysql:8.0.20
+    container_name: mysql
+    command: "--default-authentication-plugin=mysql_native_password"
     environment:
-        - DATABASE_HOST=mysql
-        - MYSQL_ROOT_PASSWORD=Wakerjacob@90
+    - MYSQL_ROOT_PASSWORD=Wakerjacob@90
+    volumes:
+    - ./mysql/data:/var/lib/mysql
+  front_end:
+    image: front_end:1.0
+    build:
+        context: ./blog
+        dockerfile: Dockerfile
+    container_name : front_end
+    stdin_open: true
+    ports:
+    - "3000:3000"
+    volumes:
+    - ./blog:/app
