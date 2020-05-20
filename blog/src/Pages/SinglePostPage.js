@@ -25,7 +25,7 @@ const useStyle = makeStyles({
     root: {
         display: 'flex',
         flexDirection: 'row',
-        marginTop: props => props.isMobile? '1rem' : '2rem',
+        paddingTop: props => props.isMobile? '1rem' : '2rem',
     },
     main: {
         padding: props => props.isMobile ? '1rem' : '2rem',
@@ -40,13 +40,13 @@ const useStyle = makeStyles({
     },
     tagsContainer: {
         textAlign: "left",
-        marginTop: "2rem",
+        paddingTop: "2rem",
     },
     tags: {
         fontSize: '0.8rem',
         backgroundColor: '#dee3e0',
         borderRadius: "0.2rem",
-        marginRight: "0.8rem",
+        paddingRight: "0.8rem",
         padding: '0.4rem',
         opacity: "70%",
         '&:hover': {
@@ -57,7 +57,7 @@ const useStyle = makeStyles({
     author: {
         display: "flex",
         flexDirection: props => props.isMobile ? 'column' : "row",
-        marginBottom: '3rem'
+        paddingBottom: '3rem'
     },
     image: {
         width: '3rem',
@@ -69,7 +69,7 @@ const useStyle = makeStyles({
     },
 
     body: {
-        marginTop: "2.5rem",
+        paddingTop: "2.5rem",
         textAlign: "left"
     },
     authorButton: {
@@ -94,12 +94,12 @@ const useStyle = makeStyles({
     followGrp: {
         display: 'flex',
         flexDirection: 'row',
-        marginRight: '1rem'
+        paddingRight: '1rem'
     },
     datePost: {
         opacity: "50%",
         textAlign: props => props.isMobile? 'left' : "right",
-        marginTop: props => props.isMobile? '1rem' : "0"
+        paddingTop: props => props.isMobile? '1rem' : "0"
     }
 })
 const SinglePostPage = () => {
@@ -229,11 +229,11 @@ const SinglePostPage = () => {
 
                                     <Box style={{display: 'flex', flexDirection: 'row', opacity: '50%'}}>
                                         <Box className={classes.followGrp}>
-                                            <GroupAddRoundedIcon style={{marginRight: '0.2rem'}}/>
+                                            <GroupAddRoundedIcon style={{paddingRight: '0.2rem'}}/>
                                             <Typography>{state.data.author.number_follower}</Typography>
                                         </Box>
                                         <Box className={classes.followGrp}>
-                                            <CreateRoundedIcon style={{marginRight: '0.2rem'}}/>
+                                            <CreateRoundedIcon style={{paddingRight: '0.2rem'}}/>
                                             <Typography>{state.data.author.number_posts}</Typography>
                                         </Box>
                                     </Box>
@@ -247,7 +247,7 @@ const SinglePostPage = () => {
                                         className={classes.datePost}>{state.data.date_post}</Typography>
                                     <div style={{display: 'flex', flexDirection: "row", opacity: "50%"}}>
                                         {isMobile? null : <div style={{flexGrow: 1}}></div>}
-                                        <VisibilityIcon style={{marginRight: "0.3rem"}}/>
+                                        <VisibilityIcon style={{paddingRight: "0.3rem"}}/>
                                         <Typography>{state.data.num_views}</Typography>
                                     </div>
                                 </div>

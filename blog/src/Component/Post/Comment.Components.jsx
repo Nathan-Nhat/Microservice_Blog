@@ -14,7 +14,7 @@ const useStyle = makeStyles({
         display: 'flex',
         flexDirection: 'column',
         '&>*': {
-            marginTop: '1rem'
+            paddingTop: '1rem'
         }
     },
     text_area: {
@@ -44,7 +44,7 @@ const useStyle = makeStyles({
         borderRadius: "50%",
     },
     textComment: {
-        marginLeft: '1rem',
+        paddingLeft: '1rem',
         width: '100%',
     },
     titleComment: {

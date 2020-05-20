@@ -10,7 +10,6 @@ p {
 
 blockquote {
     color: #666;
-    margin: 0;
     padding-left: 3em;
     border-left: 0.5em #eee solid;
 }
@@ -44,7 +43,7 @@ td {
 }
 
 .markdown_write > p img {
-    width: 80%;
+    width: 100%;
     display: block;
     margin-left: auto;
     margin-right: auto;

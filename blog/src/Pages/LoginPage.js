@@ -39,7 +39,7 @@ const useStyle = makeStyles(theme => ({
     title: {
         width: '100%',
         textAlign: 'center',
-        marginBottom: '1rem'
+        paddingBottom: '1rem'
     },
     moreOption: {
         display: 'flex',
@@ -64,7 +64,7 @@ const useStyle = makeStyles(theme => ({
         fontSize: '0.8rem',
         padding: '0.6rem',
         borderRadius: '1rem',
-        marginBottom: '1rem',
+        paddingBottom: '1rem',
         wordWrap: 'break'
     },
     responseFail: {
@@ -74,7 +74,7 @@ const useStyle = makeStyles(theme => ({
         fontSize: '0.8rem',
         padding: '0.6rem',
         borderRadius: '1rem',
-        marginBottom: '1rem'
+        paddingBottom: '1rem'
     }
 }))
 
@@ -230,7 +230,7 @@ const LoginPage = () => {
                                     <Button style={{width: '100%', marginTop: '1rem'}} color='primary'
                                             variant={'contained'} className={classes.buttonLogin}
                                             onClick={handleSendPass}>
-                                        <SendIcon style={{marginRight: '1rem'}}/>
+                                        <SendIcon style={{paddingRight: '1rem'}}/>
                                         Send
                                     </Button>
                                 </div>
@@ -272,7 +272,7 @@ const LoginPage = () => {
                                     <Button style={{width: '100%', marginTop: '1rem'}} color='primary'
                                             variant={'contained'} className={classes.buttonLogin}
                                             onClick={handleSendConfirm}>
-                                        <SendIcon style={{marginRight: '1rem'}}/>
+                                        <SendIcon style={{paddingRight: '1rem'}}/>
                                         Send
                                     </Button>
                                 </div>

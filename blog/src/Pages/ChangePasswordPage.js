@@ -14,17 +14,17 @@ const useStyle = makeStyles({
     container: {
         display: "flex",
         flexDirection: "column",
-        margin: "6rem auto",
+        padding: "6rem auto",
         width: "100%",
         maxWidth: '25rem',
         '&>*': {
-            marginTop: '1rem'
+            paddingTop: '1rem'
         }
     },
     title: {
         width: '100%',
         textAlign: 'center',
-        marginBottom: '1rem'
+        paddingBottom: '1rem'
     },
 })
 const ChangePasswordPage = () => {

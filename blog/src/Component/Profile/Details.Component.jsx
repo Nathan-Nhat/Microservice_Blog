@@ -10,37 +10,38 @@ import {useSelector, useDispatch} from "react-redux";
 import {open_profile_popup} from "../../redux/Actions/ActionObjects/ActionsObjects";
 import FormDialog from "./EditDialog.Component";
 import FollowerComponents from "./Follower.Components";
+import {useMediaQuery} from "@material-ui/core";
+import {theme} from "../../Themes";
 
 const useStyle = makeStyles({
     rootContainer: {
-        marginTop: '2rem'
+        paddingTop: '2rem'
     },
     container: {
         display: "flex",
-        flexDirection: "row",
-        padding: '2rem'
+        flexDirection: "column",
+        padding: props => props.isMobile ? '1rem' : '2rem'
     },
     image: {
-        width: "15rem",
-        height: "15rem",
+        width: "4.5rem",
+        height: "4.5rem",
         borderRadius: "0.5rem",
-        margin: 'auto'
+        margin: '0 1rem'
     },
     boxDetails: {
-        marginLeft: "2rem",
-        display : 'flex',
-        flexDirection : 'column'
+        paddingLeft: "2rem",
+        display: 'flex',
+        flexDirection: 'column'
     },
     nameText: {
         fontWeight: "bold",
-        // fontSize :"3rem",
-        marginBottom: '1rem'
+        fontSize: "1rem",
     },
     element: {
-        marginTop: "1rem",
+        paddingTop: "1rem",
     },
     author: {
-        marginTop: "1rem",
+        paddingTop: "1rem",
         fontStyle: 'italic',
         fontSize: '0.8rem'
     },
@@ -60,12 +61,13 @@ const useStyle = makeStyles({
     },
     imageContainer: {
         display: 'flex',
-        flexDirection: 'column'
+        flexDirection: props => props.isMobile ? 'column' : 'row',
+        // alignSelf: 'flex-start'
     },
     followContainer: {
+        width: '100%',
         display: 'flex',
         flexDirection: 'row',
-        marginTop: '2rem'
     },
     titleContainer: {
         display: 'flex',
@@ -77,12 +79,19 @@ const useStyle = makeStyles({
         display: 'inline-block',
         marginLeft: '1rem',
         alignSelf: 'flex-start',
-        marginTop: '0.5rem',
         boxShadow: 'none'
     },
+    left: {
+        width: props => props.isMobile ? '100%' : '50%'
+    },
+    right: {
+        marginTop : props => props.isMobile? '1rem' : '0',
+        width: props => props.isMobile ? '100%' : '50%'
+    }
 })
 const DetailsComponent = ({user_id}) => {
-    const classes = useStyle()
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
+    const classes = useStyle({isMobile})
     const dispatch = useDispatch()
     const [profile, setProfile] = useState({
         isLoading: true,
@@ -154,69 +163,82 @@ const DetailsComponent = ({user_id}) => {
                 <div>
                     <div className={classes.container}>
                         <div className={classes.imageContainer}>
-                            <img className={classes.image} src={profile.avatar_hash} alt={''}/>
-                            <div className={classes.followContainer}>
-                                <div className={classes.followText}>
-                                    <Typography style={{fontSize: '0.7rem'}}>FOLLOWERS</Typography>
-                                    <Typography style={{
-                                        fontSize: '1.5rem',
-                                        color: "green"
-                                    }}>{profile.number_follower}</Typography>
+                            <div className={classes.left}>
+                                <div style={{
+                                    display: 'flex',
+                                    flexDirection: 'row',
+                                }}>
+                                    <img className={classes.image} src={profile.avatar_hash} alt={''}/>
+                                    <div>
+                                        <div className={classes.titleContainer}>
+                                            <Typography align='left'
+                                                        className={classes.nameText}>{profile.fullName}</Typography>
+                                            {
+                                                (!isAuthenticated || parseInt(user_id) === id) ? <div></div> :
+                                                    profile.is_followed ?
+                                                        <Button variant={'contained'}
+                                                                className={classes.followBtnProfile}
+                                                                color={"primary"}
+                                                                onClick={handleUnFollow}>Following</Button> :
+                                                        <Button variant={'outlined'} color='primary'
+                                                                className={classes.followBtnProfile}
+                                                                onClick={handleFollow}>Follow</Button>
+                                            }
+                                        </div>
+                                        <div className={classes.field}>
+                                            <EmailRoundedIcon style={{paddingRight: "1rem"}}/>
+                                            <Typography align='left'>{profile.email}</Typography>
+                                        </div>
+                                        <div className={classes.field}>
+                                            <HomeIcon style={{paddingRight: "1rem"}}/>
+                                            <Typography align='left'><a
+                                                href={`https://www.google.com/maps/place/${profile.address}`}>{profile.address}</a></Typography>
+                                        </div>
+                                    </div>
                                 </div>
-                                <Divider orientation={'vertical'} flexItem/>
-                                <div className={classes.followText}>
-                                    <Typography style={{fontSize: '0.7rem'}}>FOLLOWING</Typography>
-                                    <Typography style={{
-                                        fontSize: '1.5rem',
-                                        color: 'red'
-                                    }}>{profile.number_followed}</Typography>
+                                <div>
+                                    <Typography className={classes.element}
+                                                align='left'>{profile.about_me}</Typography>
+                                    <Typography className={classes.author} align='left'>Member
+                                        since {profile.member_since.substr(0, 10)}</Typography>
+                                    {
+                                        parseInt(user_id) === id ?
+                                            <Button className={classes.button} variant='outlined'
+                                                    onClick={() => dispatch(open_profile_popup())}>Edit
+                                                Profile</Button> :
+                                            <div></div>
+                                    }
                                 </div>
-                                <Divider orientation={'vertical'} flexItem/>
-                                <div className={classes.followText}>
-                                    <Typography style={{fontSize: '0.7rem'}}>POSTS</Typography>
-                                    <Typography style={{fontSize: '1.5rem'}}>{profile.number_posts}</Typography>
+                            </div>
+                            <div className={classes.right}>
+                                <div className={classes.followContainer}>
+                                    <div className={classes.followText}>
+                                        <Typography style={{fontSize: '0.7rem'}}>FOLLOWERS</Typography>
+                                        <Typography style={{
+                                            fontSize: '1.5rem',
+                                            color: "green"
+                                        }}>{profile.number_follower}</Typography>
+                                    </div>
+                                    <Divider orientation={'vertical'} flexItem/>
+                                    <div className={classes.followText}>
+                                        <Typography style={{fontSize: '0.7rem'}}>FOLLOWING</Typography>
+                                        <Typography style={{
+                                            fontSize: '1.5rem',
+                                            color: 'red'
+                                        }}>{profile.number_followed}</Typography>
+                                    </div>
+                                    <Divider orientation={'vertical'} flexItem/>
+                                    <div className={classes.followText}>
+                                        <Typography style={{fontSize: '0.7rem'}}>POSTS</Typography>
+                                        <Typography style={{fontSize: '1.5rem'}}>{profile.number_posts}</Typography>
+                                    </div>
                                 </div>
+                                <FollowerComponents user_id={user_id}/>
                             </div>
                         </div>
-                        <Box className={classes.boxDetails}>
-                            <div className={classes.titleContainer}>
-                                <Typography variant='h4' align='left'
-                                            className={classes.nameText}>{profile.fullName}</Typography>
-                                {
-                                    (!isAuthenticated || parseInt(user_id) === id) ? <div></div> :
-                                        profile.is_followed ?
-                                            <Button variant={'contained'} className={classes.followBtnProfile}
-                                                    color={"primary"}
-                                                    onClick={handleUnFollow}>Following</Button> :
-                                            <Button variant={'outlined'} color='primary'
-                                                    className={classes.followBtnProfile}
-                                                    onClick={handleFollow}>Follow</Button>
-                                }
-                            </div>
-                            <div className={classes.field}>
-                                <EmailRoundedIcon style={{marginRight: "1rem"}}/>
-                                <Typography align='left'>{profile.email}</Typography>
-                            </div>
-                            <div className={classes.field}>
-                                <HomeIcon style={{marginRight: "1rem"}}/>
-                                <Typography align='left'><a
-                                    href={`https://www.google.com/maps/place/${profile.address}`}>{profile.address}</a></Typography>
-                            </div>
-
-                            <Typography className={classes.element} align='left'>{profile.about_me}</Typography>
-                            <Typography className={classes.author} align='left'>Member
-                                since {profile.member_since.substr(0, 10)}</Typography>
-                            {
-                                parseInt(user_id) === id ?
-                                    <Button className={classes.button} variant='outlined'
-                                            onClick={() => dispatch(open_profile_popup())}>Edit Profile</Button> : <div></div>
-                            }
-                            <Divider style={{marginTop :"1rem"}}/>
-                            <FollowerComponents user_id={user_id}/>
-                        </Box>
+                        <Divider style={{marginTop: "1rem"}}/>
                         <FormDialog data={profile} profileChange={changeProfile}/>
                     </div>
-                    <Divider style={{marginTop: "2rem"}}/>
                 </div>
             }
         </div>

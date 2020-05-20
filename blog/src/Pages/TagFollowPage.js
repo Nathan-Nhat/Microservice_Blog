@@ -12,18 +12,18 @@ import {useHistory} from 'react-router-dom'
 
 const useStyle = makeStyles({
     root: {
-        margin: '3rem 0',
+        padding:"3rem 1rem 1rem 1rem"
 
     },
     tagsContainer: {
         display: 'flex',
         flexDirection: 'row',
-        marginBottom: '2rem'
+        paddingBottom: '2rem'
     },
     tagImage: {
         fontSize: '4rem',
         color: 'red',
-        marginRight: '3rem',
+        paddingRight: '3rem',
         width: '4rem',
         height: '4rem',
         borderRadius: '50%'

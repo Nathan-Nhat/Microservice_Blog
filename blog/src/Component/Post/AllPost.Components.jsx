@@ -57,7 +57,7 @@ const AllPostComponents = () => {
             {
                 state.isLoading === true ?
                     <div style={{height: '100vh'}}>
-                        <CircularProgress style={{marginTop: '3rem'}}/>
+                        <CircularProgress style={{padding: '3rem'}}/>
                     </div>
                     :
                     <Box style={{textAlign: 'center'}}>
@@ -73,7 +73,7 @@ const AllPostComponents = () => {
                         </Box>
                         <Box>
                             <Pagination page={state.page} count={state.total_pages} variant="outlined"
-                                        style={{width: '350px', margin: " 2rem auto"}}
+                                        style={{width: '350px', padding: " 2rem auto"}}
                                         color="primary" onChange={handleChange}/>
                         </Box>
                     </Box>

@@ -66,7 +66,7 @@ def sign_up_user():
 
 
 @auth.route('/authenticate', methods=['POST'])
-@cross_origin(origins=[ServiceURL.FRONT_END_SERVER])
+@cross_origin(origins=[ServiceURL.FRONT_END_SERVER, ServiceURL.FRONT_END_SERVER_DEV])
 def authenticate():
     data = request.get_json()
     username = data.get('username')
@@ -93,7 +93,7 @@ def authenticate():
 
 
 @auth.route('/verify_login', methods=['GET'])
-@cross_origin(origins=[ServiceURL.FRONT_END_SERVER])
+@cross_origin(origins=[ServiceURL.FRONT_END_SERVER, ServiceURL.FRONT_END_SERVER_DEV])
 def verify_login():
     token = request.args.get('token')
     user_id = request.args.get('user_id')

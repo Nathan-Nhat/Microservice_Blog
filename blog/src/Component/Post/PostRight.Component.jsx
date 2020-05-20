@@ -25,7 +25,7 @@ const useStyle = makeStyles({
     },
     header1: {
         fontSize :"0.9rem",
-        marginTop: '0.5rem',
+        paddingTop: '0.5rem',
         '&:hover': {
             cursor: 'pointer',
             color: 'blue'
@@ -102,7 +102,7 @@ const PostRightComponent = ({parentData, post_id}) => {
                                     color={'primary'} onClick={handleLike}>Like</Button>
             }
             <Divider style={{marginTop: '1rem'}}></Divider>
-            <Typography style={{margin: '1rem 0 0', fontWeight: 'bold'}}>Table of contents</Typography>
+            <Typography style={{padding: '1rem 0 0', fontWeight: 'bold'}}>Table of contents</Typography>
             <div className={classes.bodyContent}>
                 {
                     parentData.list_contents.map((item, index) => {

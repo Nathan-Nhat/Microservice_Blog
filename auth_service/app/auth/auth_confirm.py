@@ -9,7 +9,7 @@ from flask_cors import cross_origin
 from app.helper.MailSender import MailSender
 import json
 from flask import redirect
-
+from app.helper.ServiceURL import ServiceURL
 
 @auth.route('/confirm', methods=['GET'])
 def confirm_user():
@@ -17,15 +17,14 @@ def confirm_user():
     token = request.args.get('token')
     user = User.query.filter_by(id=user_id).first()
     if user.confirmed:
-        return redirect(f'http://localhost:3000/login?type=0')
+        return redirect(f'{ServiceURL.FRONT_END_SERVER_DEV}/login?type=0')
     if user is None or not confirm(user, token):
         message = 'There was an error when confirming user!'
-        return redirect(f'http://localhost:3000/login?type=1')
+        return redirect(f'{ServiceURL.FRONT_END_SERVER_DEV}/login?type=1')
     user.confirmed = True
     db.session.add(user)
     db.session.commit()
-    message = 'Your account have been confirmed. Please login!'
-    return redirect(f'http://localhost:3000/login?type=0')
+    return redirect(f'{ServiceURL.FRONT_END_SERVER_DEV}/login?type=0')
 
 
 @auth.route('/re_confirm')  # argument :email

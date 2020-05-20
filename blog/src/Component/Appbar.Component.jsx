@@ -21,17 +21,15 @@ const useStyles = makeStyles((theme) => ({
         maxWidth: "1378px",
         margin: "auto"
     },
-    menuButton: {
-        marginRight: theme.spacing(2),
-    },
     title: {
         flexGrow: 1,
     },
     link: {
-        marginRight: "1rem"
+        paddingRight: "1rem"
     },
     search: {
-        marginLeft: '0.7rem',
+        marginLeft : '2rem',
+        paddingLeft: '0.7rem',
         borderRadius: '2rem',
         color: 'white',
         backgroundColor: 'rgba(255, 255, 255, .1)',
@@ -135,7 +133,7 @@ const AppbarComponent = () => {
                            onChange={handleChange}
                            name="search" value={state.search}
                            startAdornment={(<InputAdornment>
-                               <SearchIcon style={{marginLeft: '0.5rem', marginRight: '0.5rem', color: 'white'}}/>
+                               <SearchIcon style={{paddingLeft: '0.5rem', paddingRight: '0.5rem', color: 'white'}}/>
                            </InputAdornment>)}
                     />
                 </HtmlTooltip>

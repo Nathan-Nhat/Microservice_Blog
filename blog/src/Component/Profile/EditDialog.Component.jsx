@@ -26,7 +26,7 @@ const useStyle = makeStyles({
     },
     main: {
         '&>*': {
-            marginBottom: '1rem'
+            paddingBottom: '1rem'
         }
     }
 })

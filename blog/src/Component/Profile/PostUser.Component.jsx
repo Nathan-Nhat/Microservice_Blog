@@ -39,7 +39,7 @@ const PostUserComponent = ({user_id}) => {
                 state.isLoading === true ?
                     null
                     :
-                    <Box style={{textAlign: 'center',  margin: "2rem auto"}}>
+                    <Box style={{textAlign: 'center',  padding: "0 1rem 1rem"}}>
                         <Box>
                             {
                                 state.posts.map((item, index) => {
@@ -49,7 +49,7 @@ const PostUserComponent = ({user_id}) => {
                         </Box>
                         <Box>
                             <Pagination page={state.page} count={state.total_pages} variant="outlined"
-                                        style={{width: '350px', margin: " 2rem auto"}}
+                                        style={{width: '350px', padding: " 2rem auto"}}
                                         color="primary" onChange={handleChange}/>
                         </Box>
                     </Box>

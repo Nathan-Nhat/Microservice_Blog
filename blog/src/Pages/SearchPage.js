@@ -157,7 +157,7 @@ const SearchPage = () => {
                            name="queryWord" value={state.queryWord}
                            placeholder={'Enter keyword'}
                            startAdornment={(<InputAdornment>
-                               <SubdirectoryArrowRightRoundedIcon style={{marginRight: '1rem', opacity: '50%'}}/>
+                               <SubdirectoryArrowRightRoundedIcon style={{paddingRight: '1rem', opacity: '50%'}}/>
                            </InputAdornment>)}
                     />
                 </HtmlTooltip>
@@ -166,7 +166,7 @@ const SearchPage = () => {
                         state.stateLoading === stateLoading.INIT ? <div></div> :
                             state.stateLoading === stateLoading.LOADING ?
                                 <div style={{height: '100vh'}}>
-                                    <CircularProgress style={{marginTop: '3rem'}}/>
+                                    <CircularProgress style={{paddingTop: '3rem'}}/>
                                 </div>
                                 :
                                 <Box style={{textAlign: 'center'}}>
@@ -182,7 +182,7 @@ const SearchPage = () => {
                                     </Box>
                                     <Box>
                                         <Pagination page={state.page} count={state.total_pages} variant="outlined"
-                                                    style={{width: '350px', margin: " 2rem auto"}}
+                                                    style={{width: '350px', padding: " 2rem auto"}}
                                                     color="primary" onChange={handlePageChange}/>
                                     </Box>
                                 </Box>

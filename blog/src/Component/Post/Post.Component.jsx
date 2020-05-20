@@ -37,26 +37,26 @@ const useStyle = makeStyles({
     },
     commentContainer: {
         display: "flex",
-        marginTop: '0.5rem',
+        paddingTop: '0.5rem',
         flexDirection: 'row',
     },
     elementComment: {
         display: "flex",
         flexDirection: "row",
-        marginRight: "1rem",
-        opacity: '50%'
+        paddingRight: "1rem",
+        opacity: '50%',
     },
     numComment: {
-        fontSize: "1rem",
-        marginLeft: '0.2rem'
+        fontSize: props => props.isMobile?'0.8rem' : "1rem",
+        paddingLeft: '0.2rem',
     },
     iconComment: {
-        fontSize: "1rem",
+        fontSize: props => props.isMobile?'0.8rem' : "1rem",
         margin: 'auto',
     },
     containerTitle: {
         textAlign: "left",
-        marginTop : '0.2rem'
+        paddingTop: '0.2rem'
     },
     title: {
         // fontWeight: "bold",
@@ -68,7 +68,7 @@ const useStyle = makeStyles({
         }
     },
     tagsContainer: {
-        marginTop: '0.5rem',
+        paddingTop: '0.5rem',
         display: "flex",
         flexDirection: 'row',
     },
@@ -89,20 +89,20 @@ const useStyle = makeStyles({
     },
     author: {
         display: 'flex',
-        flexDirection: props => props.isMobile?'column' : 'row',
+        flexDirection: props => props.isMobile ? 'column' : 'row',
     },
     writer: {
         fontSize: '0.9rem',
         color: 'blue',
         textDecoration: "None",
-        marginRight: '1rem',
+        paddingRight: '1rem',
         '&:hover': {
             cursor: 'pointer'
         }
     },
-    namecontainer : {
-        display : 'flex',
-        flexDirection : 'row'
+    namecontainer: {
+        display: 'flex',
+        flexDirection: 'row'
     }
 
 })
@@ -136,11 +136,11 @@ const PostComponent = ({post, user}) => {
                                              to={`/profile/${user.user_id}`}>{user.name}</NavLink>
                                     {isAuthenticated && id === user.user_id ?
                                         <Box>
-                                            <IconButton style={{padding: '0rem', marginRight: '0.5rem'}}
+                                            <IconButton style={{padding: '0rem', paddingRight: '0.5rem'}}
                                                         onClick={handleEdit}>
                                                 <EditRoundedIcon style={{fontSize: '1rem', color: green[500]}}/>
                                             </IconButton>
-                                            <IconButton style={{padding: '0rem', marginRight: '0.5rem'}}
+                                            <IconButton style={{padding: '0rem', paddingRight: '0.5rem'}}
                                                         onClick={handleDelete}>
                                                 <DeleteForeverRoundedIcon color='secondary'
                                                                           style={{fontSize: '1rem'}}/>
@@ -153,7 +153,7 @@ const PostComponent = ({post, user}) => {
                                 }
                                 <Typography style={{
                                     fontSize: '0.8rem',
-                                    opacity : '50%'
+                                    opacity: '50%'
                                 }}>{moment(post.date_post).fromNow()}</Typography>
                             </div>
                             <Box className={classes.containerTitle}>

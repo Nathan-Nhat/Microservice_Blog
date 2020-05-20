@@ -12,7 +12,7 @@ from app.helper.ServiceURL import ServiceURL
 
 
 @profile.route('/user_profile', methods=['GET'])
-@cross_origin(origins=[ServiceURL.FRONT_END_SERVER])
+@cross_origin(origins=[ServiceURL.FRONT_END_SERVER, ServiceURL.FRONT_END_SERVER_DEV])
 def get_user_profile():
     user_id = request.args.get('profile_id')
     my_user_id = request.args.get('my_user_id')
@@ -49,7 +49,7 @@ def post_user_profile():
 
 
 @profile.route('/user_profile', methods=['PUT'])
-@cross_origin(origins=[ServiceURL.FRONT_END_SERVER])
+@cross_origin(origins=[ServiceURL.FRONT_END_SERVER, ServiceURL.FRONT_END_SERVER_DEV])
 @verify_jwt(blueprint=profile, permissions=[Permission.WRITE])
 def put_user_profile(user_id):
     user_details = request.get_json()

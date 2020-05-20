@@ -17,7 +17,7 @@ const useStyle = makeStyles({
         }
     },
     imageContainer: {
-        marginTop: '0.5rem',
+        paddingTop: '0.5rem',
         display: 'inline-grid',
         gridTemplateColumns: 'auto auto auto auto auto auto auto auto auto auto',
         gridColumnGap: '0.7rem',
@@ -52,11 +52,11 @@ const FollowerComponents = ({user_id}) => {
             })
     }, [user_id])
     return (
-        <div style={{marginTop: '1rem'}}>
+        <div style={{paddingTop: '1rem'}}>
             {state.isLoading ? <div></div> :
                 <div>
                     <Typography
-                        style={{marginBottom: "0.2rem", opacity : '70%'}}>{`${state.number_follower} people following ${state.user_name}`}</Typography>
+                        style={{paddingBottom: "0.2rem", opacity : '70%'}}>{`${state.number_follower} people following ${state.user_name}`}</Typography>
                     <div className={classes.imageContainer}>
                         {
                             state.followers.map((item, index) => {

@@ -18,7 +18,7 @@ const useStyle = makeStyles({
     root_container: {
         float: 'left',
         width: "100%",
-        margin: '4rem 0 2rem 0'
+        padding: '4rem 0 2rem 0'
     },
     inputTitle: {
         fontSize: '2rem',
@@ -32,7 +32,7 @@ const useStyle = makeStyles({
     tags: {
         border: 'None',
         width: "100%",
-        margin: '1rem 0',
+        padding: '1rem 0',
         '&:focus': {
             outline: 'None'
         }
@@ -41,7 +41,7 @@ const useStyle = makeStyles({
     bodyContianer: {
         display: "flex",
         flexDirection: 'row',
-        margin: '2rem 0',
+        padding: '2rem 0',
     },
     body_html: {
         fontSize: '1rem',
@@ -185,8 +185,8 @@ const WritePostComponent = () => {
                                    startAdornment={(<InputAdornment>
                                        <SearchIcon
                                            style={{
-                                               marginLeft: '0.5rem',
-                                               marginRight: '0.5rem',
+                                               paddingLeft: '0.5rem',
+                                               paddingRight: '0.5rem',
                                                color: 'black',
                                                opacity: '70%'
                                            }}/>
@@ -225,7 +225,7 @@ const WritePostComponent = () => {
                                                             <Typography
                                                                 style={{
                                                                     lineHeight: '2rem',
-                                                                    marginLeft: '1rem'
+                                                                    paddingLeft: '1rem'
                                                                 }}>{tag.tag_name}</Typography>
                                                         </div>
                                                     </div>
@@ -244,7 +244,7 @@ const WritePostComponent = () => {
                                             border: '1px solid red',
                                             padding: '0.3rem',
                                             borderRadius: '0.3rem',
-                                            marginLeft: '0.3rem'
+                                            paddingLeft: '0.3rem'
                                         }}>
                                             <Typography style={{
                                                 fontSize: '0.8rem',
@@ -254,7 +254,7 @@ const WritePostComponent = () => {
                                             <CloseRoundedIcon
                                                 style={{
                                                     fontSize: '0.8rem',
-                                                    marginLeft: '0.3rem',
+                                                    paddingLeft: '0.3rem',
                                                     color: 'red'
                                                 }}
                                                 onClick={() => handleDeleteTags(index)}/>

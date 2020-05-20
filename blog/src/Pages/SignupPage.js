@@ -23,7 +23,7 @@ const useStyle = makeStyles({
     title: {
         width: '100%',
         textAlign: 'center',
-        marginBottom: '1rem'
+        paddingBottom: '1rem'
     },
     textInput: {},
     buttonSignup: {
@@ -31,7 +31,7 @@ const useStyle = makeStyles({
         '&:hover': {
             boxShadow: 'none'
         },
-        marginBottom: '1rem'
+        paddingBottom: '1rem'
     },
 })
 const LoginPage = () => {
