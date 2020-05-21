@@ -15,7 +15,8 @@ import {theme} from "../../Themes";
 const useStyle = makeStyles({
     root: {
         textAlign: 'center',
-        padding: props => props.isMobile? "2rem 1rem 1rem 1rem" : '4rem 2rem 2rem 2rem'}
+        padding: props => props.isMobile ? "2rem 1rem 1rem 1rem" : '4rem 2rem 2rem 2rem'
+    }
 })
 const AllPostComponents = () => {
     const request_post = useSelector(state => state.RequestPostReducer)
@@ -27,7 +28,7 @@ const AllPostComponents = () => {
             author: null
         }],
         page: 0,
-        total_pages: 1,
+        total_pages: 0,
     })
     const dispatch = useDispatch()
     const {id, isAuthenticated} = useSelector(state => state.AuthenReducer)
@@ -72,9 +73,12 @@ const AllPostComponents = () => {
                             }
                         </Box>
                         <Box>
-                            <Pagination page={state.page} count={state.total_pages} variant="outlined"
-                                        style={{width: '350px', padding: " 2rem auto"}}
-                                        color="primary" onChange={handleChange}/>
+                            {
+                                state.total_pages < 1 ? null :
+                                    <Pagination page={state.page} count={state.total_pages} variant="outlined"
+                                                style={{width: '350px', padding: " 2rem auto"}}
+                                                color="primary" onChange={handleChange}/>
+                            }
                         </Box>
                     </Box>
 

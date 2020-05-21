@@ -57,7 +57,7 @@ const SearchPage = () => {
         stateLoading: stateLoading.INIT,
         result: {
             posts: [],
-            total: 0,
+            total_pages: 0,
             page: 0,
             itemPerPage: 0,
         }
@@ -181,9 +181,12 @@ const SearchPage = () => {
                                         }
                                     </Box>
                                     <Box>
-                                        <Pagination page={state.page} count={state.total_pages} variant="outlined"
-                                                    style={{width: '350px', padding: " 2rem auto"}}
-                                                    color="primary" onChange={handlePageChange}/>
+                                        {
+                                            state.total_pages < 1? null:
+                                            <Pagination page={state.page} count={state.total_pages} variant="outlined"
+                                                        style={{width: '350px', padding: " 2rem auto"}}
+                                                        color="primary" onChange={handlePageChange}/>
+                                        }
                                     </Box>
                                 </Box>
                     }

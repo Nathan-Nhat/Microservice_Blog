@@ -150,9 +150,12 @@ const TagFollowPage = () => {
                             }
                         </Box>
                         <Box>
-                            <Pagination page={state.page} count={state.total_pages} variant="outlined"
-                                        style={{width: '350px', margin: " 2rem auto"}}
-                                        color="primary" onChange={handleChange}/>
+                            {
+                                state.total_pages < 1? null:
+                                <Pagination page={state.page} count={state.total_pages} variant="outlined"
+                                            style={{width: '350px', margin: " 2rem auto"}}
+                                            color="primary" onChange={handleChange}/>
+                            }
                         </Box>
                     </Box>
                 </div>

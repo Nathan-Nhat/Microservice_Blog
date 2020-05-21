@@ -105,7 +105,7 @@ const EditPostComponent = () => {
         }
     }, [state.tag])
     const dispatch = useDispatch()
-    const {isAuthenticated} = useSelector(state => state.AuthenReducer)
+    const {isAuthenticated, id} = useSelector(state => state.AuthenReducer)
     const {post_id} = useParams()
     const handleSave = () => {
         setState({...state, isLoading: true})
@@ -113,7 +113,7 @@ const EditPostComponent = () => {
             post_id: post_id,
             title: state.title,
             body: state.body,
-            author_id: localStorage.getItem('user_id'),
+            author_id: id,
 	        tags: state.tags.join(',')
         }
         if (data.title === '' | data.body === '') {
@@ -257,7 +257,7 @@ const EditPostComponent = () => {
                                             border: '1px solid red',
                                             padding: '0.3rem',
                                             borderRadius: '0.3rem',
-                                            paddingLeft: '0.3rem'
+                                            marginRight: '0.3rem'
                                         }}>
                                             <Typography style={{
                                                 fontSize: '0.8rem',

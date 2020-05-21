@@ -25,13 +25,14 @@ const useStyle = makeStyles({
     root: {
         display: 'flex',
         flexDirection: 'row',
-        paddingTop: props => props.isMobile? '1rem' : '2rem',
+        paddingTop: props => props.isMobile ? '1rem' : '2rem',
     },
     main: {
         padding: props => props.isMobile ? '1rem' : '2rem',
         overflowWrap: 'break-word',
         wordWrap: 'break-word',
         hyphens: 'auto',
+        width: '100%',
     },
     title: {
         textAlign: 'left',
@@ -46,7 +47,7 @@ const useStyle = makeStyles({
         fontSize: '0.8rem',
         backgroundColor: '#dee3e0',
         borderRadius: "0.2rem",
-        paddingRight: "0.8rem",
+        marginRight: "0.8rem",
         padding: '0.4rem',
         opacity: "70%",
         '&:hover': {
@@ -98,8 +99,8 @@ const useStyle = makeStyles({
     },
     datePost: {
         opacity: "50%",
-        textAlign: props => props.isMobile? 'left' : "right",
-        paddingTop: props => props.isMobile? '1rem' : "0"
+        textAlign: props => props.isMobile ? 'left' : "right",
+        paddingTop: props => props.isMobile ? '1rem' : "0"
     }
 })
 const SinglePostPage = () => {
@@ -246,7 +247,7 @@ const SinglePostPage = () => {
                                     <Typography
                                         className={classes.datePost}>{state.data.date_post}</Typography>
                                     <div style={{display: 'flex', flexDirection: "row", opacity: "50%"}}>
-                                        {isMobile? null : <div style={{flexGrow: 1}}></div>}
+                                        {isMobile ? null : <div style={{flexGrow: 1}}></div>}
                                         <VisibilityIcon style={{paddingRight: "0.3rem"}}/>
                                         <Typography>{state.data.num_views}</Typography>
                                     </div>

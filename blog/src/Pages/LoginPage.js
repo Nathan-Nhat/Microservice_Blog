@@ -104,7 +104,6 @@ const LoginPage = () => {
         axios.post(URL_AUTH_SERVICE + '/authenticate', state)
             .then(res => {
                 localStorage.setItem('jwt', res.data.jwt)
-                localStorage.setItem('user_id', res.data.user_id)
                 let data = {
                     isAuthenticated: true,
                     id: res.data.user_id,

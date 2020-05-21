@@ -1,11 +1,11 @@
 from app.auth import auth
 from flask import jsonify
 from jwt import ExpiredSignatureError, InvalidTokenError
-
+from flask import request
 
 @auth.app_errorhandler(404)
 def error_404(e):
-    response = jsonify({'error': 'Cannot found result'})
+    response = jsonify({'error': 'Cannot found result yet' + f'{request.path}'})
     response.headers['Content-Type'] = 'application/json'
     response.status_code = 404
     return response

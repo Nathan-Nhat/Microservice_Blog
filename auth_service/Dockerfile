@@ -8,4 +8,4 @@ COPY . .
 
 EXPOSE 5000
 
-CMD [ "python", "./gunicorn_run.py" ]
+CMD [ "python","-u", "./gunicorn_run.py" ]

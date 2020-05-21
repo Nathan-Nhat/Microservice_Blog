@@ -3,14 +3,19 @@ services:
   rabbitmq:
     image: rabbitmq:3.8.3
     container_name: rabbitmq
+    restart: always
   auth_service:
     image: auth_service:1.0
+    restart: always
     build:
         context: ./auth_service
         dockerfile: Dockerfile
     container_name : auth_service
-    ports:
-    - "5000:5000"
+    environment:
+    - PYTHONUNBUFFERED=0
+    - FLASK_CONFIG=production
+ #   ports:
+ #  - "5000:5000"
     depends_on:
     - mysql
     - rabbitmq
@@ -18,30 +23,39 @@ services:
     - ./auth_service:/usr/src/app
   profile_service:
     image: profile_service:1.0
+    restart: always
     build:
         context: ./profile_service
         dockerfile: Dockerfile
     container_name : profile_service
-    ports:
-    - "5001:5001"
+    environment:
+    - PYTHONUNBUFFERED=0
+    - FLASK_CONFIG=production
+ #   ports:
+ #  - "5001:5001"
     depends_on:
     - mysql
     volumes:
     - ./profile_service:/usr/src/app
   post_service:
     image: post_service:1.0
+    restart: always
     build:
         context: ./post_service
         dockerfile: Dockerfile
     container_name : post_service
-    ports:
-    - "5002:5002"
+#    ports:
+#    - "5002:5002"
+    environment:
+    - PYTHONUNBUFFERED=0
+    - FLASK_CONFIG=production
     depends_on:
     - mysql
     volumes:
     - ./post_service:/usr/src/app
   mail_service:
     image: mail_service:1.0
+    restart: always
     build:
         context: ./mail_service
         dockerfile: Dockerfile
@@ -51,6 +65,7 @@ services:
   mysql:
     image: mysql:8.0.20
     container_name: mysql
+    restart: always
     command: "--default-authentication-plugin=mysql_native_password"
     environment:
     - MYSQL_ROOT_PASSWORD=Wakerjacob@90
@@ -58,6 +73,7 @@ services:
     - ./mysql/data:/var/lib/mysql
   front_end:
     image: front_end:1.0
+    restart: always
     build:
         context: ./blog
         dockerfile: Dockerfile
@@ -67,3 +83,22 @@ services:
     - "3000:3000"
     volumes:
     - ./blog:/app
+    
+  api_gateway:
+    image: kong:latest
+    container_name: api_gateway
+    ports:
+    - "8000:8000"
+    - "8443:8443"
+    - "8001:8001"
+    - "8444:8444"
+    volumes:
+    - ./api_gateway/kong:/usr/src/app
+    environment:
+    - KONG_DATABASE=off
+    - KONG_DECLARATIVE_CONFIG=/usr/src/app/kong.yml
+    - KONG_PROXY_ACCESS_LOG=/dev/stdout
+    - KONG_ADMIN_ACCESS_LOG=/dev/stdout
+    - KONG_PROXY_ERROR_LOG=/dev/stderr
+    - KONG_ADMIN_ERROR_LOG=/dev/stderr
+    - KONG_ADMIN_LISTEN=0.0.0.0:8001,0.0.0.0:8444 ssl
