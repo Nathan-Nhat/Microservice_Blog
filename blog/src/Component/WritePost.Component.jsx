@@ -107,7 +107,7 @@ const WritePostComponent = () => {
         }
     }, [state.tag])
     const dispatch = useDispatch()
-    const {isAuthenticated} = useSelector(state => state.AuthenReducer)
+    const {isAuthenticated, id} = useSelector(state => state.AuthenReducer)
     const handleSave = () => {
         if (state.tags.length === 0){
             dispatch(open_notification({message:'You need to put at least 1 tags.', type : 'error'}))
@@ -117,7 +117,7 @@ const WritePostComponent = () => {
         const data = {
             title: state.title,
             body: state.body,
-            author_id: localStorage.getItem('user_id'),
+            author_id: id,
             tags: state.tags.join(',')
         }
         if (data.title === '' | data.body === '') {

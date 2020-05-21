@@ -14,8 +14,8 @@ import {theme} from "../Themes";
 
 const useStyle = makeStyles({
     container: {
-        width: props => props.isMobile?"100%" : '70%',
-        maxWidth : "1378px",
+        width: '100%',
+        maxWidth : "1080px",
         margin: "auto"
     },
     textInput: {}

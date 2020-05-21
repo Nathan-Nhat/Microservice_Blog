@@ -11,7 +11,6 @@ import {withStyles} from "@material-ui/core";
 import SubdirectoryArrowRightRoundedIcon from '@material-ui/icons/SubdirectoryArrowRightRounded';
 import {useMediaQuery} from "@material-ui/core";
 import {theme} from "../Themes";
-
 const useStyles = makeStyles((theme) => ({
     root: {
         flexGrow: 1,
@@ -75,7 +74,6 @@ const AppbarComponent = () => {
             history.push(`/profile/${id}`)
         } else {
             localStorage.removeItem('jwt')
-            localStorage.removeItem('user_id')
             let data = {
                 isAuthenticated: false,
                 id: 0,
@@ -150,7 +148,7 @@ const AppbarComponent = () => {
                                     Sign up
                                 </Button>
                             </div> :
-                            <div>
+                            <div style={{display : 'flex', flexDirection : 'row'}}>
                                 <Button color="inherit" variant={'outlined'} className={classes.link}
                                         onClick={(e) => handleClick(e, 3)}>
                                     Add post

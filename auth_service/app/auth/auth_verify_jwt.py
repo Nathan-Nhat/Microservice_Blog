@@ -14,20 +14,25 @@ def verify_jwt():
     print(list_perm)
     if token is None:
         return jsonify({
-            'user': None,
-            'permission': False}), 403
+            'user_id': None,
+            'allowed': False}), 403
     user_id = decode_jwt_token(token)
     user = User.query.filter_by(id=user_id).first()
     if user is None:
         return jsonify({
-            'user': None,
-            'permission': False}), 403
+            'user_id': None,
+            'allowed': False}), 403
     for perm in list_perm:
         int_perm = int(perm)
         if not user.can(int_perm):
-            return jsonify({'user': user.username, 'permission': False}), 403
+            return jsonify({'user_id': user.username, 'allowed': False}), 403
     return jsonify({
         'user_id': user.id,
         'allowed': True,
         'admin_permission': user.can(Permission.ADMIN)
     })
+
+
+@auth.route('/test')
+def test():
+    return jsonify({'message': 'Success'})
