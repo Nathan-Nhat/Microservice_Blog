@@ -85,7 +85,7 @@ const useStyle = makeStyles({
         width: props => props.isMobile ? '100%' : '50%'
     },
     right: {
-        marginTop : props => props.isMobile? '1rem' : '0',
+        marginTop: props => props.isMobile ? '1rem' : '0',
         width: props => props.isMobile ? '100%' : '50%'
     }
 })
@@ -186,12 +186,12 @@ const DetailsComponent = ({user_id}) => {
                                             }
                                         </div>
                                         <div className={classes.field}>
-                                            <EmailRoundedIcon style={{paddingRight: "1rem"}}/>
-                                            <Typography align='left'>{profile.email}</Typography>
+                                            <EmailRoundedIcon style={{paddingRight: "0.5rem", fontSize:'1.2rem'}}/>
+                                            <Typography style={{wordWrap: 'break-word', wordBreak:'break-all', fontSize : '0.9rem'}}>{profile.email}</Typography>
                                         </div>
                                         <div className={classes.field}>
-                                            <HomeIcon style={{paddingRight: "1rem"}}/>
-                                            <Typography align='left'><a
+                                            <HomeIcon style={{paddingRight: "0.5rem", fontSize:'1.2rem'}}/>
+                                            <Typography align='left' style={{wordWrap: 'break-word', wordBreak:'break-all', fontSize : '0.9rem'}}><a
                                                 href={`https://www.google.com/maps/place/${profile.address}`}>{profile.address}</a></Typography>
                                         </div>
                                     </div>

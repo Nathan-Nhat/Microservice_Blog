@@ -85,15 +85,12 @@ services:
     - ./blog:/app
     
   api_gateway:
-    image: kong:latest
+    image: nginx:1.17.10
     container_name: api_gateway
     ports:
     - "8000:8000"
-    - "8443:8443"
-    - "8001:8001"
-    - "8444:8444"
     volumes:
-    - ./api_gateway/kong:/usr/src/app
+    - ./api_gateway:/etc/nginx/conf.d
     environment:
     - KONG_DATABASE=off
     - KONG_DECLARATIVE_CONFIG=/usr/src/app/kong.yml

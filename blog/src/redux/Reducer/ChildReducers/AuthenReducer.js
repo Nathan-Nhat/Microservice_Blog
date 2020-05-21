@@ -4,7 +4,8 @@ const initialState = {
     isAuthenticated: false,
     id: 0,
     name: '',
-    email: ''
+    email: '',
+    user_avatar :''
 };
 
 const AuthenReducer = (state = initialState, action) => {
@@ -14,7 +15,8 @@ const AuthenReducer = (state = initialState, action) => {
                 isAuthenticated: action.data.isAuthenticated,
                 id : action.data.id,
                 name : action.data.name,
-                email: action.data.email
+                email: action.data.email,
+                user_avatar: action.data.user_avatar
             }
             return state;
         default:

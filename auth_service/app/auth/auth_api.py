@@ -40,6 +40,7 @@ def sign_up_user():
                 'profile_id': user.id,
                 'email': user.email,
                 'name': data.get('name'),
+                'avatar_hash': 'https://www.w3schools.com/w3images/avatar2.png'
             }
             resp = conn.post(ServiceURL.PROFILE_SERVICE + 'user_profile', json=user_details)
         if resp.status_code != 200:
@@ -113,7 +114,8 @@ def verify_login():
         'user_id': user_id_decode,
         'user_username': user.username,
         'user_name': resp.json().get('name'),
-        'user_email': resp.json().get('email')
+        'user_email': resp.json().get('email'),
+        'user_avatar': resp.json().get('avatar_hash')
     }), 200
 
 

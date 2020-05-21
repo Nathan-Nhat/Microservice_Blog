@@ -182,10 +182,13 @@ const SearchPage = () => {
                                     </Box>
                                     <Box>
                                         {
-                                            state.total_pages < 1? null:
-                                            <Pagination page={state.page} count={state.total_pages} variant="outlined"
-                                                        style={{width: '350px', padding: " 2rem auto"}}
-                                                        color="primary" onChange={handlePageChange}/>
+                                            state.result.total_pages <= 1 ? null :
+                                                <div style={{display: 'flex', flexDirection: 'column', width: '100%'}}>
+                                                    <Pagination page={state.page} count={state.result.total_pages}
+                                                                variant="outlined"
+                                                                style={{marginTop: '1rem', alignSelf: 'center'}}
+                                                                color="primary" onChange={handleChange}/>
+                                                </div>
                                         }
                                     </Box>
                                 </Box>

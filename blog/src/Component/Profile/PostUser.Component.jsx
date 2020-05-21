@@ -9,16 +9,23 @@ const PostUserComponent = ({user_id}) => {
     const [state, setState] = useState({
         isLoading: true,
         posts: [],
-        user: {}
+        user: {},
+        page: 0,
+        itemPerPage:0,
+        total_pages:0
     })
     useEffect(() => {
         setState({...state, isLoading: true})
         get_data(URL_POST_SERVICE + `/${user_id}/posts`, {page: 0}, false)
             .then(res => {
+                console.log(res)
                 setState({
                     isLoading: false,
                     posts: res.data.posts,
-                    user: res.data.user
+                    user: res.data.user,
+                    page : res.data.page,
+                    itemPerPage: res.data.itemPerPage,
+                    total_pages: res.data.total_pages
                 })
             })
     }, [user_id])
@@ -29,7 +36,8 @@ const PostUserComponent = ({user_id}) => {
                 setState({
                     isLoading: false,
                     posts: res.data.posts,
-                    user: res.data.user
+                    user: res.data.user,
+
                 })
             })
     }
@@ -47,12 +55,14 @@ const PostUserComponent = ({user_id}) => {
                                 })
                             }
                         </Box>
-                        <Box>
+                         <Box>
                             {
-                                state.total_pages < 1? null:
-                                <Pagination page={state.page} count={state.total_pages} variant="outlined"
-                                            style={{width: '350px', padding: " 2rem auto"}}
-                                            color="primary" onChange={handleChange}/>
+                                state.total_pages <= 1 ? null :
+                                    <div style={{display: 'flex' , flexDirection : 'column' , width:'100%'}}>
+                                    <Pagination page={state.page} count={state.total_pages} variant="outlined"
+                                                style={{marginTop:'1rem', alignSelf:'center'}}
+                                                color="primary" onChange={handleChange}/>
+                                                </div>
                             }
                         </Box>
                     </Box>

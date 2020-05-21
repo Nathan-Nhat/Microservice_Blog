@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {TextField, makeStyles, Paper, Typography, Button} from "@material-ui/core";
+import {TextField, makeStyles, Paper, Typography, Button, useMediaQuery} from "@material-ui/core";
 import axios from 'axios'
 import {URL_AUTH_SERVICE} from '../Constants'
 import {useSelector} from "react-redux";
@@ -8,34 +8,46 @@ import {useDispatch} from 'react-redux'
 import {open_notification} from "../redux/Actions/ActionObjects/ActionsObjects";
 import {validatePassword} from "../Helper/ValidatePassword";
 import {validateEmail} from "../Helper/ValidateEmail";
+import {theme} from "../Themes";
 
 const useStyle = makeStyles({
     container: {
         display: "flex",
         flexDirection: "column",
-        margin: "6rem auto",
+        margin: props => props.isMobile ? "3rem auto" : '6rem auto',
         width: "100%",
         maxWidth: '25rem',
         '&>*': {
             marginTop: '1rem'
         }
     },
+    input: {
+        borderRadius: 'none',
+        width: '100%'
+    },
     title: {
         width: '100%',
         textAlign: 'center',
-        paddingBottom: '1rem'
     },
     textInput: {},
     buttonSignup: {
         boxShadow: 'none',
+        margin: 'auto',
+        padding: '0.7rem 1rem 0.7rem 1rem',
         '&:hover': {
             boxShadow: 'none'
         },
-        marginBottom: '1rem'
     },
+    main: {
+        padding: '0 1rem',
+        '&>*': {
+            marginTop: '1rem'
+        }
+    }
 })
 const LoginPage = () => {
-    const classes = useStyle();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
+    const classes = useStyle({isMobile});
     const dispatch = useDispatch()
     const [state, setState] = useState({username: '', password: '', name: '', email: '', re_password: ''})
     const handleChange = (e) => {
@@ -63,8 +75,7 @@ const LoginPage = () => {
             ))
             return
         }
-        if (!validateEmail(state.email))
-        {
+        if (!validateEmail(state.email)) {
             dispatch(open_notification(
                 {
                     message: 'Invalid Email!',
@@ -74,7 +85,7 @@ const LoginPage = () => {
             return
         }
         if (state.username === '' || state.name === '') {
-             dispatch(open_notification(
+            dispatch(open_notification(
                 {
                     message: 'You need to fill all required field',
                     type: 'error'
@@ -98,23 +109,29 @@ const LoginPage = () => {
                 isAuthenticated === false ?
                     <div className={classes.container}>
                         <Typography variant={"h6"} className={classes.title}>SIGN UP</Typography>
-                        <TextField required label="Username" type="text" name='username'
-                                   variant={'outlined'}
-                                   onChange={handleChange}/>
-                        <TextField required label="Name" type="text" name='name'
-                                   variant={'outlined'}
-                                   onChange={handleChange}/>
-                        <TextField required label="Email" type="email" name='email'
-                                   variant={'outlined'}
-                                   onChange={handleChange}/>
-                        <TextField required label="Password" type="password" name='password'
-                                   variant={'outlined'}
-                                   onChange={handleChange}/>
-                        <TextField required label="Re-Password" type="password" name='re_password'
-                                   variant={'outlined'}
-                                   onChange={handleChange}/>
-                        <Button variant="contained" color="primary" onClick={handleClick}
-                                className={classes.buttonSignup}> Sign up</Button>
+                        <div className={classes.main}>
+                            <TextField required label="Username" type="text" name='username' className={classes.input}
+                                       variant={'outlined'}
+                                       onChange={handleChange}/>
+                            <TextField required label="Name" type="text" name='name' className={classes.input}
+                                       variant={'outlined'}
+                                       onChange={handleChange}/>
+                            <TextField required label="Email" type="email" name='email' className={classes.input}
+                                       variant={'outlined'}
+                                       onChange={handleChange}/>
+                            <TextField required label="Password" type="password" name='password'
+                                       className={classes.input}
+                                       variant={'outlined'}
+                                       onChange={handleChange}/>
+                            <TextField required label="Re-Password" type="password" name='re_password'
+                                       className={classes.input}
+                                       variant={'outlined'}
+                                       onChange={handleChange}/>
+                            <div style={{width: '100%', textAlign: 'center'}}>
+                                <Button variant="contained" color="primary" onClick={handleClick}
+                                        className={classes.buttonSignup}> Sign up</Button>
+                            </div>
+                        </div>
                     </div>
                     : <Redirect to='/'/>
             }

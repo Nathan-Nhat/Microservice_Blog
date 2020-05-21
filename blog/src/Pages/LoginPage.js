@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {TextField, makeStyles, Paper, Typography, Button, Divider} from "@material-ui/core";
+import {TextField, makeStyles, Paper, Typography, Button, Divider, useMediaQuery} from "@material-ui/core";
 import axios from 'axios'
 import {URL_AUTH_SERVICE} from '../Constants'
 import {useHistory} from 'react-router-dom'
@@ -14,27 +14,30 @@ import Dialog from "@material-ui/core/Dialog";
 import SendIcon from '@material-ui/icons/Send';
 import {get_data, post_data} from "../ApiCall";
 import queryString from 'query-string'
+import {theme} from "../Themes";
 
 const useStyle = makeStyles(theme => ({
     container: {
         display: "flex",
         flexDirection: "column",
-        margin: "6rem auto",
+        margin: props => props.isMobile ? "2rem auto" : '6rem auto',
         width: "100%",
         maxWidth: '25rem',
         '&>*': {
             marginTop: '1rem'
-        }
+        },
     },
     input: {
         borderRadius: 'none',
+        width: '100%'
     },
     buttonLogin: {
         boxShadow: 'none',
+        margin: 'auto',
+        padding : '0.7rem 1rem 0.7rem 1rem',
         '&:hover': {
             boxShadow: 'none'
         },
-        marginBottom: '1rem'
     },
     title: {
         width: '100%',
@@ -75,12 +78,19 @@ const useStyle = makeStyles(theme => ({
         padding: '0.6rem',
         borderRadius: '1rem',
         paddingBottom: '1rem'
+    },
+    main: {
+        padding: '1rem',
+        '&>*': {
+            marginTop: '1rem'
+        }
     }
 }))
 
 
 const LoginPage = () => {
-    const classes = useStyle();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
+    const classes = useStyle({isMobile});
     const [state, setState] = useState({
         username: '',
         password: '',
@@ -177,27 +187,31 @@ const LoginPage = () => {
                                 <Typography className={classes.responseSuccess}>
                                     Your account have been confirmed! Please login
                                 </Typography> :
-                                    <Typography className={classes.responseFail}>
-                                        Error when confirm your account.Please try again
-                                    </Typography>
+                                <Typography className={classes.responseFail}>
+                                    Error when confirm your account.Please try again
+                                </Typography>
                         }
-                        <TextField required id="username" label="Username" type="text" name='username'
-                                   variant={'outlined'} className={classes.input}
-                                   onChange={handleChange}/>
-                        <TextField required id="password" label="Password" type="password" name='password'
-                                   variant={'outlined'} className={classes.input}
-                                   onChange={handleChange}/>
-                        <Button variant="contained" color="primary" onClick={handleClick}
-                                className={classes.buttonLogin}> Login</Button>
-                        <Divider variant={'middle'}/>
-                        <div className={classes.moreOption}>
-                            <Typography className={classes.toSignup}>Don't have account yet? Click <NavLink
-                                to={'/signup'}>Sign
-                                up</NavLink></Typography>
-                            <Typography className={classes.forgotPassword} onClick={handleForgotPass}>Forgot
-                                password?</Typography>
-                            <Typography className={classes.forgotPassword} onClick={handleConfirm}>Not confirm your
-                                account yet?</Typography>
+                        <div className={classes.main}>
+                            <TextField required id="username" label="Username" type="text" name='username'
+                                       variant={'outlined'} className={classes.input}
+                                       onChange={handleChange}/>
+                            <TextField required id="password" label="Password" type="password" name='password'
+                                       variant={'outlined'} className={classes.input}
+                                       onChange={handleChange}/>
+                            <div style={{width :'100%', textAlign :'center'}}>
+                                <Button variant="contained" color="primary" onClick={handleClick}
+                                        className={classes.buttonLogin}> Login</Button>
+                            </div>
+                            <Divider variant={'middle'}/>
+                            <div className={classes.moreOption}>
+                                <Typography className={classes.toSignup}>Don't have account yet? Click <NavLink
+                                    to={'/signup'}>Sign
+                                    up</NavLink></Typography>
+                                <Typography className={classes.forgotPassword} onClick={handleForgotPass}>Forgot
+                                    password?</Typography>
+                                <Typography className={classes.forgotPassword} onClick={handleConfirm}>Not confirm your
+                                    account yet?</Typography>
+                            </div>
                         </div>
                         <Dialog open={state.isOpen} onClose={handleClose} aria-labelledby="form-dialog-title">
                             <DialogTitle id="form-dialog-forgot_password">Forgot Password</DialogTitle>

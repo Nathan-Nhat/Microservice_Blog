@@ -207,6 +207,8 @@ def get_user_post(user_id):
         if resp.status_code != 200:
             raise CustomException('Cannot found user', 404)
     posts = Post.query.filter_by(author_id=user_id).paginate(page, itemPerPage, error_out=False)
+    total = posts.total
+    num_page = total // itemPerPage + 1
     if posts is None:
         return jsonify({'message': 'User have no post'}), 404
     list_post = list(map(lambda d: d.to_json_little(), posts.items))
@@ -220,7 +222,7 @@ def get_user_post(user_id):
         'posts': list_post,
         'page': page,
         'itemPerPage': itemPerPage,
-        'total_post': posts.total
+        'total_pages': num_page
     }), 200
 
 

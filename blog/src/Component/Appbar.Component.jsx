@@ -11,6 +11,12 @@ import {withStyles} from "@material-ui/core";
 import SubdirectoryArrowRightRoundedIcon from '@material-ui/icons/SubdirectoryArrowRightRounded';
 import {useMediaQuery} from "@material-ui/core";
 import {theme} from "../Themes";
+import {Drawer, ListItem, ListItemIcon, ListItemText} from '@material-ui/core'
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import VpnKeyIcon from '@material-ui/icons/VpnKey';
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import PostAddIcon from '@material-ui/icons/PostAdd';
+import MeetingRoomIcon from '@material-ui/icons/MeetingRoom';
 const useStyles = makeStyles((theme) => ({
     root: {
         flexGrow: 1,
@@ -18,28 +24,32 @@ const useStyles = makeStyles((theme) => ({
     toolbar: {
         width: props => props.isMobile ? '100%' : "70%",
         maxWidth: "1378px",
-        margin: "auto"
+        padding: 0,
+        margin: 'auto'
     },
     title: {
-        flexGrow: 1,
+        flexGrow: 1
     },
     link: {
         marginRight: "1rem"
     },
     search: {
-        marginLeft : '2rem',
-        paddingLeft: '0.7rem',
+        marginLeft: '1rem',
+        paddingLeft: '0.2rem',
         borderRadius: '2rem',
         color: 'white',
         backgroundColor: 'rgba(255, 255, 255, .1)',
-        width: '15rem',
+        width: props => props.isMobile?'100%':'15rem',
+        maxWidth: props => props.isMobile?'15rem' : '100rem',
+        flexGrow: props => props.isMobile?1:0,
+        marginRight:'1rem',
         paddingRight: '1rem',
         '&:hover': {
             backgroundColor: 'rgba(255, 255, 255, .3)'
         }
     },
-    loginButton : {
-        display : props => props.isMobile? 'none': ''
+    loginButton: {
+        display: props => props.isMobile ? 'none' : ''
     }
 }));
 
@@ -82,6 +92,9 @@ const AppbarComponent = () => {
             }
             dispatch(fetch_user(data))
         }
+        if (isMobile){
+            setDrawOpen(false)
+        }
     }
 
     const handleHome = () => {
@@ -101,10 +114,29 @@ const AppbarComponent = () => {
             [name]: val
         })
     }
-    const {isAuthenticated, id} = useSelector(state => state.AuthenReducer)
+    const [isDrawOpen, setDrawOpen] = React.useState(false)
+    const {isAuthenticated, id, user_avatar, name} = useSelector(state => state.AuthenReducer)
+    console.log(user_avatar)
+    const toggleDrawer = () => {
+        setDrawOpen(true)
+    }
+    const handleCloseDraw = () => {
+        setDrawOpen(false)
+    }
     return (
-        <AppBar position="static" style={{boxShadow: 'none'}}>
+        <AppBar position="static" style={{boxShadow: 'none', paddingLeft: '1rem'}}>
             <Toolbar className={classes.toolbar}>
+                {
+                    !isMobile ? null :
+                        <IconButton
+                            edge="start"
+                            color="inherit"
+                            aria-label="open drawer"
+                            onClick={toggleDrawer}
+                        >
+                            <MenuIcon/>
+                        </IconButton>
+                }
                 <Button onClick={handleHome}><Typography variant="h5"
                                                          style={{color: "white", fontWeight: "bold"}}>Blog</Typography></Button>
 
@@ -137,31 +169,74 @@ const AppbarComponent = () => {
                 </HtmlTooltip>
                 <div className={classes.title}>
                 </div>
-                <div className={classes.loginButton}>
-                    {
-                        isAuthenticated === false ?
-                            <div>
-                                <Button color="inherit" className={classes.link} onClick={(e) => handleClick(e, 1)}>
-                                    Login
-                                </Button>
-                                <Button color="inherit" className={classes.link} onClick={(e) => handleClick(e, 2)}>
-                                    Sign up
-                                </Button>
-                            </div> :
-                            <div style={{display : 'flex', flexDirection : 'row'}}>
-                                <Button color="inherit" variant={'outlined'} className={classes.link}
-                                        onClick={(e) => handleClick(e, 3)}>
-                                    Add post
-                                </Button>
-                                <Button color="inherit" className={classes.link} onClick={(e) => handleClick(e, 4)}>
-                                    My Profile
-                                </Button>
-                                <Button color="inherit" className={classes.link} onClick={(e) => handleClick(e, 5)}>
-                                    Logout
-                                </Button>
-                            </div>
-                    }
-                </div>
+                {
+                    isMobile ?
+                        <Drawer anchor={'left'} open={isDrawOpen} onClose={handleCloseDraw}>
+                            <img style={{height: '6rem', width: '6rem', margin: '2rem auto 0 auto', borderRadius: '50%'}}
+                                 src={isAuthenticated ? `${user_avatar}` : 'https://www.pphfoundation.ca/wp-content/uploads/2018/05/default-avatar.png'}/>
+                            {
+                                isAuthenticated?
+                                <Typography style={{textAlign : 'center', fontWeight : 'bold', marginBottom : '1rem'}}>{name}</Typography>: null
+                            }
+                            <Divider/>
+                            {
+                                isAuthenticated === false ?
+                                    <div>
+                                        <ListItem button onClick={(e) => handleClick(e, 1)}>
+                                            <ListItemIcon><ExitToAppIcon/></ListItemIcon>
+                                            <ListItemText primary={'Login'}/>
+                                        </ListItem>
+                                        <ListItem button onClick={(e) => handleClick(e, 2)}>
+                                            <ListItemIcon><VpnKeyIcon/></ListItemIcon>
+                                            <ListItemText primary={'Signup'} style={{marginRight: '2rem'}}/>
+                                        </ListItem>
+                                    </div>:
+                                    <div>
+                                        <ListItem button onClick={(e) => handleClick(e, 4)}>
+                                            <ListItemIcon><AccountCircleIcon/></ListItemIcon>
+                                            <ListItemText primary={'My Profile'}/>
+                                        </ListItem>
+                                        <ListItem button onClick={(e) => handleClick(e, 3)}>
+                                            <ListItemIcon><PostAddIcon/></ListItemIcon>
+                                            <ListItemText primary={'Add post'} style={{marginRight: '2rem'}}/>
+                                        </ListItem>
+                                        <ListItem button onClick={(e) => handleClick(e, 5)}>
+                                            <ListItemIcon><MeetingRoomIcon/></ListItemIcon>
+                                            <ListItemText primary={'Logout'}/>
+                                        </ListItem>
+                                    </div>
+                            }
+                        </Drawer> :
+                        <div className={classes.loginButton}>
+                            {
+                                isAuthenticated === false ?
+                                    <div>
+                                        <Button color="inherit" className={classes.link}
+                                                onClick={(e) => handleClick(e, 1)}>
+                                            Login
+                                        </Button>
+                                        <Button color="inherit" className={classes.link}
+                                                onClick={(e) => handleClick(e, 2)}>
+                                            Sign up
+                                        </Button>
+                                    </div> :
+                                    <div style={{display: 'flex', flexDirection: 'row'}}>
+                                        <Button color="inherit" variant={'outlined'} className={classes.link}
+                                                onClick={(e) => handleClick(e, 3)}>
+                                            Add post
+                                        </Button>
+                                        <Button color="inherit" className={classes.link}
+                                                onClick={(e) => handleClick(e, 4)}>
+                                            My Profile
+                                        </Button>
+                                        <Button color="inherit" className={classes.link}
+                                                onClick={(e) => handleClick(e, 5)}>
+                                            Logout
+                                        </Button>
+                                    </div>
+                            }
+                        </div>
+                }
             </Toolbar>
         </AppBar>
     );

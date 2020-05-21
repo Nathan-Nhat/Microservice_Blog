@@ -57,7 +57,7 @@ const TagFollowPage = () => {
         tag_name: '',
         url_image: '',
         posts: [],
-        total: 0,
+        total_pages: 0,
         page: 0,
         itemPerPage: 0,
         is_followed: false,
@@ -72,7 +72,7 @@ const TagFollowPage = () => {
                     tag_name: res.data.tag_name,
                     url_image: res.data.url_image,
                     posts: res.data.Post,
-                    total: res.data.total_pages,
+                    total_pages: res.data.total_pages,
                     page: res.data.page,
                     itemPerPage: res.data.itemPerPage,
                     num_follower: res.data.num_follower
@@ -92,7 +92,7 @@ const TagFollowPage = () => {
                     tag_name: res.data.tag_name,
                     url_image: res.data.url_image,
                     posts: res.data.Post,
-                    total: res.data.total_pages,
+                    total_pages: res.data.total_pages,
                     page: res.data.page,
                     itemPerPage: res.data.itemPerPage,
                     is_followed: res.data.is_followed,
@@ -149,12 +149,14 @@ const TagFollowPage = () => {
                                 })
                             }
                         </Box>
-                        <Box>
+                         <Box>
                             {
-                                state.total_pages < 1? null:
-                                <Pagination page={state.page} count={state.total_pages} variant="outlined"
-                                            style={{width: '350px', margin: " 2rem auto"}}
-                                            color="primary" onChange={handleChange}/>
+                                state.total_pages <= 1 ? null :
+                                    <div style={{display: 'flex' , flexDirection : 'column' , width:'100%'}}>
+                                    <Pagination page={state.page} count={state.total_pages} variant="outlined"
+                                                style={{marginTop:'1rem', alignSelf:'center'}}
+                                                color="primary" onChange={handleChange}/>
+                                                </div>
                             }
                         </Box>
                     </Box>

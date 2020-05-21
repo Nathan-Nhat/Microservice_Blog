@@ -104,7 +104,7 @@ const useStyle = makeStyles({
     }
 })
 const SinglePostPage = () => {
-    const isMobile = useMediaQuery(theme.breakpoints.down('md'))
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
     const {post_id} = useParams()
     const [state, setState] = useState({
         list_contents: [],

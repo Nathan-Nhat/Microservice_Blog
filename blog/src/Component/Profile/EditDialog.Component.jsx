@@ -12,17 +12,20 @@ import {makeStyles} from "@material-ui/core/styles";
 import {Divider} from "@material-ui/core";
 import * as API from '../../ApiCall'
 import * as URL from '../../Constants'
+import {theme} from "../../Themes";
+import {useMediaQuery} from "@material-ui/core";
 
 const useStyle = makeStyles({
     contents: {
         display: 'flex',
-        flexDirection: 'row'
+        flexDirection: props => props.isMobile?'column':'row'
     },
     image: {
         minWidth: "10rem",
         maxWidth: '10rem',
         height: "10rem",
         borderRadius: "0.5rem",
+        margin:'auto'
     },
     main: {
         '&>*': {
@@ -33,6 +36,7 @@ const useStyle = makeStyles({
 export default function FormDialog({data, profileChange}) {
     const open = useSelector(state => state.togglePopUpReducer.profile_popup)
     const dispatch = useDispatch()
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
     const [state, setState] = React.useState({
         fullName: data.fullName,
         email: data.email ,
@@ -65,14 +69,14 @@ export default function FormDialog({data, profileChange}) {
             [name]: value
         })
     }
-    const classes = useStyle()
+    const classes = useStyle({isMobile})
     return (
         <div>
             <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
                 <DialogTitle id="form-dialog-title">Profile</DialogTitle>
                 <DialogContent className={classes.contents}>
                     <img className={classes.image} src={state.avatar_hash} alt={''}/>
-                    <Divider orientation={'vertical'} flexItem={true} style={{margin: '0 1rem 0 1rem'}}></Divider>
+                    <Divider orientation={isMobile?"horizontal" : 'vertical'} flexItem={true} style={{margin: '0 1rem 0 1rem'}}></Divider>
                     <div className={classes.main}>
                         <TextField
                             autoFocus
