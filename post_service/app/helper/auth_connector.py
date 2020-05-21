@@ -16,9 +16,6 @@ def verify_jwt(blueprint, permissions):
     def wrapper_first(func):
         @wraps(func)
         def inner_function(*args, **kwargs):
-            user_id = request.args.get('user_id')
-            if user_id is None:
-                raise CustomException('User dont have permission', 403)
             with get_connection(blueprint, name='verify_jwt') as conn:
                 token = request.args.get('token')
                 if token is None:
@@ -33,10 +30,7 @@ def verify_jwt(blueprint, permissions):
                 body = resp.json()
                 if not body.get('allowed'):
                     raise CustomException('User dont have permission', 403)
-                if body.get('user_id') != int(user_id):
-                    if not body.get('admin_permission'):
-                        raise CustomException('User dont have permission', 403)
-                return func(*args, **kwargs, user_id=user_id)
+                return func(*args, **kwargs, user_id=body.get('user_id'))
 
         return inner_function
 

@@ -1,0 +1,91 @@
+_format_version: "1.1"
+
+services:
+- name: auth_service
+  url: http://auth_service:5000/api/v1/auth
+  routes:
+  - name: auth
+    paths:
+    - /auth
+- name: profile_service
+  url: http://profile_service:5001/api/v1/profile
+  routes:
+  - name: profile
+    paths:
+    - /profile
+- name: post_service
+  url: http://post_service:5002/api/v1/post
+  routes:
+  - name: post
+    paths:
+    - /post
+plugins:
+- name: cors
+  service: auth_service
+  config: 
+    origins:
+    - http://localhost:3000
+    - http://192.168.98.241:3000
+    methods:
+    - GET
+    - POST
+    - DELETE
+    - PUT
+    headers:
+    - Accept
+    - Accept-Version
+    - Content-Length
+    - Content-MD5
+    - Content-Type
+    - Date
+    - X-Auth-Token
+    exposed_headers:
+    - X-Auth-Token
+    credentials: true
+    max_age: 3600
+- name: cors
+  service: profile_service
+  config: 
+    origins:
+    - http://localhost:3000
+    - http://192.168.98.241:3000
+    methods:
+    - GET
+    - POST
+    - DELETE
+    - PUT
+    headers:
+    - Accept
+    - Accept-Version
+    - Content-Length
+    - Content-MD5
+    - Content-Type
+    - Date
+    - X-Auth-Token
+    exposed_headers:
+    - X-Auth-Token
+    credentials: true
+    max_age: 3600
+- name: cors
+  service: post_service
+  config: 
+    origins:
+    - http://localhost:3000
+    - http://192.168.98.241:3000
+    methods:
+    - GET
+    - POST
+    - DELETE
+    - PUT
+    headers:
+    - Accept
+    - Accept-Version
+    - Content-Length
+    - Content-MD5
+    - Content-Type
+    - Date
+    - X-Auth-Token
+    exposed_headers:
+    - X-Auth-Token
+    credentials: true
+    max_age: 3600
