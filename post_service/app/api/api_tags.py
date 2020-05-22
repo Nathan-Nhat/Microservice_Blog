@@ -100,4 +100,5 @@ def get_post_by_tag(tag_id):
         'page': page,
         'itemPerPage': itemPerPage,
         'total_pages': num_page,
+        'total' : total,
         'num_follower' : num_user}), 200

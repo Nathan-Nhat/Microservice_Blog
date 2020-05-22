@@ -118,8 +118,10 @@ const LoginPage = () => {
                     isAuthenticated: true,
                     id: res.data.user_id,
                     email: res.data.user_email,
-                    name: res.data.name
+                    name: res.data.user_name,
+                    user_avatar: res.data.user_avatar
                 }
+                console.log(data.user_avatar)
                 dispatch(fetch_user(data))
                 if (location.state)
                     history.push(location.state.nextUrl)

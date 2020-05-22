@@ -12,7 +12,7 @@ import Notification from "./Component/Notifycation.Component";
 import {MuiThemeProvider} from "@material-ui/core/styles";
 import CircularProgress from '@material-ui/core/CircularProgress';
 import EditPostComponent from "./Component/EditPost.Component";
-
+import LoadingImage from './image/background.jpg'
 const AuthComponent = () => {
     const [state, setState] = React.useState(true)
     React.useEffect(() => {
@@ -41,9 +41,7 @@ const AuthComponent = () => {
     return (
         <div>
             {state === true ?
-                <div style={{width: "100vw", height: '100vh'}}>
-                    <CircularProgress style={{margin: "auto"}}/>
-                </div> :
+              null :
                 <MuiThemeProvider theme={defaultTheme}>
                     <Router>
                         <AppbarComponent/>

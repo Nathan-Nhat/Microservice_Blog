@@ -1,16 +1,17 @@
 import React from 'react';
-import {Box, Button} from "@material-ui/core";
+import {Box, Button, useMediaQuery} from "@material-ui/core";
 import {get_data, post_data} from "../../ApiCall";
-import {URL_POST_SERVICE} from "../../Constants";
+import {URL_AUTH_SERVICE, URL_POST_SERVICE} from "../../Constants";
 import {Typography, makeStyles, Divider} from "@material-ui/core";
 import {useSelector} from "react-redux";
 import {NavLink} from 'react-router-dom';
 import moment from "moment";
+import {theme} from "../../Themes";
 
 const useStyle = makeStyles({
     container: {},
     commentContainer: {
-        padding: '0 2rem',
+        padding: props => props.isMobile? 0: '0 2rem',
         display: 'flex',
         flexDirection: 'column',
         '&>*': {
@@ -20,7 +21,8 @@ const useStyle = makeStyles({
     text_area: {
         width: "100%",
         height: '3rem',
-        borderRadius: '0.2rem'
+        borderRadius: '0.2rem',
+        boxSizing:'border-box'
     },
     addButton: {
         float: 'right'
@@ -36,7 +38,7 @@ const useStyle = makeStyles({
     wrapComment: {
         display: 'flex',
         flexDirection: 'row',
-        padding: '1rem'
+        padding: '1rem 0 1rem 0'
     },
     image: {
         width: "3rem",
@@ -73,7 +75,8 @@ const CommentComponents = ({post_id}) => {
         isFinished: false,
         list_comment: []
     })
-    const classes = useStyle()
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
+    const classes = useStyle({isMobile})
     const handleChange = (e) => {
         var name = e.target.name
         var value = e.target.value
@@ -99,9 +102,11 @@ const CommentComponents = ({post_id}) => {
                 })
             })
     }
-    const {isAuthenticated} = useSelector(state => state.AuthenReducer)
+    const {isAuthenticated, id} = useSelector(state => state.AuthenReducer)
     React.useEffect(() => {
-        get_data(URL_POST_SERVICE + `/comments/${post_id}`, {page: state.page, item_per_page: 5}, false)
+        get_data(URL_POST_SERVICE + `/comments/${post_id}`, {page: state.page, item_per_page: 5,
+            current_user_id: isAuthenticated? id : 0
+        }, false)
             .then(res => {
                 let isDone = false
                 if (state.page === 0 && res.data.total === 1) isDone = true
@@ -128,6 +133,12 @@ const CommentComponents = ({post_id}) => {
                     }
                 )
             })
+    }
+    const handleLike =(e, comment_id)=>{
+        console.log(comment_id)
+        post_data(URL_POST_SERVICE+ `/comments/${comment_id}/like`, {}, {}, true)
+            .then(res=>console.log(res))
+
     }
     return (
         <div className={classes.container}>
@@ -161,6 +172,8 @@ const CommentComponents = ({post_id}) => {
                                                     className={classes.date}>{moment(item.date_comment).fromNow()}</Typography>
                                             </div>
                                             <Typography className={classes.body}>{item.body_html}</Typography>
+                                            <Button variant={item.is_liked? 'contained' : 'outlined'} color = 'primary'
+                                                    onClick={(e)=>handleLike(e, item.comment_id)}>Like</Button>
                                         </div>
                                     </div>
                                 </div>

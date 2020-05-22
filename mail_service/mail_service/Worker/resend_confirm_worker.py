@@ -27,14 +27,14 @@ def resend_confirm_callback(ch, method, properties, body):
         Hello {data.get('user_name')},
         This email to perform that you need to confirm your account. Please click in
         the address bellow to continue
-        http://localhost:5000/api/v1/auth/confirm?token={data.get('token')}&user_id={data.get('user_id')}
+        http://localhost:8000/auth/confirm?token={data.get('token')}&user_id={data.get('user_id')}
     """
     html = f"""\
     <html>
       <body>
         <h2>Hello {data.get('user_name')},</h2>
         <p>This email to perform that you want to confirm your account. Please 
-        click <a href = 'http://localhost:5000/api/v1/auth/confirm?token={data.get('token')}&user_id={data.get('user_id')}'>
+        click <a href = 'http://localhost:8000/auth/confirm?token={data.get('token')}&user_id={data.get('user_id')}'>
             HERE</a> to continue </p>
       </body>
     </html>

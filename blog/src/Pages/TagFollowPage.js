@@ -1,5 +1,5 @@
 import React from 'react';
-import {Typography, Button, Divider, Box} from "@material-ui/core";
+import {Typography, Button, Divider, Box, useMediaQuery} from "@material-ui/core";
 import {delete_data, get_data, post_data} from "../ApiCall";
 import {URL_POST_SERVICE} from "../Constants";
 import {useParams} from 'react-router-dom'
@@ -9,6 +9,7 @@ import LocalOfferIcon from '@material-ui/icons/LocalOffer';
 import {makeStyles} from "@material-ui/core/styles";
 import {useSelector} from "react-redux";
 import {useHistory} from 'react-router-dom'
+import {theme} from "../Themes";
 
 const useStyle = makeStyles({
     root: {
@@ -23,7 +24,7 @@ const useStyle = makeStyles({
     tagImage: {
         fontSize: '4rem',
         color: 'red',
-        marginRight: '3rem',
+        marginRight: props => props.isMobile?'1rem':'3rem',
         width: '4rem',
         height: '4rem',
         borderRadius: '50%'
@@ -35,6 +36,7 @@ const useStyle = makeStyles({
     tagName: {
         fontSize: '1.2rem',
         fontWeight: 'bold',
+        marginRight :'1rem',
         gridColumnStart: 1,
         gridColumnEnd: 4
     },
@@ -61,7 +63,8 @@ const TagFollowPage = () => {
         page: 0,
         itemPerPage: 0,
         is_followed: false,
-        num_follower: 0
+        num_follower: 0,
+        total : 0
     })
     const handleChange = (e, newVal) => {
         get_data(URL_POST_SERVICE + `/tags/${tag_id}/post`, {page: newVal}, false)
@@ -75,7 +78,8 @@ const TagFollowPage = () => {
                     total_pages: res.data.total_pages,
                     page: res.data.page,
                     itemPerPage: res.data.itemPerPage,
-                    num_follower: res.data.num_follower
+                    num_follower: res.data.num_follower,
+                    total :res.data.total
                 })
             })
     }
@@ -96,7 +100,8 @@ const TagFollowPage = () => {
                     page: res.data.page,
                     itemPerPage: res.data.itemPerPage,
                     is_followed: res.data.is_followed,
-                    num_follower: res.data.num_follower
+                    num_follower: res.data.num_follower,
+                    total:res.data.total
                 })
             })
     }, [tag_id])
@@ -111,7 +116,8 @@ const TagFollowPage = () => {
         delete_data(URL_POST_SERVICE + `/tags/${tag_id}/follow`, {}, true)
             .then(res => setState({...state, is_followed: false, num_follower: state.num_follower - 1}))
     }
-    const classes = useStyle()
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
+    const classes = useStyle({isMobile})
     return (
         <div>
             {state.isLoading ? <div></div> :

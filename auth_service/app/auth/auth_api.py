@@ -31,7 +31,7 @@ def sign_up_user():
     user = User(username=data.get('username'), email=data.get('email'), password=data.get('password'))
     try:
         # fake confirm first
-        user.confirmed = 1
+        user.confirmed = 0
         db.session.add(user)
         db.session.commit()
         # add user profile
@@ -88,7 +88,8 @@ def authenticate():
         'user_id': user.id,
         'user_username': user.username,
         'user_name': resp.json().get('name'),
-        'user_email': resp.json().get('email')
+        'user_email': resp.json().get('email'),
+        'user_avatar': resp.json().get('avatar_hash')
     }), 200
 
 

@@ -60,6 +60,8 @@ services:
         context: ./mail_service
         dockerfile: Dockerfile
     container_name : mail_service
+    volumes:
+    - ./mail_service:/usr/src/app
     depends_on:
     - rabbitmq
   mysql:
@@ -91,11 +93,4 @@ services:
     - "8000:8000"
     volumes:
     - ./api_gateway:/etc/nginx/conf.d
-    environment:
-    - KONG_DATABASE=off
-    - KONG_DECLARATIVE_CONFIG=/usr/src/app/kong.yml
-    - KONG_PROXY_ACCESS_LOG=/dev/stdout
-    - KONG_ADMIN_ACCESS_LOG=/dev/stdout
-    - KONG_PROXY_ERROR_LOG=/dev/stderr
-    - KONG_ADMIN_ERROR_LOG=/dev/stderr
-    - KONG_ADMIN_LISTEN=0.0.0.0:8001,0.0.0.0:8444 ssl
+    restart: always

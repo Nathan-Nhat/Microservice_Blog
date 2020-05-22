@@ -17,6 +17,7 @@ import VpnKeyIcon from '@material-ui/icons/VpnKey';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import PostAddIcon from '@material-ui/icons/PostAdd';
 import MeetingRoomIcon from '@material-ui/icons/MeetingRoom';
+import defaultAvatar from '../image/default_avatar.jpg'
 const useStyles = makeStyles((theme) => ({
     root: {
         flexGrow: 1,
@@ -172,8 +173,8 @@ const AppbarComponent = () => {
                 {
                     isMobile ?
                         <Drawer anchor={'left'} open={isDrawOpen} onClose={handleCloseDraw}>
-                            <img style={{height: '6rem', width: '6rem', margin: '2rem auto 0 auto', borderRadius: '50%'}}
-                                 src={isAuthenticated ? `${user_avatar}` : 'https://www.pphfoundation.ca/wp-content/uploads/2018/05/default-avatar.png'}/>
+                            <img style={{height: '6rem', width: '6rem', margin: '2rem auto 1rem auto', borderRadius: '50%'}}
+                                 src={isAuthenticated ? user_avatar : defaultAvatar}/>
                             {
                                 isAuthenticated?
                                 <Typography style={{textAlign : 'center', fontWeight : 'bold', marginBottom : '1rem'}}>{name}</Typography>: null
@@ -188,7 +189,7 @@ const AppbarComponent = () => {
                                         </ListItem>
                                         <ListItem button onClick={(e) => handleClick(e, 2)}>
                                             <ListItemIcon><VpnKeyIcon/></ListItemIcon>
-                                            <ListItemText primary={'Signup'} style={{marginRight: '2rem'}}/>
+                                            <ListItemText primary={'Signup'} style={{marginRight: '4rem'}}/>
                                         </ListItem>
                                     </div>:
                                     <div>
@@ -198,7 +199,7 @@ const AppbarComponent = () => {
                                         </ListItem>
                                         <ListItem button onClick={(e) => handleClick(e, 3)}>
                                             <ListItemIcon><PostAddIcon/></ListItemIcon>
-                                            <ListItemText primary={'Add post'} style={{marginRight: '2rem'}}/>
+                                            <ListItemText primary={'Add post'} style={{marginRight: '4rem'}}/>
                                         </ListItem>
                                         <ListItem button onClick={(e) => handleClick(e, 5)}>
                                             <ListItemIcon><MeetingRoomIcon/></ListItemIcon>

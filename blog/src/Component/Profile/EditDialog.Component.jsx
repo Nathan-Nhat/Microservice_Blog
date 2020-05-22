@@ -79,7 +79,6 @@ export default function FormDialog({data, profileChange}) {
                     <Divider orientation={isMobile?"horizontal" : 'vertical'} flexItem={true} style={{margin: '0 1rem 0 1rem'}}></Divider>
                     <div className={classes.main}>
                         <TextField
-                            autoFocus
                             margin="dense"
                             label="Full name"
                             type="text"
@@ -89,7 +88,6 @@ export default function FormDialog({data, profileChange}) {
                             fullWidth
                         />
                         <TextField
-                            autoFocus
                             margin="dense"
                             label="Email Address"
                             type="email"
@@ -98,7 +96,6 @@ export default function FormDialog({data, profileChange}) {
                             disabled={true}
                         />
                         <TextField
-                            autoFocus
                             margin="dense"
                             label="Address"
                             type="text"
@@ -108,7 +105,6 @@ export default function FormDialog({data, profileChange}) {
                             onChange={handleChange}
                         />
                         <TextField
-                            autoFocus
                             margin="dense"
                             label="About me"
                             value={state.about_me}

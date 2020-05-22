@@ -3,7 +3,7 @@ import {makeStyles} from "@material-ui/core/styles";
 import ReactMarkdown from "react-markdown/with-html";
 import CodeBlock from "../Helper/CodeBlock";
 import './MarkdownPost.css'
-import {Button, InputAdornment} from "@material-ui/core";
+import {Button, InputAdornment, useMediaQuery} from "@material-ui/core";
 import {get_data, post_data} from "../ApiCall";
 import {URL_POST_SERVICE} from "../Constants";
 import {useDispatch, useSelector} from "react-redux";
@@ -13,16 +13,18 @@ import {Input} from '@material-ui/core'
 import SearchIcon from "@material-ui/icons/Search";
 import {Typography} from "@material-ui/core";
 import CloseRoundedIcon from '@material-ui/icons/CloseRounded';
+import {theme} from "../Themes";
 
 const useStyle = makeStyles({
     root_container: {
         float: 'left',
         width: "100%",
-        padding: '4rem 0 2rem 0'
+        padding: props => props.isMobile ? '1rem 0 1rem 0' : '4rem 0 2rem 0'
     },
     inputTitle: {
         fontSize: '2rem',
-        border: 'None',
+        border: 'none',
+        padding:'0.5rem',
         width: "100%",
         fontWeight: 'bold',
         '&:focus': {
@@ -30,7 +32,7 @@ const useStyle = makeStyles({
         }
     },
     tags: {
-        border: 'None',
+        border: 'none',
         width: "100%",
         padding: '1rem 0',
         '&:focus': {
@@ -40,19 +42,19 @@ const useStyle = makeStyles({
 
     bodyContianer: {
         display: "flex",
-        flexDirection: 'row',
+        flexDirection: props => props.isMobile ? 'column' : 'row',
         padding: '2rem 0',
     },
     body_html: {
-        fontSize: '1rem',
-        width: "50%",
+        fontSize: '1.2rem',
+        width: props => props.isMobile ? '100%' : "50%",
         border: '1px solid #9494b8',
         boxSizing: 'border-box',
         '&:focus': {
             outline: 'None'
         },
         padding: '1rem',
-        height: '42rem + 2px'
+        height: '80vh'
     },
     buttonSave: {
         float: "right"
@@ -70,7 +72,8 @@ const useStyle = makeStyles({
 
 var timeout = null
 const WritePostComponent = () => {
-    const classes = useStyle()
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
+    const classes = useStyle({isMobile})
     const [state, setState] = useState({
         title: '',
         tag: '',
@@ -109,8 +112,8 @@ const WritePostComponent = () => {
     const dispatch = useDispatch()
     const {isAuthenticated, id} = useSelector(state => state.AuthenReducer)
     const handleSave = () => {
-        if (state.tags.length === 0){
-            dispatch(open_notification({message:'You need to put at least 1 tags.', type : 'error'}))
+        if (state.tags.length === 0) {
+            dispatch(open_notification({message: 'You need to put at least 1 tags.', type: 'error'}))
             return;
         }
         setState({...state, isLoading: true})
@@ -177,9 +180,9 @@ const WritePostComponent = () => {
         <div className={classes.root_container}>
             {
                 !isAuthenticated ? <Redirect to={'/'}/> :
-                    <div style={{padding: '0 2rem 2rem 2rem'}}>
-                        <input className={classes.inputTitle} placeholder={`Title`} name='title' value={state.title}
-                               onChange={handleChange}></input>
+                    <div style={isMobile ? {padding: '1rem'} : {padding: '0 2rem 2rem 2rem'}}>
+                            <Input className={classes.inputTitle} placeholder={`Title`} name='title' value={state.title}
+                                   onChange={handleChange}></Input>
                         <div style={{position: 'relative'}}>
                             <Input name='tag' className={classes.tags} placeholder={`Input Tags`} value={state.tag}
                                    disableUnderline
@@ -220,12 +223,12 @@ const WritePostComponent = () => {
                                                         <div
                                                             className={classes.hintElementFocus}>
                                                             <img alt={''}
-                                                                style={{
-                                                                    width: '2rem',
-                                                                    height: '2rem',
-                                                                    borderRadius: '50%'
-                                                                }}
-                                                                src={tag.url_image}/>
+                                                                 style={{
+                                                                     width: '2rem',
+                                                                     height: '2rem',
+                                                                     borderRadius: '50%'
+                                                                 }}
+                                                                 src={tag.url_image}/>
                                                             <Typography
                                                                 style={{
                                                                     lineHeight: '2rem',
@@ -271,8 +274,12 @@ const WritePostComponent = () => {
                                             <textarea name='body' className={classes.body_html} placeholder={`Body`}
                                                       value={state.body}
                                                       onChange={handleChange}></textarea>
-                            <ReactMarkdown className="markdown_write" source={state.body}
-                                           escapeHtml={false} renderers={{code: CodeBlock}}/>
+
+                            {
+                                isMobile?  null:
+                                <ReactMarkdown className="markdown_write" source={state.body}
+                                            escapeHtml={false} renderers={{code: CodeBlock}}/>
+                            }
                         </div>
                         <Button variant={'contained'} color={'primary'} className={classes.buttonSave}
                                 onClick={handleSave} C>Save</Button>

@@ -37,8 +37,8 @@ td {
     overflow-wrap: break-word;
     word-wrap: break-word;
     hyphens: auto;
-    height: 40rem;
-    /*box-sizing: content-box;*/
+    height: 80vh;
+    box-sizing: border-box;
     overflow: auto;
 }
 
