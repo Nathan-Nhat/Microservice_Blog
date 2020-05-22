@@ -97,10 +97,10 @@ const DetailsComponent = ({user_id}) => {
         isLoading: true,
         fullName: 'Anonymous',
         email: 'anonymous@gmail.com',
-        address: 'La khe - Ha Dong - Ha Noi',
+        address: '',
         member_since: '06-01-1996',
         about_me: 'N/A',
-        avatar_hash: 'https://greendestinations.org/wp-content/uploads/2019/05/avatar-exemple.jpg',
+        avatar_hash: '',
         number_follower: 0,
         number_followed: 0,
         is_followed: false,
@@ -196,7 +196,7 @@ const DetailsComponent = ({user_id}) => {
                                         </div>
                                     </div>
                                 </div>
-                                <div>
+                                <div style = {{paddingLeft : '1rem'}}>
                                     <Typography className={classes.element}
                                                 align='left'>{profile.about_me}</Typography>
                                     <Typography className={classes.author} align='left'>Member

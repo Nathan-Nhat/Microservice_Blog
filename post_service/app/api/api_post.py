@@ -222,7 +222,8 @@ def get_user_post(user_id):
         'posts': list_post,
         'page': page,
         'itemPerPage': itemPerPage,
-        'total_pages': num_page
+        'total_pages': num_page,
+        'total': total
     }), 200
 
 

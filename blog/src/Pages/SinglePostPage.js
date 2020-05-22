@@ -37,11 +37,12 @@ const useStyle = makeStyles({
     title: {
         textAlign: 'left',
         fontWeight: "bold",
-        fontSize: '2rem',
+        lineHeight: props => props.isMobile?'2.3rem' : '3rem',
+        fontSize: props => props.isMobile?'1.7rem':'2rem',
     },
     tagsContainer: {
         textAlign: "left",
-        paddingTop: "2rem",
+        paddingTop: props => props.isMobile? '1rem' :"2rem",
     },
     tags: {
         fontSize: '0.8rem',
@@ -58,7 +59,7 @@ const useStyle = makeStyles({
     author: {
         display: "flex",
         flexDirection: props => props.isMobile ? 'column' : "row",
-        paddingBottom: '3rem'
+        paddingBottom: props => props.isMobile?'1rem':'3rem'
     },
     image: {
         width: '3rem',
