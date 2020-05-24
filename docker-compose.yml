@@ -73,18 +73,18 @@ services:
     - MYSQL_ROOT_PASSWORD=Wakerjacob@90
     volumes:
     - ./mysql/data:/var/lib/mysql
-  front_end:
-    image: front_end:1.0
-    restart: always
-    build:
-        context: ./blog
-        dockerfile: Dockerfile
-    container_name : front_end
-    stdin_open: true
-    ports:
-    - "2000:3000"
-    volumes:
-    - ./blog:/app
+#  front_end:
+#    image: front_end:1.0
+#    restart: always
+#    build:
+#        context: ./blog
+#        dockerfile: Dockerfile
+#    container_name : front_end
+#    stdin_open: true
+#    ports:
+#    - "2000:3000"
+#    volumes:
+#    - ./blog:/app
     
   api_gateway:
     image: nginx:1.17.10
