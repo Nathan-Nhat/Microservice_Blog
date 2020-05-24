@@ -6,7 +6,6 @@ from app.models.post_model import Post
 from app import db
 from datetime import datetime, timedelta
 from app.helper.Convert import DateTimeCnv
-from flask_cors import cross_origin
 from app.helper.auth_connector import verify_jwt
 from app.helper.auth_connector import Permission
 from app.helper.Connection import get_connection
@@ -14,7 +13,7 @@ from app.helper.ServiceURL import ServiceURL
 from bs4 import BeautifulSoup
 from markdown import markdown
 from app.models.like_model import Like
-from app.models.tag_model import Tags, Tag_post
+from app.models.tag_model import Tags
 
 
 @post.route('/test')
@@ -61,21 +60,21 @@ def add_post(user_id):
                     author_id=user_id)
     tags = post_details.get('tags')
     tag_arr = tags.split(',')
-    try:
-        for tag_name in tag_arr:
-            tag_target = Tags.query.filter_by(name=tag_name).first()
-            if tag_target is None:
-                tag_insert = Tags(name=tag_name)
-                db.session.add(tag_insert)
-                db.session.flush()
-                post_add.tags.append(tag_insert)
-            else:
-                post_add.tags.append(tag_target)
-        db.session.add(post_add)
-        db.session.flush()
-        db.session.commit()
-    except:
-        db.session.rollback()
+    # try:
+    for tag_name in tag_arr:
+        tag_target = Tags.query.filter_by(name=tag_name).first()
+        if tag_target is None:
+            tag_insert = Tags(name=tag_name)
+            db.session.add(tag_insert)
+            db.session.flush()
+            post_add.tags.append(tag_insert)
+        else:
+            post_add.tags.append(tag_target)
+    db.session.add(post_add)
+    db.session.flush()
+    db.session.commit()
+    # except:
+    #     db.session.rollback()
     return jsonify({'message': 'Success'}), 200
 
 
@@ -138,9 +137,19 @@ def get_all_post_by_page():
     date_from = DateTimeCnv(req_from)
     req_to = request.args.get('to') or '3000-01-01 00:00:00'
     date_to = DateTimeCnv(req_to)
-    posts = Post.query.filter(Post.date_post >= date_from).filter(Post.date_post <= date_to) \
-        .order_by(Post.date_post.desc()) \
-        .paginate(page, itemPerPage, error_out=False)
+    current_user_id = request.args.get('user_current_id')
+    if type == 0:
+        posts = Post.query.filter(Post.date_post >= date_from).filter(Post.date_post <= date_to) \
+            .order_by(Post.date_post.desc()) \
+            .paginate(page, itemPerPage, error_out=False)
+    else:
+        if current_user_id is None:
+            raise CustomException('You dont have permission', 403)
+        posts = db.session.query(Post).join(Like, Post.post_id == Like.post_id).filter(Post.date_post >= date_from,
+                                                                                       Post.date_post <= date_to,
+                                                                                       Like.user_id == current_user_id) \
+            .order_by(Post.date_post.desc()) \
+            .paginate(page, itemPerPage, error_out=False)
     post_paginated = posts.items
     total = posts.total
     num_page = total // itemPerPage + 1
@@ -157,7 +166,6 @@ def get_all_post_by_page():
         index = data_index.index(element.author_id)
         json = element.to_json_summary(data[index])
         json['is_liked'] = False
-        current_user_id = request.args.get('user_current_id')
         if current_user_id is not None:
             like = element.like.filter_by(user_id=current_user_id).first()
             if like is not None:
@@ -241,9 +249,13 @@ def search_post():
     page = int(request.args.get('page', '0'))
     itemPerPage = 20
     if type == 'title':
-        posts = Post.query.filter(Post.title.like(f'%{key_word}%')).paginate(page, itemPerPage, error_out=False)
+        posts = Post.query.filter(Post.title.like(f'%{key_word}%')) \
+            .order_by(Post.date_post.desc()) \
+            .paginate(page, itemPerPage, error_out=False)
     else:
-        posts = Post.query.filter(db.or_(Post.body.like(f'%{key_word}%'), Post.title.like(f'%{key_word}%'))).paginate(
+        posts = Post.query.filter(db.or_(Post.body.like(f'%{key_word}%'), Post.title.like(f'%{key_word}%'))) \
+            .order_by(Post.date_post.desc()) \
+            .paginate(
             page, itemPerPage, error_out=False)
     post_paginated = posts.items
     total = posts.total
@@ -271,3 +283,44 @@ def search_post():
                     'page': page,
                     'itemPerPage': itemPerPage,
                     'total_pages': num_page}), 200
+
+
+@post.route('/most_post')
+def get_most_post():
+    date_before_now = timedelta(days=7)
+    previous_date = datetime.utcnow() - date_before_now
+    sql_str = 'select posts.post_id, posts.title, case ' \
+              'when count(posts.post_id) = 1 and like_table.post_id is null then 0 ' \
+              'else count(posts.post_id) ' \
+              'end ' \
+              '* 10 ' \
+              '+ posts.num_views  as reputation, posts.num_views,posts.author_id, count(like_table.post_id) from posts ' \
+              'left join like_table on posts.post_id = like_table.post_id ' \
+              'where posts.date_post > :date_before ' \
+              'group by posts.post_id ' \
+              'order by reputation desc ' \
+              'limit 5'
+    result = db.session.execute(sql_str, {'date_before':previous_date})
+    result1 = [x for x in result]
+    list_post = []
+    list_author_id = set(map(lambda d: str(d[4]), result1))
+    str_list = ','.join(list_author_id)
+    with get_connection(post, name='profile') as conn:
+        resp = conn.get(ServiceURL.PROFILE_SERVICE + 'list_user_profile?list=' + str_list)
+        if resp.status_code != 200:
+            raise CustomException('Cannot found post', 404)
+    data = resp.json().get('profile')
+    data_index = [int(x.get('user_id')) for x in data]
+    for element in result1:
+        author_id = element[4]
+        index = data_index.index(author_id)
+        json_ret = {
+            'post_id': element[0],
+            'title': element[1],
+            'reputation': element[2],
+            'num_views': element[3],
+            'author': data[index],
+            'num_like': element[5],
+        }
+        list_post.append(json_ret)
+    return jsonify({'post': list_post})

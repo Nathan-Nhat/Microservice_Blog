@@ -8,9 +8,9 @@ import Pagination from "@material-ui/lab/Pagination";
 import LocalOfferIcon from '@material-ui/icons/LocalOffer';
 import {makeStyles} from "@material-ui/core/styles";
 import {useSelector} from "react-redux";
-import {useHistory} from 'react-router-dom'
+import {useHistory, useLocation} from 'react-router-dom'
 import {theme} from "../Themes";
-
+import queryString from 'query-string'
 const useStyle = makeStyles({
     root: {
         padding:"3rem 1rem 1rem 1rem"
@@ -53,6 +53,8 @@ const TagFollowPage = () => {
     const {tag_id} = useParams()
     const history = useHistory()
     const {id, isAuthenticated} = useSelector(state => state.AuthenReducer)
+    const location = useLocation()
+    const page = queryString.parse(location.search).page
     const [state, setState] = React.useState({
         isLoading: false,
         tag_id: tag_id,
@@ -60,28 +62,14 @@ const TagFollowPage = () => {
         url_image: '',
         posts: [],
         total_pages: 0,
-        page: 0,
+        page: page?page:1,
         itemPerPage: 0,
         is_followed: false,
         num_follower: 0,
         total : 0
     })
     const handleChange = (e, newVal) => {
-        get_data(URL_POST_SERVICE + `/tags/${tag_id}/post`, {page: newVal}, false)
-            .then(res => {
-                setState({
-                    ...state,
-                    tag_id: res.data.tag_id,
-                    tag_name: res.data.tag_name,
-                    url_image: res.data.url_image,
-                    posts: res.data.Post,
-                    total_pages: res.data.total_pages,
-                    page: res.data.page,
-                    itemPerPage: res.data.itemPerPage,
-                    num_follower: res.data.num_follower,
-                    total :res.data.total
-                })
-            })
+        history.push(`/tag/${tag_id}?page=${newVal}`)
     }
     React.useEffect(() => {
         let param = {}
@@ -104,7 +92,7 @@ const TagFollowPage = () => {
                     total:res.data.total
                 })
             })
-    }, [tag_id])
+    }, [tag_id, page])
     const handleFollow = () => {
         if (!isAuthenticated) {
             history.push({pathname: '/login', state: {nextUrl: `/tag/${tag_id}`}})

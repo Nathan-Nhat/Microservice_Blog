@@ -201,7 +201,7 @@ const EditPostComponent = () => {
                                                paddingLeft: '0.5rem',
                                                paddingRight: '0.5rem',
                                                color: 'black',
-                                               opacity: '70%'
+                                               opacity: '0.7'
                                            }}/>
                                    </InputAdornment>)}/>
                             {

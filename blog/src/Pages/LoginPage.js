@@ -35,6 +35,7 @@ const useStyle = makeStyles(theme => ({
         boxShadow: 'none',
         margin: 'auto',
         padding : '0.7rem 1rem 0.7rem 1rem',
+        alignSelf : 'center',
         '&:hover': {
             boxShadow: 'none'
         },
@@ -121,7 +122,6 @@ const LoginPage = () => {
                     name: res.data.user_name,
                     user_avatar: res.data.user_avatar
                 }
-                console.log(data.user_avatar)
                 dispatch(fetch_user(data))
                 if (location.state)
                     history.push(location.state.nextUrl)
@@ -207,7 +207,7 @@ const LoginPage = () => {
                             <Divider variant={'middle'}/>
                             <div className={classes.moreOption}>
                                 <Typography className={classes.toSignup}>Don't have account yet? Click <NavLink
-                                    to={'/signup'}>Sign
+                                    to={'/signup'} style = {{color: theme.palette.primary.dark}}>Sign
                                     up</NavLink></Typography>
                                 <Typography className={classes.forgotPassword} onClick={handleForgotPass}>Forgot
                                     password?</Typography>

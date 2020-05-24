@@ -1,5 +1,5 @@
 import React from 'react';
-import {useLocation} from 'react-router-dom'
+import {useLocation, useHistory} from 'react-router-dom'
 import queryString from 'query-string'
 import {Box, CircularProgress, Divider, Input, InputAdornment, Typography} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
@@ -51,33 +51,22 @@ const useStyle = makeStyles({
 });
 const SearchPage = () => {
     const location = useLocation()
+    const history = useHistory()
     const classes = useStyle()
+    const page = queryString.parse(location.search).page
+    const queryText = queryString.parse(location.search).query
     const [state, setState] = React.useState({
-        queryWord: queryString.parse(location.search).query,
+        queryWord: queryText,
         stateLoading: stateLoading.INIT,
         result: {
             posts: [],
-            total_pages: 0,
-            page: 0,
+            total_pages: 1,
+            page: page?page:1,
             itemPerPage: 0,
         }
     })
     const handlePageChange = (e, newVal) => {
-        setState({...state, stateLoading: stateLoading.LOADING})
-        let param = covert_to_search(state.queryWord, newVal)
-        get_data(URL_POST_SERVICE + '/search', param, false)
-            .then(res => {
-                setState({
-                    ...state,
-                    stateLoading: stateLoading.LOADED,
-                    result: {
-                        posts: res.data.Post,
-                        page: res.data.page,
-                        itemPerPage: res.data.itemPerPage,
-                        total_pages: res.data.total_pages
-                    }
-                })
-            })
+        history.push(`/search?query=${queryText}&page=${newVal}`)
     }
     const handleKeyDown = (e) => {
         if (e.key === 'Enter') {
@@ -109,7 +98,7 @@ const SearchPage = () => {
         })
     }
     React.useEffect(() => {
-            let param = covert_to_search(queryString.parse(location.search).query, 0)
+            let param = covert_to_search(queryString.parse(location.search).query, page?page:1)
             get_data(URL_POST_SERVICE + '/search', param, false)
                 .then(res => {
                     setState({
@@ -125,7 +114,7 @@ const SearchPage = () => {
                     })
                 })
         }
-        , [location.search])
+        , [location.search, location.page])
     return (
         <div className={classes.container}>
             <div className={classes.root}>
@@ -157,7 +146,7 @@ const SearchPage = () => {
                            name="queryWord" value={state.queryWord}
                            placeholder={'Enter keyword'}
                            startAdornment={(<InputAdornment>
-                               <SubdirectoryArrowRightRoundedIcon style={{paddingRight: '1rem', opacity: '50%'}}/>
+                               <SubdirectoryArrowRightRoundedIcon style={{paddingRight: '1rem', opacity: '0.5'}}/>
                            </InputAdornment>)}
                     />
                 </HtmlTooltip>
@@ -184,10 +173,10 @@ const SearchPage = () => {
                                         {
                                             state.result.total_pages <= 1 ? null :
                                                 <div style={{display: 'flex', flexDirection: 'column', width: '100%'}}>
-                                                    <Pagination page={state.page} count={state.result.total_pages}
+                                                    <Pagination page={state.result.page} count={state.result.total_pages}
                                                                 variant="outlined"
                                                                 style={{marginTop: '1rem', alignSelf: 'center'}}
-                                                                color="primary" onChange={handleChange}/>
+                                                                color="primary" onChange={handlePageChange}/>
                                                 </div>
                                         }
                                     </Box>

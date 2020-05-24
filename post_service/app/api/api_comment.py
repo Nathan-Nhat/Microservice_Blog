@@ -43,7 +43,7 @@ def add_comment(user_id):
 
 @post.route('/comments/<post_id>')
 def get_comment(post_id):
-    page = int(request.args.get('page', '0'))
+    page = int(request.args.get('page', '1'))
     item_per_page = int(request.args.get('item_per_page', '20'))
     comments_paginate = Comments.query.filter_by(post_id=post_id).order_by(Comments.date_comment.desc()).paginate(page,
                                                                                                                   item_per_page,
@@ -59,7 +59,6 @@ def get_comment(post_id):
     if comment is None:
         return jsonify({'message': 'There is some thing wrong'}), 500
     data = resp.json().get('profile')
-    print(data)
     list_comment = []
     data_index = [x.get('user_id') for x in data]
     for element in comment:
@@ -96,15 +95,15 @@ def edit_comment(user_id):
     return jsonify({'': ''}), 204
 
 
-@post.route('/comments', methods=['DELETE'])
+@post.route('/comments/<comment_id>', methods=['DELETE'])
 @verify_jwt(blueprint=post, permissions=[Permission.COMMENT])
-def delete_comment(user_id):
+def delete_comment(user_id, comment_id):
     data = request.get_json()
-    comment_id = int(data.get('comment_id', 0))
+    comment_id = int(comment_id)
     comment = Comments.query.filter_by(id=comment_id).first()
     if comment is None:
         raise CustomException('Cannot found comment', 404)
-    if user_id != int(data.get('user_comment_id', 0)):
+    if user_id != comment.user_id:
         raise CustomException('You dont have permisson', 403)
     db.session.delete(comment)
     db.session.commit()
@@ -114,12 +113,10 @@ def delete_comment(user_id):
 @post.route('/comments/<comment_id>/like', methods=['POST'])
 @verify_jwt(blueprint=post, permissions=[Permission.COMMENT])
 def like_comment(user_id, comment_id):
-    comment = Comments.query.filter_by(id=comment_id).first()
-    if comment is None:
-        raise CustomException('Cannot found comment', 404)
-    query_like = comment.user_like.filter_by(user_id = user_id).first()
+    comment_id = int(comment_id)
+    query_like = LikeComment.query.filter(LikeComment.comment_id == comment_id, LikeComment.user_id == user_id).first()
     if query_like is not None:
-        raise CustomException('Already liked', 404)
+        raise CustomException(query_like.to_json(), 404)
     like_cmt = LikeComment(comment_id=comment_id, user_id=user_id)
     db.session.add(like_cmt)
     db.session.commit()
@@ -129,7 +126,8 @@ def like_comment(user_id, comment_id):
 @post.route('/comments/<comment_id>/like', methods=['DELETE'])
 @verify_jwt(blueprint=post, permissions=[Permission.COMMENT])
 def unlike_comment(user_id, comment_id):
-    like_cmt = LikeComment.query.filter(comment_id == comment_id, user_id == user_id).first()
+    comment_id = int(comment_id)
+    like_cmt = LikeComment.query.filter(LikeComment.comment_id == comment_id, LikeComment.user_id == user_id).first()
     if like_cmt is None:
         raise CustomException('Cannot found comment', 404)
     db.session.delete(like_cmt)

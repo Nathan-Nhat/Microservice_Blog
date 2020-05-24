@@ -24,12 +24,12 @@ const useStyle = makeStyles({
         gridRowGap: '0.8rem'
     },
     moreButton : {
-        opacity :"70%",
+        opacity :"0.7",
         fontSize : '1rem',
         margin : 'auto',
          '&:hover': {
             cursor: "pointer",
-             opacity :"100%",
+             opacity :"1",
         }
     }
 })
@@ -56,7 +56,7 @@ const FollowerComponents = ({user_id}) => {
             {state.isLoading ? <div></div> :
                 <div>
                     <Typography
-                        style={{paddingBottom: "0.2rem", opacity : '70%'}}>{`${state.number_follower} people following ${state.user_name}`}</Typography>
+                        style={{paddingBottom: "0.2rem", opacity : '0.7'}}>{`${state.number_follower} people following ${state.user_name}`}</Typography>
                     <div className={classes.imageContainer}>
                         {
                             state.followers.map((item, index) => {

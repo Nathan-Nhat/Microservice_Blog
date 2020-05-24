@@ -20,6 +20,7 @@ import PostRightComponent from "../Component/Post/PostRight.Component";
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import {useMediaQuery} from "@material-ui/core";
 import {theme} from "../Themes";
+import BookmarkIcon from "@material-ui/icons/Bookmark";
 
 const useStyle = makeStyles({
     root: {
@@ -37,12 +38,12 @@ const useStyle = makeStyles({
     title: {
         textAlign: 'left',
         fontWeight: "bold",
-        lineHeight: props => props.isMobile?'2.3rem' : '3rem',
-        fontSize: props => props.isMobile?'1.7rem':'2rem',
+        lineHeight: props => props.isMobile ? '2.3rem' : '3rem',
+        fontSize: props => props.isMobile ? '1.7rem' : '2rem',
     },
     tagsContainer: {
         textAlign: "left",
-        paddingTop: props => props.isMobile? '1rem' :"2rem",
+        paddingTop: props => props.isMobile ? '1rem' : "2rem",
     },
     tags: {
         fontSize: '0.8rem',
@@ -50,7 +51,7 @@ const useStyle = makeStyles({
         borderRadius: "0.2rem",
         marginRight: "0.8rem",
         padding: '0.4rem',
-        opacity: "70%",
+        opacity: "0.7",
         '&:hover': {
             cursor: 'pointer',
             boxShadow: '0px 2px 18px -8px rgba(0,0,0,0.75)'
@@ -59,7 +60,7 @@ const useStyle = makeStyles({
     author: {
         display: "flex",
         flexDirection: props => props.isMobile ? 'column' : "row",
-        paddingBottom: props => props.isMobile?'1rem':'3rem'
+        paddingBottom: props => props.isMobile ? '1rem' : '3rem'
     },
     image: {
         width: '3rem',
@@ -99,9 +100,16 @@ const useStyle = makeStyles({
         paddingRight: '1rem'
     },
     datePost: {
-        opacity: "50%",
+        opacity: "0.5",
         textAlign: props => props.isMobile ? 'left' : "right",
         paddingTop: props => props.isMobile ? '1rem' : "0"
+    },
+    likeMobile: {
+        color: props => props.state.data.is_liked ? theme.palette.primary.dark : 'black',
+        opacity: props => props.state.data.is_liked ? 1 : 0.5,
+        '&:hover' : {
+            cursor : 'pointer'
+        }
     }
 })
 const SinglePostPage = () => {
@@ -137,7 +145,7 @@ const SinglePostPage = () => {
 
     }, [state.isLoading])
     const {id, isAuthenticated} = useSelector(state => state.AuthenReducer)
-    const classes = useStyle({isMobile})
+    const classes = useStyle({isMobile, state})
     const history = useHistory()
     const ref = useRef('123')
     useEffect(() => {
@@ -209,75 +217,116 @@ const SinglePostPage = () => {
             })
     }
 
-    return (
-        <div>
-            {state.isLoading === true ? <div></div> :
-                <div className={classes.root}>
-                    <div className={classes.main}>
-                        <Box className={classes.container}>
-                            <Box className={classes.author}>
-                                <Box className={classes.authorButton}>
-                                    <img className={classes.image} src={state.data.author.avatar_hash} alt={''}/>
-                                    <NavLink className={classes.name}
-                                             to={`/profile/${state.data.author.user_id}`}>{state.data.author.name}</NavLink>
-                                    {parseInt(state.data.author.user_id) === id ? <div></div> :
-                                        state.is_followed === false || !isAuthenticated ?
-                                            <Button variant={'outlined'} className={classes.followBtn}
-                                                    onClick={handleFollow}>Follow</Button> :
-                                            <Button variant={'contained'} color='primary'
-                                                    className={classes.followBtn}
-                                                    onClick={handleUnFollow}>Following</Button>
-                                    }
+    const toggole_like = () => {
+        if (!isAuthenticated) {
+            history.push({pathname: '/login', state: {nextUrl: `/post/${post_id}`}})
+        } else if (!state.data.is_liked) {
+            API.post_data(URL_POST_SERVICE + `/${post_id}/like`, {}, null, true)
+                .then(res => setState({
+                    ...state,
+                    data: {
+                        ...state.data,
+                        num_like: state.data.num_like + 1,
+                        is_liked: true
+                    }
+                }))
+        } else {
+            API.delete_data(URL_POST_SERVICE + `/${post_id}/like`, {}, true)
+                .then(res => setState({
+                    ...state,
+                    data: {
+                        ...state.data,
+                        num_like: state.data.num_like - 1,
+                        is_liked: false
+                    }
+                }))
+        }
+    }
 
-                                    <Box style={{display: 'flex', flexDirection: 'row', opacity: '50%'}}>
-                                        <Box className={classes.followGrp}>
-                                            <GroupAddRoundedIcon style={{paddingRight: '0.2rem'}}/>
-                                            <Typography>{state.data.author.number_follower}</Typography>
-                                        </Box>
-                                        <Box className={classes.followGrp}>
-                                            <CreateRoundedIcon style={{paddingRight: '0.2rem'}}/>
-                                            <Typography>{state.data.author.number_posts}</Typography>
+        return (
+            <div>
+                {state.isLoading === true ? <div></div> :
+                    <div className={classes.root}>
+                        <div className={classes.main}>
+                            <Box className={classes.container}>
+                                <Box className={classes.author}>
+                                    <Box className={classes.authorButton}>
+                                        <img className={classes.image} src={state.data.author.avatar_hash} alt={''}/>
+                                        <NavLink className={classes.name}
+                                                 to={`/profile/${state.data.author.user_id}`}>{state.data.author.name}</NavLink>
+                                        {parseInt(state.data.author.user_id) === id ? <div></div> :
+                                            state.is_followed === false || !isAuthenticated ?
+                                                <Button variant={'outlined'} className={classes.followBtn}
+                                                        onClick={handleFollow}>Follow</Button> :
+                                                <Button variant={'contained'} color='primary'
+                                                        className={classes.followBtn}
+                                                        onClick={handleUnFollow}>Following</Button>
+                                        }
+
+                                        <Box style={{display: 'flex', flexDirection: 'row', opacity: '0.5'}}>
+                                            <Box className={classes.followGrp}>
+                                                <GroupAddRoundedIcon style={{paddingRight: '0.2rem'}}/>
+                                                <Typography>{state.data.author.number_follower}</Typography>
+                                            </Box>
+                                            <Box className={classes.followGrp}>
+                                                <CreateRoundedIcon style={{paddingRight: '0.2rem'}}/>
+                                                <Typography>{state.data.author.number_posts}</Typography>
+                                            </Box>
                                         </Box>
                                     </Box>
-                                </Box>
-                                {
-                                    isMobile ? null :
-                                        <div style={{flexGrow: 1}}></div>
-                                }
-                                <div>
-                                    <Typography
-                                        className={classes.datePost}>{state.data.date_post}</Typography>
-                                    <div style={{display: 'flex', flexDirection: "row", opacity: "50%"}}>
-                                        {isMobile ? null : <div style={{flexGrow: 1}}></div>}
-                                        <VisibilityIcon style={{paddingRight: "0.3rem"}}/>
-                                        <Typography>{state.data.num_views}</Typography>
+                                    {
+                                        isMobile ? null :
+                                            <div style={{flexGrow: 1}}></div>
+                                    }
+                                    <div>
+                                        <Typography
+                                            className={classes.datePost}>{state.data.date_post}</Typography>
+                                        <div style={{display: 'flex', flexDirection: "row", opacity: "1"}}>
+                                            {isMobile ? null : <div style={{flexGrow: 1}}></div>}
+                                            <VisibilityIcon style={{paddingRight: "0.3rem", opacity: 0.5}}/>
+                                            <Typography style={{
+                                                paddingRight: "0.5rem",
+                                                opacity: 0.5
+                                            }}>{state.data.num_views}</Typography>
+                                            {
+                                                isMobile ?
+                                                    <BookmarkIcon className={classes.likeMobile} onClick={toggole_like}
+                                                    /> : null
+                                            }
+                                            {
+                                                isMobile?
+                                                <Typography style={{
+                                                paddingRight: "0.5rem",
+                                                opacity: state.data.is_liked? '1' : '0.5', color : state.data.is_liked?theme.palette.primary.dark :'black'
+                                            }}>{state.data.num_like}</Typography> : null
+                                            }
+                                        </div>
                                     </div>
+                                </Box>
+                                <Typography
+                                    className={classes.title}>{state.data.title}</Typography>
+                                <Box className={classes.tagsContainer}>
+                                    {state.data.tag.map((item, index) => {
+                                        return <a key={index} className={classes.tags} key={index} onClick={() => {
+                                            history.push(`/tag/${item.tag_id}`)
+                                        }}>{item.tag_name}</a>
+                                    })}
+                                </Box>
+                                <div ref={ref}>
+                                    <ReactMarkdown className="markdown" source={state.data.body}
+                                                   renderers={{code: CodeBlock}} escapeHtml={false}/>
                                 </div>
                             </Box>
-                            <Typography
-                                className={classes.title}>{state.data.title}</Typography>
-                            <Box className={classes.tagsContainer}>
-                                {state.data.tag.map((item, index) => {
-                                    return <a key={index} className={classes.tags} key={index} onClick={() => {
-                                        history.push(`/tag/${item.tag_id}`)
-                                    }}>{item.tag_name}</a>
-                                })}
-                            </Box>
-                            <div ref={ref}>
-                                <ReactMarkdown className="markdown" source={state.data.body}
-                                               renderers={{code: CodeBlock}} escapeHtml={false}/>
-                            </div>
-                        </Box>
-                        <Divider/>
-                        <CommentComponents post_id={post_id}/>
-                    </div>
-                    {
-                        isMobile ? null :
-                            <PostRightComponent parentData={state} post_id={post_id}/>
-                    }
-                </div>}
-        </div>
-    );
-};
+                            <Divider/>
+                            <CommentComponents post_id={post_id}/>
+                        </div>
+                        {
+                            isMobile ? null :
+                                <PostRightComponent parentData={state} post_id={post_id} toggle_like={toggole_like}/>
+                        }
+                    </div>}
+            </div>
+        );
+    };
 
-export default SinglePostPage;
+    export default SinglePostPage;

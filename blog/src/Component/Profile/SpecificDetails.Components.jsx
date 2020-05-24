@@ -1,5 +1,6 @@
 import React from 'react';
 import PostUserComponent from "./PostUser.Component";
+
 const SpecificDetailsComponents = ({user_id}) => {
     return (
         <div>

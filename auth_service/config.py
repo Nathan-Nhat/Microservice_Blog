@@ -19,7 +19,7 @@ class Config:
 class DevelopmentConfig(Config):
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = os.environ.get('DEV_DATABASE_URL') or 'mysql+pymysql://root:Wakerjacob@90@localhost' \
-                                                                    ':3306/authentication'
+                                                                    ':3306/authentication?charset=utf8mb4'
 
 
 class TestingConfig(Config):
@@ -29,7 +29,7 @@ class TestingConfig(Config):
 
 class ProductionConfig(Config):
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'mysql+pymysql://root:Wakerjacob@90@mysql' \
-                                                                    ':3306/authentication'
+                                                                    ':3306/authentication?charset=utf8mb4'
 
 
 config = {

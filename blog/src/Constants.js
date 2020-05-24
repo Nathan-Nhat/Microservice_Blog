@@ -12,6 +12,6 @@
 // export const URL_POST_SERVICE = 'http://192.168.0.106:8000/post'
 
 
-export const URL_AUTH_SERVICE = 'http://192.168.98.241:8000/auth'
-export const URL_PROFILE_SERVICE = 'http://192.168.98.241:8000/profile'
-export const URL_POST_SERVICE = 'http://192.168.98.241:8000/post'
+export const URL_AUTH_SERVICE = 'http://localhost:8000/auth'
+export const URL_PROFILE_SERVICE = 'http://localhost:8000/profile'
+export const URL_POST_SERVICE = 'http://localhost:8000/post'

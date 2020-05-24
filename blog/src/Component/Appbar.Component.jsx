@@ -18,13 +18,14 @@ import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import PostAddIcon from '@material-ui/icons/PostAdd';
 import MeetingRoomIcon from '@material-ui/icons/MeetingRoom';
 import defaultAvatar from '../image/default_avatar.jpg'
+import LocalOfferIcon from '@material-ui/icons/LocalOffer';
 const useStyles = makeStyles((theme) => ({
     root: {
         flexGrow: 1,
     },
     toolbar: {
-        width: props => props.isMobile ? '100%' : "70%",
-        maxWidth: "1378px",
+        maxWidth: "1200px",
+        width :'100%',
         padding: 0,
         margin: 'auto'
     },
@@ -83,7 +84,7 @@ const AppbarComponent = () => {
         else if (index === 3) history.push('/add_post')
         else if (index === 4) {
             history.push(`/profile/${id}`)
-        } else {
+        } else if (index===5) {
             localStorage.removeItem('jwt')
             let data = {
                 isAuthenticated: false,
@@ -92,6 +93,8 @@ const AppbarComponent = () => {
                 email: ''
             }
             dispatch(fetch_user(data))
+        } else {
+            history.push('/all_tags')
         }
         if (isMobile){
             setDrawOpen(false)
@@ -117,7 +120,6 @@ const AppbarComponent = () => {
     }
     const [isDrawOpen, setDrawOpen] = React.useState(false)
     const {isAuthenticated, id, user_avatar, name} = useSelector(state => state.AuthenReducer)
-    console.log(user_avatar)
     const toggleDrawer = () => {
         setDrawOpen(true)
     }
@@ -197,6 +199,10 @@ const AppbarComponent = () => {
                                             <ListItemIcon><AccountCircleIcon/></ListItemIcon>
                                             <ListItemText primary={'My Profile'}/>
                                         </ListItem>
+                                         <ListItem button onClick={(e) => handleClick(e, 6)}>
+                                            <ListItemIcon><LocalOfferIcon/></ListItemIcon>
+                                            <ListItemText primary={'Tags'} style={{marginRight: '4rem'}}/>
+                                        </ListItem>
                                         <ListItem button onClick={(e) => handleClick(e, 3)}>
                                             <ListItemIcon><PostAddIcon/></ListItemIcon>
                                             <ListItemText primary={'Add post'} style={{marginRight: '4rem'}}/>
@@ -222,6 +228,10 @@ const AppbarComponent = () => {
                                         </Button>
                                     </div> :
                                     <div style={{display: 'flex', flexDirection: 'row'}}>
+                                        <Button color="inherit" className={classes.link}
+                                                onClick={(e) => handleClick(e, 6)}>
+                                            Tags
+                                        </Button>
                                         <Button color="inherit" variant={'outlined'} className={classes.link}
                                                 onClick={(e) => handleClick(e, 3)}>
                                             Add post

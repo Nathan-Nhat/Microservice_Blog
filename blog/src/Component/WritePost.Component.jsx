@@ -149,6 +149,10 @@ const WritePostComponent = () => {
     const handleKeyDown = (e) => {
         if (e.key === 'Enter') {
             let cur_tags = state.tags
+            if (state.tag.length > 20) {
+                dispatch(open_notification({message: 'Number character of tag must be smaller than 20', type :"error"}))
+                return
+            }
             if (!cur_tags.includes(state.tag)) {
                 cur_tags.push(state.tag)
             }
@@ -195,7 +199,7 @@ const WritePostComponent = () => {
                                                paddingLeft: '0.5rem',
                                                paddingRight: '0.5rem',
                                                color: 'black',
-                                               opacity: '70%'
+                                               opacity: '0.7'
                                            }}/>
                                    </InputAdornment>)}/>
                             {
