@@ -14,11 +14,6 @@ class Post(db.Model):
     comments = db.relationship('Comments', backref='post', lazy='dynamic')
     like = db.relationship('Like', cascade="all, delete-orphan", backref="items", lazy='dynamic', )
     num_views = db.Column(db.Integer, default=0)
-    tags = db.relationship('Tags',
-                           secondary='tag_post',
-                           cascade='save-update, merge',
-                           backref=db.backref('posts', lazy='dynamic'),
-                           lazy='dynamic')
 
     def to_json_little(self):
         return {
@@ -28,7 +23,7 @@ class Post(db.Model):
             'num_comment': self.comments.count(),
             'num_like': self.like.count(),
             'num_views': self.num_views,
-            'tags': list(map(lambda d : {'tag_name' : d.name, 'tag_id' : d.tag_id},self.tags.all()))
+            'tags': list(map(lambda d: {'tag_name': d.name, 'tag_id': d.tag_id}, self.tags.all()))
         }
 
     def to_json_full(self, author):
@@ -42,7 +37,7 @@ class Post(db.Model):
             'num_like': self.like.count(),
             'author': author,
             'num_views': self.num_views,
-            'tags': list(map(lambda d : {'tag_name' : d.name, 'tag_id' : d.tag_id},self.tags.all()))
+            'tags': list(map(lambda d: {'tag_name': d.name, 'tag_id': d.tag_id}, self.tags.all()))
         }
         return ret
 
@@ -55,7 +50,7 @@ class Post(db.Model):
             'num_like': self.like.count(),
             'author': author,
             'num_views': self.num_views,
-            'tags': list(map(lambda d : {'tag_name' : d.name, 'tag_id' : d.tag_id},self.tags.all()))
+            'tags': list(map(lambda d: {'tag_name': d.name, 'tag_id': d.tag_id}, self.tags.all()))
         }
         return ret
 
