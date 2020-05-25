@@ -16,6 +16,7 @@ class Post(db.Model):
     num_views = db.Column(db.Integer, default=0)
     tags = db.relationship('Tags',
                            secondary='tag_post',
+                           cascade='save-update, merge',
                            backref=db.backref('posts', lazy='dynamic'),
                            lazy='dynamic')
 
