@@ -25,7 +25,8 @@ const AuthComponent = () => {
                         id: res.data.user_id,
                         name: res.data.user_name,
                         email: res.data.user_email,
-                        user_avatar:res.data.user_avatar
+                        user_avatar:res.data.user_avatar,
+                        is_admin: res.data.is_admin
                     }
                     dispatch(fetch_user(data))
                     setState(false)

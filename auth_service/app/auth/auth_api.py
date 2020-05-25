@@ -10,6 +10,7 @@ from app.helper.Connection import get_connection
 from app.helper.ServiceURL import ServiceURL
 from app.helper.MailSender import MailSender
 from app.model.user_model import confirm
+from app.model.role_model import Permission
 
 
 @auth.route('/sign_up', methods=['POST'])
@@ -89,7 +90,8 @@ def authenticate():
         'user_username': user.username,
         'user_name': resp.json().get('name'),
         'user_email': resp.json().get('email'),
-        'user_avatar': resp.json().get('avatar_hash')
+        'user_avatar': resp.json().get('avatar_hash'),
+        'is_admin': user.can(Permission.ADMIN)
     }), 200
 
 
@@ -116,7 +118,8 @@ def verify_login():
         'user_username': user.username,
         'user_name': resp.json().get('name'),
         'user_email': resp.json().get('email'),
-        'user_avatar': resp.json().get('avatar_hash')
+        'user_avatar': resp.json().get('avatar_hash'),
+        'is_admin': user.can(Permission.ADMIN)
     }), 200
 
 

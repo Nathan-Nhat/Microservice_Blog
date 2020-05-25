@@ -5,7 +5,8 @@ const initialState = {
     id: 0,
     name: '',
     email: '',
-    user_avatar :''
+    user_avatar :'',
+    is_admin: false
 };
 
 const AuthenReducer = (state = initialState, action) => {
@@ -16,7 +17,8 @@ const AuthenReducer = (state = initialState, action) => {
                 id : action.data.id,
                 name : action.data.name,
                 email: action.data.email,
-                user_avatar: action.data.user_avatar
+                user_avatar: action.data.user_avatar,
+                is_admin : action.data.is_admin,
             }
             return state;
         default:

@@ -5,15 +5,16 @@ import {URL_POST_SERVICE} from "../Constants";
 import {useParams} from 'react-router-dom'
 import PostComponent from "../Component/Post/Post.Component";
 import Pagination from "@material-ui/lab/Pagination";
-import LocalOfferIcon from '@material-ui/icons/LocalOffer';
 import {makeStyles} from "@material-ui/core/styles";
 import {useSelector} from "react-redux";
 import {useHistory, useLocation} from 'react-router-dom'
 import {theme} from "../Themes";
 import queryString from 'query-string'
+import {Dialog, DialogTitle, TextField} from '@material-ui/core'
+
 const useStyle = makeStyles({
     root: {
-        padding:"3rem 1rem 1rem 1rem"
+        padding: "3rem 1rem 1rem 1rem"
 
     },
     tagsContainer: {
@@ -22,9 +23,7 @@ const useStyle = makeStyles({
         paddingBottom: '2rem'
     },
     tagImage: {
-        fontSize: '4rem',
-        color: 'red',
-        marginRight: props => props.isMobile?'1rem':'3rem',
+        marginRight: props => props.isMobile ? '1rem' : '3rem',
         width: '4rem',
         height: '4rem',
         borderRadius: '50%'
@@ -36,7 +35,7 @@ const useStyle = makeStyles({
     tagName: {
         fontSize: '1.2rem',
         fontWeight: 'bold',
-        marginRight :'1rem',
+        marginRight: '1rem',
         gridColumnStart: 1,
         gridColumnEnd: 4
     },
@@ -47,7 +46,12 @@ const useStyle = makeStyles({
     followerText: {
         fontSize: '0.9rem',
         lineHeight: '1.9rem'
-    }
+    },
+    dialogTag: {
+        padding: '1rem',
+        display: "flex",
+        flexDirection: 'column'
+    },
 })
 const TagFollowPage = () => {
     const {tag_id} = useParams()
@@ -62,18 +66,18 @@ const TagFollowPage = () => {
         url_image: '',
         posts: [],
         total_pages: 0,
-        page: page?page:1,
+        page: page ? page : 1,
         itemPerPage: 0,
         is_followed: false,
         num_follower: 0,
-        total : 0
+        total: 0
     })
     const handleChange = (e, newVal) => {
         history.push(`/tag/${tag_id}?page=${newVal}`)
     }
     React.useEffect(() => {
-        let param = {page : page?page:1}
-        if (isAuthenticated) param = {current_user_id: id, page: page?page:1}
+        let param = {page: page ? page : 1}
+        if (isAuthenticated) param = {current_user_id: id, page: page ? page : 1}
         setState({...state, isLoading: true})
         get_data(URL_POST_SERVICE + `/tags/${tag_id}/post`, param, false)
             .then(res => {
@@ -89,7 +93,7 @@ const TagFollowPage = () => {
                     itemPerPage: res.data.itemPerPage,
                     is_followed: res.data.is_followed,
                     num_follower: res.data.num_follower,
-                    total:res.data.total
+                    total: res.data.total
                 })
             })
     }, [tag_id, page])
@@ -106,6 +110,12 @@ const TagFollowPage = () => {
     }
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
     const classes = useStyle({isMobile})
+    const handleImageChange = (e) => {
+        let val = e.target.files[0]
+        console.log(val)
+        let url = URL.createObjectURL(val)
+        setState({...state, url_image: url})
+    }
     return (
         <div>
             {state.isLoading ? <div></div> :
@@ -123,6 +133,7 @@ const TagFollowPage = () => {
                             </div>
                         </div>
                         <div style={{flexGrow: 1}}></div>
+                        <input name='image_tag' type='file' onChange={handleImageChange}/>
                         <Box>
                             {!state.is_followed ?
                                 <Button onClick={handleFollow} variant={'outlined'} color='primary'>Follow</Button> :
@@ -143,14 +154,14 @@ const TagFollowPage = () => {
                                 })
                             }
                         </Box>
-                         <Box>
+                        <Box>
                             {
                                 state.total_pages <= 1 ? null :
-                                    <div style={{display: 'flex' , flexDirection : 'column' , width:'100%'}}>
-                                    <Pagination page={state.page} count={state.total_pages} variant="outlined"
-                                                style={{marginTop:'1rem', alignSelf:'center'}}
-                                                color="primary" onChange={handleChange}/>
-                                                </div>
+                                    <div style={{display: 'flex', flexDirection: 'column', width: '100%'}}>
+                                        <Pagination page={state.page} count={state.total_pages} variant="outlined"
+                                                    style={{marginTop: '1rem', alignSelf: 'center'}}
+                                                    color="primary" onChange={handleChange}/>
+                                    </div>
                             }
                         </Box>
                     </Box>

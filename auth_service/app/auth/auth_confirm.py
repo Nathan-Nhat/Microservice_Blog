@@ -11,6 +11,7 @@ import json
 from flask import redirect
 from app.helper.ServiceURL import ServiceURL
 
+
 @auth.route('/confirm', methods=['GET'])
 def confirm_user():
     user_id = request.args.get('user_id')

@@ -42,7 +42,7 @@ def post_user_profile():
     user_details = request.get_json()
     user_id = user_details.get('profile_id')
     userDetails = UserDetails(user_id=user_id, email=user_details.get('email'), name=user_details.get('name'))
-    userDetails.avatar_hash = 'https://www.w3schools.com/w3images/avatar2.png'
+    userDetails.avatar_hash = userDetails.gravatar(size=256)
     db.session.add(userDetails)
     db.session.commit()
     return resp_json(userDetails.to_json(), 200)

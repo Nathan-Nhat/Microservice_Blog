@@ -120,7 +120,8 @@ const LoginPage = () => {
                     id: res.data.user_id,
                     email: res.data.user_email,
                     name: res.data.user_name,
-                    user_avatar: res.data.user_avatar
+                    user_avatar: res.data.user_avatar,
+                    is_admin : res.data.is_admin
                 }
                 dispatch(fetch_user(data))
                 if (location.state)
