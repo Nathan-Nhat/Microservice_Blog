@@ -102,7 +102,7 @@ services:
       context: ./front_end_production
       dockerfile: Dockerfile
     ports:
-    - "8080:80"
+    - "80:80"
     volumes:
     - ./front_end_production/build:/usr/share/nginx/html
     - ./front_end_production/config:/etc/nginx/conf.d

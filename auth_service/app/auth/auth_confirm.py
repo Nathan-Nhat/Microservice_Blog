@@ -17,14 +17,14 @@ def confirm_user():
     token = request.args.get('token')
     user = User.query.filter_by(id=user_id).first()
     if user.confirmed:
-        return redirect(f'{ServiceURL.FRONT_END_SERVER_DEV}/login?type=0')
+        return redirect(f'{ServiceURL.FRONT_END_SERVER}/login?type=0')
     if user is None or not confirm(user, token):
         message = 'There was an error when confirming user!'
-        return redirect(f'{ServiceURL.FRONT_END_SERVER_DEV}/login?type=1')
+        return redirect(f'{ServiceURL.FRONT_END_SERVER}/login?type=1')
     user.confirmed = True
     db.session.add(user)
     db.session.commit()
-    return redirect(f'{ServiceURL.FRONT_END_SERVER_DEV}/login?type=0')
+    return redirect(f'{ServiceURL.FRONT_END_SERVER}/login?type=0')
 
 
 @auth.route('/re_confirm')  # argument :email
