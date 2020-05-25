@@ -7,17 +7,29 @@
     width: 90vw;
     margin:auto;
   }
+   .markdown p{
+  font-size: 1rem;
+  line-height: 2rem;
+}
+   li {
+   font-size: 1rem;
+   line-height: 2rem;
+ }
 }
 @media only screen and (min-width: 600px) {
   pre {
     border: 1px solid #ccc;
     box-sizing: border-box;
   }
+  .markdown p{
+  font-size: 1.2rem;
+  line-height: 2.2rem;
 }
- li {
+   li {
    font-size: 1.2rem;
    line-height: 2.2rem;
  }
+}
 blockquote {
   color: #666;
   margin: 0;
@@ -43,10 +55,7 @@ td {
 .markdown {
   margin-top: 2rem;
 }
-.markdown p{
-  font-size: 1.2rem;
-  line-height: 2.2rem;
-}
+
 .markdown > p img {
   width: 80%;
   display: block;

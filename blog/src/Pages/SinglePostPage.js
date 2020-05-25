@@ -1,6 +1,6 @@
 import React, {useState, useEffect, useRef} from 'react';
 import {useParams} from 'react-router-dom'
-import {Box, Typography, CircularProgress} from '@material-ui/core'
+import {Box, Typography, CircularProgress, Popover, Grow, Paper, MenuList, MenuItem} from '@material-ui/core'
 import {makeStyles} from "@material-ui/core/styles";
 import {get_data} from "../ApiCall";
 import {URL_POST_SERVICE, URL_PROFILE_SERVICE} from "../Constants";
@@ -10,7 +10,7 @@ import '../Markdown.style.css'
 import CodeBlock from "../Helper/CodeBlock";
 import CommentComponents from "../Component/Post/Comment.Components";
 import Divider from "@material-ui/core/Divider";
-import {Button} from "@material-ui/core";
+import {Button, IconButton} from "@material-ui/core";
 import {useSelector} from "react-redux";
 import GroupAddRoundedIcon from '@material-ui/icons/GroupAddRounded';
 import CreateRoundedIcon from '@material-ui/icons/CreateRounded';
@@ -21,7 +21,7 @@ import VisibilityIcon from '@material-ui/icons/Visibility';
 import {useMediaQuery} from "@material-ui/core";
 import {theme} from "../Themes";
 import BookmarkIcon from "@material-ui/icons/Bookmark";
-
+import EditIcon from '@material-ui/icons/Edit';
 const useStyle = makeStyles({
     root: {
         display: 'flex',
@@ -107,8 +107,8 @@ const useStyle = makeStyles({
     likeMobile: {
         color: props => props.state.data.is_liked ? theme.palette.primary.dark : 'black',
         opacity: props => props.state.data.is_liked ? 1 : 0.5,
-        '&:hover' : {
-            cursor : 'pointer'
+        '&:hover': {
+            cursor: 'pointer'
         }
     }
 })
@@ -242,91 +242,137 @@ const SinglePostPage = () => {
                 }))
         }
     }
+    const myRef = useRef(null)
+    const handleEdit = () => {
+        history.push(`/edit_post/${post_id}`)
+    }
+    const handleDelete = () => {
+        API.delete_data(URL_POST_SERVICE + `/${post_id}`, {}, true)
+            .then(res => {
+                history.push('/')
+            })
+    }
+    const [open, setOpen] = React.useState(false)
+    const toggleOpen = () => {
+        setOpen(true)
+    }
+    const handleClose = () => {
+        setOpen(false)
+    }
+    return (
+        <div>
+            {state.isLoading === true ? <div></div> :
+                <div className={classes.root}>
+                    <div className={classes.main}>
+                        <Box className={classes.container}>
+                            <Box className={classes.author}>
+                                <Box className={classes.authorButton}>
+                                    <img className={classes.image} src={state.data.author.avatar_hash} alt={''}/>
+                                    <NavLink className={classes.name}
+                                             to={`/profile/${state.data.author.user_id}`}>{state.data.author.name}</NavLink>
+                                    {parseInt(state.data.author.user_id) === id ? <div></div> :
+                                        state.is_followed === false || !isAuthenticated ?
+                                            <Button variant={'outlined'} className={classes.followBtn}
+                                                    onClick={handleFollow}>Follow</Button> :
+                                            <Button variant={'contained'} color='primary'
+                                                    className={classes.followBtn}
+                                                    onClick={handleUnFollow}>Following</Button>
+                                    }
 
-        return (
-            <div>
-                {state.isLoading === true ? <div></div> :
-                    <div className={classes.root}>
-                        <div className={classes.main}>
-                            <Box className={classes.container}>
-                                <Box className={classes.author}>
-                                    <Box className={classes.authorButton}>
-                                        <img className={classes.image} src={state.data.author.avatar_hash} alt={''}/>
-                                        <NavLink className={classes.name}
-                                                 to={`/profile/${state.data.author.user_id}`}>{state.data.author.name}</NavLink>
-                                        {parseInt(state.data.author.user_id) === id ? <div></div> :
-                                            state.is_followed === false || !isAuthenticated ?
-                                                <Button variant={'outlined'} className={classes.followBtn}
-                                                        onClick={handleFollow}>Follow</Button> :
-                                                <Button variant={'contained'} color='primary'
-                                                        className={classes.followBtn}
-                                                        onClick={handleUnFollow}>Following</Button>
-                                        }
-
-                                        <Box style={{display: 'flex', flexDirection: 'row', opacity: '0.5'}}>
-                                            <Box className={classes.followGrp}>
-                                                <GroupAddRoundedIcon style={{paddingRight: '0.2rem'}}/>
-                                                <Typography>{state.data.author.number_follower}</Typography>
-                                            </Box>
-                                            <Box className={classes.followGrp}>
-                                                <CreateRoundedIcon style={{paddingRight: '0.2rem'}}/>
-                                                <Typography>{state.data.author.number_posts}</Typography>
-                                            </Box>
+                                    <Box style={{display: 'flex', flexDirection: 'row', opacity: '0.5'}}>
+                                        <Box className={classes.followGrp}>
+                                            <GroupAddRoundedIcon style={{paddingRight: '0.2rem'}}/>
+                                            <Typography>{state.data.author.number_follower}</Typography>
+                                        </Box>
+                                        <Box className={classes.followGrp}>
+                                            <CreateRoundedIcon style={{paddingRight: '0.2rem'}}/>
+                                            <Typography>{state.data.author.number_posts}</Typography>
                                         </Box>
                                     </Box>
-                                    {
-                                        isMobile ? null :
-                                            <div style={{flexGrow: 1}}></div>
-                                    }
-                                    <div>
-                                        <Typography
-                                            className={classes.datePost}>{state.data.date_post}</Typography>
-                                        <div style={{display: 'flex', flexDirection: "row", opacity: "1"}}>
-                                            {isMobile ? null : <div style={{flexGrow: 1}}></div>}
-                                            <VisibilityIcon style={{paddingRight: "0.3rem", opacity: 0.5}}/>
-                                            <Typography style={{
-                                                paddingRight: "0.5rem",
-                                                opacity: 0.5
-                                            }}>{state.data.num_views}</Typography>
-                                            {
-                                                isMobile ?
-                                                    <BookmarkIcon className={classes.likeMobile} onClick={toggole_like}
-                                                    /> : null
-                                            }
-                                            {
-                                                isMobile?
+                                </Box>
+                                {
+                                    isMobile ? null :
+                                        <div style={{flexGrow: 1}}></div>
+                                }
+                                <div>
+                                    <Typography
+                                        className={classes.datePost}>{state.data.date_post}</Typography>
+                                    <div style={{display: 'flex', flexDirection: "row", opacity: "1"}}>
+                                        {isMobile ? null : <div style={{flexGrow: 1}}></div>}
+                                        <VisibilityIcon style={{paddingRight: "0.3rem", opacity: 0.5}}/>
+                                        <Typography style={{
+                                            paddingRight: "0.5rem",
+                                            opacity: 0.5
+                                        }}>{state.data.num_views}</Typography>
+                                        {
+                                            isMobile ?
+                                                <BookmarkIcon className={classes.likeMobile} onClick={toggole_like}
+                                                /> : null
+                                        }
+                                        {
+                                            isMobile ?
                                                 <Typography style={{
-                                                paddingRight: "0.5rem",
-                                                opacity: state.data.is_liked? '1' : '0.5', color : state.data.is_liked?theme.palette.primary.dark :'black'
-                                            }}>{state.data.num_like}</Typography> : null
-                                            }
-                                        </div>
+                                                    paddingRight: "0.5rem",
+                                                    opacity: state.data.is_liked ? '1' : '0.5',
+                                                    color: state.data.is_liked ? theme.palette.primary.dark : 'black'
+                                                }}>{state.data.num_like}</Typography> : null
+                                        }
                                     </div>
-                                </Box>
-                                <Typography
-                                    className={classes.title}>{state.data.title}</Typography>
-                                <Box className={classes.tagsContainer}>
-                                    {state.data.tag.map((item, index) => {
-                                        return <a key={index} className={classes.tags} key={index} onClick={() => {
-                                            history.push(`/tag/${item.tag_id}`)
-                                        }}>{item.tag_name}</a>
-                                    })}
-                                </Box>
-                                <div ref={ref}>
-                                    <ReactMarkdown className="markdown" source={state.data.body}
-                                                   renderers={{code: CodeBlock}} escapeHtml={false}/>
                                 </div>
                             </Box>
-                            <Divider/>
-                            <CommentComponents post_id={post_id}/>
-                        </div>
-                        {
-                            isMobile ? null :
-                                <PostRightComponent parentData={state} post_id={post_id} toggle_like={toggole_like}/>
-                        }
-                    </div>}
-            </div>
-        );
-    };
+                            <Typography
+                                className={classes.title}>{state.data.title}</Typography>
+                            <Box className={classes.tagsContainer}>
+                                {state.data.tag.map((item, index) => {
+                                    return <a key={index} className={classes.tags} key={index} onClick={() => {
+                                        history.push(`/tag/${item.tag_id}`)
+                                    }}>{item.tag_name}</a>
+                                })}
+                                <div style={{float:'right'}}>
+                                    {isAuthenticated && id === state.data.author.user_id ?
+                                        <div>
+                                            <IconButton ref={myRef} aria-controls={true ? 'menu-list-post' : undefined}
+                                                        aria-haspopup="true" onClick={toggleOpen}
+                                                        size={'large'}>
+                                                <EditIcon style={{fontSize: '1.5rem', color: theme.palette.primary.dark}}/>
+                                            </IconButton>
+                                            <Popover open={open} anchorEl={myRef.current} role={undefined}
+                                                     disablePortal onClose={handleClose} anchorOrigin={{
+                                                vertical: 'bottom',
+                                                horizontal: 'center',
+                                            }}
+                                                     transformOrigin={{
+                                                         vertical: 'top',
+                                                         horizontal: 'left',
+                                                     }}>
+                                                <Grow in={true}>
+                                                    <Paper>
+                                                        <MenuList id="menu-list-post">
+                                                            <MenuItem onClick={handleEdit}>Edit</MenuItem>
+                                                            <MenuItem onClick={handleDelete}>Delete</MenuItem>
+                                                        </MenuList>
+                                                    </Paper>
+                                                </Grow>
+                                            </Popover>
+                                        </div> : null
+                                    }
+                                </div>
+                            </Box>
+                            <div ref={ref}>
+                                <ReactMarkdown className="markdown" source={state.data.body}
+                                               renderers={{code: CodeBlock}} escapeHtml={false}/>
+                            </div>
+                        </Box>
+                        <Divider/>
+                        <CommentComponents post_id={post_id}/>
+                    </div>
+                    {
+                        isMobile ? null :
+                            <PostRightComponent parentData={state} post_id={post_id} toggle_like={toggole_like}/>
+                    }
+                </div>}
+        </div>
+    );
+};
 
-    export default SinglePostPage;
+export default SinglePostPage;

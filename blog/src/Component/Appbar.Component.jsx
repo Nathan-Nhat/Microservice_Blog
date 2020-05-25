@@ -127,7 +127,7 @@ const AppbarComponent = () => {
         setDrawOpen(false)
     }
     return (
-        <AppBar position="static" style={{boxShadow: 'none', paddingLeft: '1rem'}}>
+        <AppBar position="static" style={{boxShadow: 'none', paddingLeft: '1rem'}} color={'secondary'}>
             <Toolbar className={classes.toolbar}>
                 {
                     !isMobile ? null :

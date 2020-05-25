@@ -14,7 +14,7 @@ import SearchIcon from "@material-ui/icons/Search";
 import {Typography} from "@material-ui/core";
 import CloseRoundedIcon from '@material-ui/icons/CloseRounded';
 import {theme} from "../Themes";
-
+import {useHistory} from 'react-router-dom'
 const useStyle = makeStyles({
     root_container: {
         float: 'left',
@@ -67,7 +67,7 @@ const useStyle = makeStyles({
             backgroundColor: '#42a5f5',
             cursor: 'pointer'
         }
-    }
+    },
 })
 
 var timeout = null
@@ -82,6 +82,7 @@ const WritePostComponent = () => {
         isLoading: false,
         isFocusedTags: false
     })
+    const history = useHistory()
     const [hint, setHint] = useState({
         tags: [],
         is_focusing: false
@@ -130,6 +131,7 @@ const WritePostComponent = () => {
         post_data(URL_POST_SERVICE + `/`, {}, data, true)
             .then(res => {
                 setState({...state, isLoading: false})
+                history.push(`/post/${res.data.post_id}`)
                 dispatch(open_notification({message: "Save post successful", type: 'success'}))
             })
             .catch(error => {

@@ -15,6 +15,7 @@ import {Typography, Divider, InputAdornment} from "@material-ui/core";
 import CloseRoundedIcon from '@material-ui/icons/CloseRounded';
 import {useParams} from 'react-router-dom'
 import {theme} from "../Themes";
+import {useHistory} from 'react-router-dom'
 const useStyle = makeStyles({
     root_container: {
         float: 'left',
@@ -72,6 +73,7 @@ var timeout = null
 const EditPostComponent = () => {
      const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
     const classes = useStyle({isMobile})
+    const history = useHistory()
     const [state, setState] = useState({
         title: '',
         tag: '',
@@ -125,6 +127,7 @@ const EditPostComponent = () => {
         put_data(URL_POST_SERVICE + `/`, {}, data, true)
             .then(res => {
                 setState({...state, isLoading: false})
+                history.push(`/post/${res.data.post_id}`)
                 dispatch(open_notification({message: "Save post successful", type: 'success'}))
             })
             .catch(error => {
