@@ -1,6 +1,6 @@
 import React from 'react';
 import {makeStyles} from "@material-ui/core";
-import {Switch, Route} from "react-router-dom";
+import {Switch, Route, Redirect} from "react-router-dom";
 import LoginPage from "../Pages/LoginPage";
 import SignupPage from '../Pages/SignupPage'
 import MainPage from "../Pages/MainPage";
@@ -11,11 +11,12 @@ import TagFollowPage from '../Pages/TagFollowPage'
 import ChangePasswordPage from '../Pages/ChangePasswordPage'
 import {useMediaQuery} from "@material-ui/core";
 import {theme} from "../Themes";
+import AllTagPage from "../Pages/AllTagPage";
 
 const useStyle = makeStyles({
     container: {
         width: '100%',
-        maxWidth : "1080px",
+        maxWidth : "1200px",
         margin: "auto"
     },
     textInput: {}
@@ -28,12 +29,16 @@ const MainComponent = () => {
             <Switch>
                 <Route path={'/login'} component={LoginPage}/>
                 <Route path='/signup' component={SignupPage}/>
-                <Route exact path = '/' component={MainPage}/>
+                <Route exact path = '/'>
+                    <Redirect to = '/p/newest'/>
+                </Route>
+                <Route path={'/p'}  component={MainPage}/>
                 <Route path='/profile/:userId' component={ProfilePage} />
                 <Route path='/post/:post_id' component={SinglePostPage}/>
                 <Route path={'/search'} component={SearchPage} />
                 <Route path={'/tag/:tag_id'} component={TagFollowPage} />
                 <Route path={'/change_password'} component={ChangePasswordPage} />
+                <Route path={'/all_tags'} component={AllTagPage}/>
             </Switch>
 
         </div>

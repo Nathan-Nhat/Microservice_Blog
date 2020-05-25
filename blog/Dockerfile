@@ -1,4 +1,4 @@
-FROM node:13.12.0-alpine
+FROM node:13.12.0-alpine as react
 
 WORKDIR /app
 
@@ -15,4 +15,4 @@ COPY . ./
 
 EXPOSE 3000
 
-CMD [ "npm", "start" ]
+CMD ["npm", "start"]

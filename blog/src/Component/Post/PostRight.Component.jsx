@@ -6,11 +6,13 @@ import {useSelector} from "react-redux";
 import {URL_POST_SERVICE, URL_PROFILE_SERVICE} from "../../Constants";
 import {useHistory} from 'react-router-dom'
 import * as API from "../../ApiCall";
+import BookmarkIcon from '@material-ui/icons/Bookmark';
+import CheckIcon from '@material-ui/icons/Check';
 
 const useStyle = makeStyles({
     tableContent: {
-        minWidth : '250px',
-        maxWidth :'250px',
+        minWidth: '250px',
+        maxWidth: '250px',
         alignSelf: 'flex-start',
         padding: '2rem 2rem',
         overflowWrap: 'break-word',
@@ -21,10 +23,10 @@ const useStyle = makeStyles({
         top: 0,
         display: 'flex',
         flexDirection: 'column',
-        height :'100vh'
+        height: '100vh'
     },
     header1: {
-        fontSize :"0.9rem",
+        fontSize: "0.9rem",
         paddingTop: '0.5rem',
         '&:hover': {
             cursor: 'pointer',
@@ -32,9 +34,9 @@ const useStyle = makeStyles({
         },
     },
     header2: {
-        fontSize :"0.9rem",
-        padding : '0.2rem',
-        lineHeight : '1.2rem',
+        fontSize: "0.9rem",
+        padding: '0.2rem',
+        lineHeight: '1.2rem',
         '&:hover': {
             cursor: 'pointer',
             color: 'blue'
@@ -43,8 +45,8 @@ const useStyle = makeStyles({
     },
     bodyContent: {
         padding: "0.6rem 1rem",
-        height : '100%',
-        overflow : 'auto'
+        height: '100%',
+        overflow: 'auto'
     },
     likeCmt: {
         display: 'flex',
@@ -53,54 +55,34 @@ const useStyle = makeStyles({
         justifyContent: 'center',
     }
 })
-const PostRightComponent = ({parentData, post_id}) => {
+const PostRightComponent = ({parentData, post_id, toggle_like}) => {
     const classes = useStyle()
-    const [state, setState] = React.useState({
-        isLiked : parentData.data.is_liked,
-        num_comment : parentData.data.num_comment,
-        num_Like: parentData.data.num_like
-    })
-    const {id, isAuthenticated} = useSelector(state=>state.AuthenReducer)
-    const history = useHistory()
-    const handleLike = () => {
-        let cur_like = state.num_Like + 1
-        if (!isAuthenticated) {
-            history.push({pathname: '/login', state: {nextUrl: `/post/${post_id}`}})
-        }
-        else
-        {
-            API.post_data(URL_POST_SERVICE + `/${post_id}/like`, {}, null, true)
-                .then(res => setState({...state, isLiked: true, num_Like: cur_like}))
-        }
-    }
-
-    const handleUnLike = () => {
-            let cur_like = state.num_Like - 1
-            API.delete_data(URL_POST_SERVICE + `/${post_id}/like`, {}, true)
-                .then(res => setState({...state, isLiked: false, num_Like: cur_like}))
-    }
     return (
         <div className={classes.tableContent}>
             <div className={classes.likeCmt}>
                 <div style={{width: '45%', textAlign: 'center'}}>
-                    <Typography variant={"h4"}>{state.num_Like}</Typography>
-                    <Typography style={{fontSize : '0.8rem'}}>Likes</Typography>
+                    <Typography variant={"h4"}>{parentData.data.num_like}</Typography>
+                    <Typography style={{fontSize: '0.8rem'}}>Saved</Typography>
                 </div>
                 <Divider orientation={"vertical"} flexItem={true}></Divider>
                 <div style={{width: '45%', textAlign: 'center'}}>
-                    <Typography variant={"h4"}>{state.num_comment}</Typography>
-                    <Typography style={{fontSize : '0.8rem'}}>Comments</Typography>
+                    <Typography variant={"h4"}>{parentData.data.num_comment}</Typography>
+                    <Typography style={{fontSize: '0.8rem'}}>Comments</Typography>
                 </div>
             </div>
-            {state.isLiked ?
-                <Button variant='outlined'
-                        style={{borderRadius: '2rem'}}
-                        color={'primary'} onClick={handleUnLike}>
-                    Liked
-                </Button> : <Button variant='contained'
-                                    style={{borderRadius: '2rem'}}
-                                    color={'primary'} onClick={handleLike}>Like</Button>
-            }
+            <Button variant={parentData.data.is_liked ? 'outlined' : 'contained'}
+                    style={{borderRadius: '2rem'}}
+                    color={'primary'} onClick={toggle_like}>
+                {
+                    parentData.data.is_liked ?
+                        <CheckIcon style={{marginRight: '0.3rem', fontSize: "1.2rem"}}/> :
+                        <BookmarkIcon style={{marginRight: '0.3rem', fontSize: "1.2rem"}}/>
+                }
+                {
+                    parentData.data.is_liked?
+                    'Saved' : 'Save'
+                }
+            </Button>
             <Divider style={{marginTop: '1rem'}}></Divider>
             <Typography style={{padding: '1rem 0 0', fontWeight: 'bold'}}>Table of contents</Typography>
             <div className={classes.bodyContent}>

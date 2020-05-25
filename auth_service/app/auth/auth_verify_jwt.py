@@ -30,7 +30,7 @@ def verify_jwt():
         'user_id': user.id,
         'allowed': True,
         'admin_permission': user.can(Permission.ADMIN)
-    })
+    }), 200
 
 
 @auth.route('/test')

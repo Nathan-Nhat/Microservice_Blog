@@ -11,7 +11,7 @@ class Comments(db.Model):
     disable = db.Column(db.Boolean, default=False)
     user_id = db.Column(db.Integer)
     post_id = db.Column(db.Integer, db.ForeignKey('posts.post_id'))
-    user_like = db.relationship('LikeComment', backref='comment', lazy='dynamic')
+    user_like = db.relationship('LikeComment', backref='comment', lazy='dynamic', cascade="all, delete-orphan")
 
     def to_json(self, user_comment, user_id):
         return {

@@ -16,7 +16,7 @@ class Post(db.Model):
     num_views = db.Column(db.Integer, default=0)
     tags = db.relationship('Tags',
                            secondary='tag_post',
-                           backref=db.backref('post', lazy='dynamic'),
+                           backref=db.backref('posts', lazy='dynamic'),
                            lazy='dynamic')
 
     def to_json_little(self):
@@ -57,3 +57,7 @@ class Post(db.Model):
             'tags': list(map(lambda d : {'tag_name' : d.name, 'tag_id' : d.tag_id},self.tags.all()))
         }
         return ret
+
+    @staticmethod
+    def order_by_reputaiton():
+        return Post.num_views + Post.like.count() * 10

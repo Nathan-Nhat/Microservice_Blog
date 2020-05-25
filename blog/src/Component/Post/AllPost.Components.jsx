@@ -11,34 +11,35 @@ import {Divider} from "@material-ui/core";
 import {makeStyles} from "@material-ui/core/styles";
 import {useMediaQuery} from "@material-ui/core";
 import {theme} from "../../Themes";
+import queryString from "query-string";
+import {useLocation, useHistory} from 'react-router-dom'
 
 const useStyle = makeStyles({
     root: {
         textAlign: 'center',
-        padding: props => props.isMobile ? "2rem 1rem 1rem 1rem" : '4rem 2rem 2rem 2rem'
     }
 })
 const AllPostComponents = () => {
-    const request_post = useSelector(state => state.RequestPostReducer)
     const isMobile = useMediaQuery(theme.breakpoints.down('md'))
     const classes = useStyle({isMobile})
+    const location = useLocation()
+    const page = queryString.parse(location.search).page
+    const pathname = location.pathname
     const [state, setState] = useState({
         isLoading: true,
-        posts: [{
-            author: null
-        }],
-        page: 0,
-        total_pages: 0,
+        posts: [],
+        total_pages: 1,
+        page: page
     })
-    const dispatch = useDispatch()
+    const history = useHistory()
     const {id, isAuthenticated} = useSelector(state => state.AuthenReducer)
     useEffect(() => {
         setState({...state, isLoading: true})
         let params = isAuthenticated ? {
-            type: request_post.type,
-            page: request_post.page,
+            type: pathname === '/p/newest' ? 0 : pathname === '/p/saved' ? 1 : 2,
+            page: page ? page : 1,
             user_current_id: id
-        } : {type: request_post.type, page: request_post.page}
+        } : {type: pathname === '/p/newest' ? 0 : pathname === '/p/saved' ? 1 : 2, page: page ? page : 1}
         get_data(URL_POST_SERVICE + `/get_all`, params, false)
             .then(res => {
                 setState({
@@ -48,42 +49,47 @@ const AllPostComponents = () => {
                     total_pages: res.data.total_pages
                 })
             })
-    }, [request_post])
+    }, [page, pathname])
     const handleChange = (e, newVal) => {
-        dispatch(change_page_post(newVal))
+        history.push(`${pathname}?page=${newVal}`)
     }
     return (
         <div className={classes.root}>
-            <HeaderPost/>
             {
                 state.isLoading === true ?
-                    <div style={{height: '100vh'}}>
-                        <CircularProgress style={{padding: '3rem'}}/>
-                    </div>
+                    null
                     :
-                    <Box style={{textAlign: 'center'}}>
-                        <Box>
-                            {
-                                state.posts.map((item, index) => {
-                                    return <div key={index}>
-                                        <PostComponent post={item} user={item.author}/>
-                                        <Divider/>
-                                    </div>
-                                })
-                            }
-                        </Box>
-                        <Box>
-                            {
-                                state.total_pages <= 1 ? null :
-                                    <div style={{display: 'flex' , flexDirection : 'column' , width:'100%'}}>
-                                    <Pagination page={state.page} count={state.total_pages} variant="outlined"
-                                                style={{marginTop:'1rem', alignSelf:'center'}}
-                                                color="primary" onChange={handleChange}/>
+                    <div>
+                        {
+                            pathname === '/p/followed_tags' ?
+                                <div style = {{marginTop : '4rem', fontSize  :'2rem'}}>
+                                    Inprogress...
+                                </div> :
+                                <Box style={{textAlign: 'center'}}>
+                                    <Box>
+                                        {
+                                            state.posts.map((item, index) => {
+                                                return <div key={index}>
+                                                    <PostComponent post={item} user={item.author}/>
+                                                    <Divider/>
                                                 </div>
-                            }
-                        </Box>
-                    </Box>
-
+                                            })
+                                        }
+                                    </Box>
+                                    <Box>
+                                        {
+                                            state.total_pages <= 1 ? null :
+                                                <div style={{display: 'flex', flexDirection: 'column', width: '100%'}}>
+                                                    <Pagination page={state.page} count={state.total_pages}
+                                                                variant="outlined"
+                                                                style={{marginTop: '1rem', alignSelf: 'center'}}
+                                                                color="primary" onChange={handleChange}/>
+                                                </div>
+                                        }
+                                    </Box>
+                                </Box>
+                        }
+                    </div>
             }
 
         </div>

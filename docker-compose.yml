@@ -73,18 +73,18 @@ services:
     - MYSQL_ROOT_PASSWORD=Wakerjacob@90
     volumes:
     - ./mysql/data:/var/lib/mysql
-  front_end:
-    image: front_end:1.0
-    restart: always
-    build:
-        context: ./blog
-        dockerfile: Dockerfile
-    container_name : front_end
-    stdin_open: true
-    ports:
-    - "3000:3000"
-    volumes:
-    - ./blog:/app
+#  front_end:
+#    image: front_end:1.0
+#    restart: always
+#    build:
+#        context: ./blog
+#        dockerfile: Dockerfile
+#    container_name : front_end
+#    stdin_open: true
+#    ports:
+#    - "2000:3000"
+#    volumes:
+#    - ./blog:/app
     
   api_gateway:
     image: nginx:1.17.10
@@ -94,3 +94,17 @@ services:
     volumes:
     - ./api_gateway:/etc/nginx/conf.d
     restart: always
+
+  front_end_production:
+    image: fe_production:1.0
+    container_name: FE_Production
+    build:
+      context: ./front_end_production
+      dockerfile: Dockerfile
+    ports:
+    - "8080:80"
+    volumes:
+    - ./front_end_production/build:/usr/share/nginx/html
+    - ./front_end_production/config:/etc/nginx/conf.d
+    restart: always
+ 

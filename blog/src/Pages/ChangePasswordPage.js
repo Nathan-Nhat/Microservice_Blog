@@ -2,33 +2,40 @@ import React from 'react';
 import {useParams} from 'react-router-dom'
 import {get_data, post_data} from "../ApiCall";
 import {URL_AUTH_SERVICE} from "../Constants"
-import {TextField, Button, Typography} from "@material-ui/core";
+import {TextField, Button, Typography, useMediaQuery} from "@material-ui/core";
 import queryString from 'query-string'
 import {useLocation, useHistory} from 'react-router-dom'
 import {makeStyles} from "@material-ui/core/styles";
 import {useDispatch} from "react-redux";
 import {open_notification} from "../redux/Actions/ActionObjects/ActionsObjects";
 import {validatePassword} from "../Helper/ValidatePassword";
+import {theme} from "../Themes";
 
 const useStyle = makeStyles({
     container: {
         display: "flex",
         flexDirection: "column",
-        padding: "6rem auto",
+        margin: props => props.isMobile ? "5rem auto" : '6rem auto',
         width: "100%",
         maxWidth: '25rem',
+    },
+    main: {
+        padding: '1rem',
         '&>*': {
-            paddingTop: '1rem'
+            marginTop: '1rem'
         }
     },
+    input: {
+        width: "100%",
+        borderRadius: 'none',
+    },
     title: {
-        width: '100%',
         textAlign: 'center',
-        paddingBottom: '1rem'
     },
 })
 const ChangePasswordPage = () => {
     const location = useLocation()
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
     const param = queryString.parse(location.search)
     const token = param.token
     const user_id = param.user_id
@@ -52,8 +59,8 @@ const ChangePasswordPage = () => {
         if (state.password !== state.re_password) {
             dispatch(open_notification(
                 {
-                    message : 'Your confirm password is not match. Please try again',
-                    type : 'error'
+                    message: 'Your confirm password is not match. Please try again',
+                    type: 'error'
                 }
             ))
             return
@@ -61,9 +68,9 @@ const ChangePasswordPage = () => {
         if (!validatePassword(state.password)) {
             dispatch(open_notification(
                 {
-                    message : 'Invalid Password! Password must be contain at least one lowercase letter, ' +
+                    message: 'Invalid Password! Password must be contain at least one lowercase letter, ' +
                         'one uppercase letter, one numeric digit, and one special character',
-                    type : 'error'
+                    type: 'error'
                 }
             ))
             return
@@ -75,26 +82,30 @@ const ChangePasswordPage = () => {
         }
         post_data(URL_AUTH_SERVICE + '/change_password', {}, data, false)
             .then(res => {
-                dispatch(open_notification({message: 'Success! Please login with new password', type :'success'}))
+                dispatch(open_notification({message: 'Success! Please login with new password', type: 'success'}))
                 history.push('/login')
             })
-            .catch(err=>{
-                dispatch(open_notification({message: 'There is some error.Please try again', type :'Error'}))
+            .catch(err => {
+                dispatch(open_notification({message: 'There is some error.Please try again', type: 'Error'}))
             })
     }
-    const classes = useStyle()
+    const classes = useStyle({isMobile})
     return (
         <div>
             < div className={classes.container}>
                 <Typography variant={"h5"} className={classes.title}>RESET PASSWORD</Typography>
-                <TextField required label="Password" type="password" name='password'
-                           variant={'outlined'} className={classes.input}
-                           onChange={handleChange}/>
-                <TextField required label="Re-password" type="password" name='re_password'
-                           variant={'outlined'} className={classes.input}
-                           onChange={handleChange}/>
-                <Button variant="contained" color="primary" onClick={handleClick}
-                        className={classes.buttonLogin}>Change password</Button>
+                <div className={classes.main}>
+                    <TextField required label="Password" type="password" name='password'
+                               variant={'outlined'} className={classes.input}
+                               onChange={handleChange}/>
+                    <TextField required label="Re-password" type="password" name='re_password'
+                               variant={'outlined'} className={classes.input}
+                               onChange={handleChange}/>
+                    <div style={{width: '100%', textAlign: 'center'}}>
+                        <Button variant="contained" color="primary" onClick={handleClick}
+                                className={classes.buttonLogin}>Change password</Button>
+                    </div>
+                </div>
             </div>
         </div>
     );

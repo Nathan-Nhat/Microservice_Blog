@@ -8,15 +8,27 @@ from app.helper.Exception import CustomException
 from app import db
 from app.helper.Connection import get_connection
 from app.helper.auth_connector import ServiceURL
+from app.models.post_model import Post
+from sqlalchemy import desc, func, text
+from app.models.tag_model import Tag_post
 
 
 @post.route('/tags')
 def get_tag():
-    query_tag = request.args.get('query_tag')
-    tags = Tags.query.filter(Tags.name.like(f'%{query_tag}%')).all()
-    return jsonify({'tags': list(map(lambda d: {'tag_name' : d.name,
-                                                'tag_id' : d.tag_id,
-                                                'url_image' : d.url_image}, tags))})
+    query_tag = request.args.get('query_tag', '')
+    page = int(request.args.get('page', 0))
+    current_user_id = int(request.args.get('current_user_id', '0'))
+    result = db.session.query(Tags, func.count(Tag_post.post_id).label('total_post')).join(Tag_post) \
+        .filter(Tags.name.like(f'%{query_tag}%')) \
+        .group_by(Tags.tag_id) \
+        .order_by(text('total_post desc')) \
+        .paginate(page=page, per_page=30, error_out=False)
+    tag_list = result.items
+    return jsonify({
+        'page': page,
+        'total_tags': result.total,
+        'total_pages': result.total // 30 + 1,
+        'tags': list(map(lambda d: d[0].to_json(current_user_id), tag_list))})
 
 
 @post.route('/tags/<tag_id>/follow', methods=['POST'])
@@ -62,7 +74,9 @@ def get_post_by_tag(tag_id):
     itemPerPage = 20
     tags = Tags.query.filter(Tags.tag_id == tag_id).first()
     num_user = tags.tag_user.count()
-    posts = tags.post.paginate(page, itemPerPage, error_out=False)
+    posts = tags.posts \
+        .order_by(Post.date_post.desc()) \
+        .paginate(page, itemPerPage, error_out=False)
     post_paginated = posts.items
     total = posts.total
     num_page = total // itemPerPage + 1
@@ -92,13 +106,13 @@ def get_post_by_tag(tag_id):
         if tag_user is not None:
             is_followed = True
     return jsonify({
-        'tag_id' : tags.tag_id,
+        'tag_id': tags.tag_id,
         'tag_name': tags.name,
-        'url_image' : tags.url_image,
+        'url_image': tags.url_image,
         'Post': list_post,
-        'is_followed' : is_followed,
+        'is_followed': is_followed,
         'page': page,
         'itemPerPage': itemPerPage,
         'total_pages': num_page,
-        'total' : total,
-        'num_follower' : num_user}), 200
+        'total': total,
+        'num_follower': num_user}), 200
