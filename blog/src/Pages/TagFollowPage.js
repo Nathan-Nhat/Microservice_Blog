@@ -72,8 +72,8 @@ const TagFollowPage = () => {
         history.push(`/tag/${tag_id}?page=${newVal}`)
     }
     React.useEffect(() => {
-        let param = {}
-        if (isAuthenticated) param = {current_user_id: id}
+        let param = {page : page?page:1}
+        if (isAuthenticated) param = {current_user_id: id, page: page?page:1}
         setState({...state, isLoading: true})
         get_data(URL_POST_SERVICE + `/tags/${tag_id}/post`, param, false)
             .then(res => {
