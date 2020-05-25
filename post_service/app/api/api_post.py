@@ -60,22 +60,22 @@ def add_post(user_id):
                     author_id=user_id)
     tags = post_details.get('tags')
     tag_arr = tags.split(',')
-    # try:
-    for tag_name in tag_arr:
-        tag_target = Tags.query.filter_by(name=tag_name).first()
-        if tag_target is None:
-            tag_insert = Tags(name=tag_name)
-            db.session.add(tag_insert)
-            db.session.flush()
-            post_add.tags.append(tag_insert)
-        else:
-            post_add.tags.append(tag_target)
-    db.session.add(post_add)
-    db.session.flush()
-    db.session.commit()
-    # except:
-    #     db.session.rollback()
-    return jsonify({'message': 'Success'}), 200
+    try:
+        for tag_name in tag_arr:
+            tag_target = Tags.query.filter_by(name=tag_name).first()
+            if tag_target is None:
+                tag_insert = Tags(name=tag_name)
+                db.session.add(tag_insert)
+                db.session.flush()
+                post_add.tags.append(tag_insert)
+            else:
+                post_add.tags.append(tag_target)
+        db.session.add(post_add)
+        db.session.flush()
+        db.session.commit()
+    except:
+        db.session.rollback()
+    return jsonify({'message': 'Success', 'post_id' : post_add.post_id}), 200
 
 
 @post.route('/<post_id>', methods=['DELETE'])
@@ -122,7 +122,8 @@ def update_post(user_id):
         db.session.commit()
     except:
         db.session.rollback()
-    return jsonify({'message': 'Success'}), 200
+    return jsonify({'message': 'Success',
+                    'post_id': post_update.post_id}), 200
 
 
 @post.route('/get_all', methods=['GET'])
