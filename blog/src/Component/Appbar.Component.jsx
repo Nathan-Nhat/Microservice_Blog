@@ -185,6 +185,11 @@ const AppbarComponent = () => {
                             {
                                 isAuthenticated === false ?
                                     <div>
+				    	<ListItem button onClick={(e) => handleClick(e, 6)}>
+                                            <ListItemIcon><LocalOfferIcon/></ListItemIcon>
+                                            <ListItemText primary={'Tags'} style={{marginRight: '4rem'}}/>
+                                        </ListItem>
+
                                         <ListItem button onClick={(e) => handleClick(e, 1)}>
                                             <ListItemIcon><ExitToAppIcon/></ListItemIcon>
                                             <ListItemText primary={'Login'}/>
@@ -218,6 +223,11 @@ const AppbarComponent = () => {
                             {
                                 isAuthenticated === false ?
                                     <div>
+				    	<Button color="inherit" className={classes.link}
+                                                onClick={(e) => handleClick(e, 6)}>
+                                            Tags
+                                        </Button>
+
                                         <Button color="inherit" className={classes.link}
                                                 onClick={(e) => handleClick(e, 1)}>
                                             Login

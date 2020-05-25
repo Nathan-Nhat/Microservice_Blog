@@ -18,7 +18,7 @@ def get_tag():
     query_tag = request.args.get('query_tag', '')
     page = int(request.args.get('page', 0))
     current_user_id = int(request.args.get('current_user_id', '0'))
-    result = db.session.query(Tags, func.count(Tag_post.post_id).label('total_post')).join(Tag_post) \
+    result = db.session.query(Tags, func.count(Tag_post.post_id).label('total_post')).outerjoin(Tag_post) \
         .filter(Tags.name.like(f'%{query_tag}%')) \
         .group_by(Tags.tag_id) \
         .order_by(text('total_post desc')) \
