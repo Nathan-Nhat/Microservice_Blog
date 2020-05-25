@@ -5,7 +5,7 @@ from config import Config
 import pika
 import json
 from mail_service.Worker import Worker
-
+from mail_service.Worker.ServiceURL import ServiceURL
 
 class ForgotPassWorker(Worker):
     def __init__(self, *args, **kwargs):
@@ -28,7 +28,7 @@ def forgot_pass_callback(ch, method, properties, body):
         Hello {data.get('user_name')},
         This email to perform that you want to reset your password. Please click in
         the address bellow to continue
-        http://35.240.191.124/change_password?token={data.get('token')}&user_id={data.get('user_id')}'
+        {ServiceURL.FRONT_END_SERVICE}/change_password?token={data.get('token')}&user_id={data.get('user_id')}'
  
     """
     html = f"""\
@@ -36,7 +36,7 @@ def forgot_pass_callback(ch, method, properties, body):
       <body>
         <h2>Hello {data.get('user_name')},</h2>
         <p>This email to perform that you want to reset your password. Please 
-        click <a href = 'http://35.240.191.124/change_password?token={data.get('token')}&user_id={data.get('user_id')}'>
+        click <a href = '{ServiceURL.FRONT_END_SERVICE}/change_password?token={data.get('token')}&user_id={data.get('user_id')}'>
             HERE</a> to continue </p>
       </body>
     </html>

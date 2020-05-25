@@ -4,7 +4,7 @@ from email.mime.multipart import MIMEMultipart
 from config import Config
 import json
 from mail_service.Worker import Worker
-
+from mail_service.Worker.ServiceURL import ServiceURL
 
 class ResendConfirmWorker(Worker):
     def __init__(self, *args, **kwargs):
@@ -27,14 +27,14 @@ def resend_confirm_callback(ch, method, properties, body):
         Hello {data.get('user_name')},
         This email to perform that you need to confirm your account. Please click in
         the address bellow to continue
-        http://35.240.191.124:8000/auth/confirm?token={data.get('token')}&user_id={data.get('user_id')}
+        {ServiceURL.API_GATEWAY_SERVICE}/auth/confirm?token={data.get('token')}&user_id={data.get('user_id')}
     """
     html = f"""\
     <html>
       <body>
         <h2>Hello {data.get('user_name')},</h2>
         <p>This email to perform that you want to confirm your account. Please 
-        click <a href = 'http://35.240.191.124:8000/auth/confirm?token={data.get('token')}&user_id={data.get('user_id')}'>
+        click <a href = '{ServiceURL.API_GATEWAY_SERVICE}/auth/confirm?token={data.get('token')}&user_id={data.get('user_id')}'>
             HERE</a> to continue </p>
       </body>
     </html>
