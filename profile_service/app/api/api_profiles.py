@@ -5,7 +5,6 @@ from app import db
 from flask import jsonify
 from app.helper.Exception import CustomException
 from app.helper.auth_connector import verify_jwt, Permission
-from flask_cors import cross_origin
 from app.helper.Connection import get_connection
 from app.helper.ServiceURL import ServiceURL
 
@@ -33,7 +32,7 @@ def get_user_profile():
             resp['total_posts'] = 0
         else:
             resp['total_posts'] = resp_profile.json().get('total_posts')
-    return resp_json(resp, 200)
+    return jsonify(resp), 200
 
 
 @profile.route('/user_profile', methods=['POST'])
@@ -44,7 +43,7 @@ def post_user_profile():
     userDetails.avatar_hash = userDetails.gravatar(size=256)
     db.session.add(userDetails)
     db.session.commit()
-    return resp_json(userDetails.to_json(), 200)
+    return jsonify(userDetails.to_json()), 200
 
 
 @profile.route('/user_profile', methods=['PUT'])
