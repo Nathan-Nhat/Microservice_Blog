@@ -15,6 +15,8 @@ import {Typography} from "@material-ui/core";
 import CloseRoundedIcon from '@material-ui/icons/CloseRounded';
 import {theme} from "../Themes";
 import {useHistory} from 'react-router-dom'
+import CKEditor from '@ckeditor/ckeditor5-react';
+import ClassicEditor from "custom-ckeditor/build/ckeditor";
 const useStyle = makeStyles({
     root_container: {
         float: 'left',
@@ -24,7 +26,7 @@ const useStyle = makeStyles({
     inputTitle: {
         fontSize: '2rem',
         border: 'none',
-        padding:'0.5rem',
+        padding: '0.5rem',
         width: "100%",
         fontWeight: 'bold',
         '&:focus': {
@@ -152,7 +154,7 @@ const WritePostComponent = () => {
         if (e.key === 'Enter') {
             let cur_tags = state.tags
             if (state.tag.length > 20) {
-                dispatch(open_notification({message: 'Number character of tag must be smaller than 20', type :"error"}))
+                dispatch(open_notification({message: 'Number character of tag must be smaller than 20', type: "error"}))
                 return
             }
             if (!cur_tags.includes(state.tag)) {
@@ -187,8 +189,8 @@ const WritePostComponent = () => {
             {
                 !isAuthenticated ? <Redirect to={'/'}/> :
                     <div style={isMobile ? {padding: '1rem'} : {padding: '0 2rem 2rem 2rem'}}>
-                            <Input className={classes.inputTitle} placeholder={`Title`} name='title' value={state.title}
-                                   onChange={handleChange}></Input>
+                        <Input className={classes.inputTitle} placeholder={`Title`} name='title' value={state.title}
+                               onChange={handleChange}></Input>
                         <div style={{position: 'relative'}}>
                             <Input name='tag' className={classes.tags} placeholder={`Input Tags`} value={state.tag}
                                    disableUnderline
@@ -276,17 +278,36 @@ const WritePostComponent = () => {
                                 }
                             </div>
                         </div>
-                        <div className={classes.bodyContianer}>
-                                            <textarea name='body' className={classes.body_html} placeholder={`Body`}
-                                                      value={state.body}
-                                                      onChange={handleChange}></textarea>
+                        {/*<div className={classes.bodyContianer}>*/}
+                        {/*                    <textarea name='body' className={classes.body_html} placeholder={`Body`}*/}
+                        {/*                              value={state.body}*/}
+                        {/*                              onChange={handleChange}></textarea>*/}
 
-                            {
-                                isMobile?  null:
-                                <ReactMarkdown className="markdown_write" source={state.body}
-                                            escapeHtml={false} renderers={{code: CodeBlock}}/>
-                            }
-                        </div>
+                        {/*    {*/}
+                        {/*        isMobile?  null:*/}
+                        {/*        <ReactMarkdown className="markdown_write" source={state.body}*/}
+                        {/*                    escapeHtml={false} renderers={{code: CodeBlock}}/>*/}
+                        {/*    }*/}
+                        {/*</div>*/}
+                        <CKEditor
+                            editor={ClassicEditor}
+                            data="<p>Hello from CKEditor 5!</p>"
+                            // config={}
+                            onInit={editor => {
+                                // You can store the "editor" and use when it is needed.
+                                console.log('Editor is ready to use!', editor);
+                            }}
+                            onChange={(event, editor) => {
+                                const data = editor.getData();
+                                console.log({event, editor, data});
+                            }}
+                            onBlur={(event, editor) => {
+                                console.log('Blur.', editor);
+                            }}
+                            onFocus={(event, editor) => {
+                                console.log('Focus.', editor);
+                            }}
+                        />
                         <Button variant={'contained'} color={'primary'} className={classes.buttonSave}
                                 onClick={handleSave} C>Save</Button>
                     </div>
