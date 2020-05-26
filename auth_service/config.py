@@ -23,7 +23,7 @@ class DevelopmentConfig(Config):
     POST_SERVICE = 'http://localhost:5002/api/v1/post/'
     FRONT_END_SERVER = 'http://localhost:3000'
     SQLALCHEMY_DATABASE_URI = os.environ.get('DEV_DATABASE_URL') or 'mysql+pymysql://root:Wakerjacob@90@localhost' \
-                                                                    ':3306/post?charset=utf8mb4'
+                                                                    ':3306/authentication?charset=utf8mb4'
 
 
 class TestingConfig(Config):
@@ -37,7 +37,7 @@ class ProductionConfig(Config):
     POST_SERVICE = 'http://post_service:5002/api/v1/post/'
     FRONT_END_SERVER = 'http://35.240.191.124/'
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'mysql+pymysql://root:Wakerjacob@90@mysql' \
-                                                                    ':3306/post?charset=utf8mb4'
+                                                                    ':3306/authentication?charset=utf8mb4'
 
 
 config = {
