@@ -1,12 +1,8 @@
-import os
+import app
 
 
 class ServiceURL:
-    AUTH_SERVICE = 'http://auth_service:5000/api/v1/auth/' if os.environ.get(
-        'FLASK_CONFIG') == 'production' else 'http://localhost:5000/api/v1/auth/'
-    PROFILE_SERVICE = 'http://profile_service:5001/api/v1/profile/' if os.environ.get(
-        'FLASK_CONFIG') == 'production' else 'http://localhost:5001/api/v1/profile/'
-    POST_SERVICE = 'http://post_service:5002/api/v1/post/' if os.environ.get(
-        'FLASK_CONFIG') == 'production' else 'http://localhost:5002/api/v1/post/'
-    FRONT_END_SERVER = 'http://35.240.191.124' if os.environ.get('FLASK_CONFIG') == 'production' else 'http://localhost:3000'
-
+    AUTH_SERVICE = app.config['AUTH_SERVICE']
+    PROFILE_SERVICE = app.config['PROFILE_SERVICE']
+    POST_SERVICE = app.config['POST_SERVICE']
+    FRONT_END_SERVER = app.config['FRONT_END_SERVER']
