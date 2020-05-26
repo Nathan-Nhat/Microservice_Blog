@@ -1,10 +1,7 @@
 import React, {useState} from 'react';
 import {makeStyles} from "@material-ui/core/styles";
-import ReactMarkdown from "react-markdown/with-html";
-import CodeBlock from "../Helper/CodeBlock";
-import './MarkdownPost.css'
 import {Button, InputAdornment, useMediaQuery} from "@material-ui/core";
-import {get_data, post_data} from "../ApiCall";
+import {get_data, post_data, put_data} from "../ApiCall";
 import {URL_POST_SERVICE} from "../Constants";
 import {useDispatch, useSelector} from "react-redux";
 import {open_notification} from "../redux/Actions/ActionObjects/ActionsObjects";
@@ -15,8 +12,8 @@ import {Typography} from "@material-ui/core";
 import CloseRoundedIcon from '@material-ui/icons/CloseRounded';
 import {theme} from "../Themes";
 import {useHistory} from 'react-router-dom'
-import CKEditor from '@ckeditor/ckeditor5-react';
-import ClassicEditor from "custom-ckeditor/build/ckeditor";
+import {Editor} from '@tinymce/tinymce-react'
+
 const useStyle = makeStyles({
     root_container: {
         float: 'left',
@@ -59,7 +56,7 @@ const useStyle = makeStyles({
         height: '80vh'
     },
     buttonSave: {
-        float: "right"
+        float: "right",
     },
     hintElementFocus: {
         display: 'flex',
@@ -184,6 +181,16 @@ const WritePostComponent = () => {
             clearTimeout(timeout)
         }
     }, [])
+    const handleEditorChange = (e) => {
+        console.log(
+            'Content was updated:',
+            e.target.getContent()
+        );
+        setState({
+            ...state,
+            body: e.target.getContent()
+        })
+    }
     return (
         <div className={classes.root_container}>
             {
@@ -278,36 +285,48 @@ const WritePostComponent = () => {
                                 }
                             </div>
                         </div>
-                        {/*<div className={classes.bodyContianer}>*/}
-                        {/*                    <textarea name='body' className={classes.body_html} placeholder={`Body`}*/}
-                        {/*                              value={state.body}*/}
-                        {/*                              onChange={handleChange}></textarea>*/}
+                        <div style={{marginTop: "1rem", marginBottom: '1rem'}}>
+                            <Editor
+                                initialValue="Write your post here..."
+                                apiKey="gzdsey0opala3t7opvlkqunzo51svo4mkwhmg5pwepf8ml2d"
+                                init={{
 
-                        {/*    {*/}
-                        {/*        isMobile?  null:*/}
-                        {/*        <ReactMarkdown className="markdown_write" source={state.body}*/}
-                        {/*                    escapeHtml={false} renderers={{code: CodeBlock}}/>*/}
-                        {/*    }*/}
-                        {/*</div>*/}
-                        <CKEditor
-                            editor={ClassicEditor}
-                            data="<p>Hello from CKEditor 5!</p>"
-                            // config={}
-                            onInit={editor => {
-                                // You can store the "editor" and use when it is needed.
-                                console.log('Editor is ready to use!', editor);
-                            }}
-                            onChange={(event, editor) => {
-                                const data = editor.getData();
-                                console.log({event, editor, data});
-                            }}
-                            onBlur={(event, editor) => {
-                                console.log('Blur.', editor);
-                            }}
-                            onFocus={(event, editor) => {
-                                console.log('Focus.', editor);
-                            }}
-                        />
+                                    height: '60vh',
+                                    menubar: false,
+                                    plugins: [
+                                        'advlist autolink lists link image',
+                                        'charmap print preview anchor help',
+                                        'searchreplace visualblocks code codesample fullscreen',
+                                        'insertdatetime media table paste wordcount'
+                                    ],
+                                    toolbar:
+                                        'undo redo | formatselect | bold italic | \
+                                        alignleft aligncenter alignright | image preview fullscreen| \
+                                        bullist numlist outdent indent code codesample | help',
+                                    codesample_languages: [
+                                        {text: 'HTML/XML', value: 'markup'},
+                                        {text: 'JavaScript', value: 'javascript'},
+                                        {text: 'CSS', value: 'css'},
+                                        {text: 'PHP', value: 'php'},
+                                        {text: 'Ruby', value: 'ruby'},
+                                        {text: 'Python', value: 'python'},
+                                        {text: 'Java', value: 'java'},
+                                        {text: 'C', value: 'c'},
+                                        {text: 'C#', value: 'csharp'},
+                                        {text: 'C++', value: 'cpp'}
+                                    ],
+                                    images_upload_url: 'http://localhost:5004/api/v1/image/uploads',
+                                    images_upload_handler: function (blob, success, failed) {
+                                        let formData = new FormData()
+                                        formData.append('file', blob.blob(), blob.filename())
+                                        put_data('http://localhost:5004/api/v1/image/uploads', {}, formData, false)
+                                            .then(res => success(res.data.urls.default))
+                                            .catch(error => failed('Up load image fail'))
+                                    }
+                                }}
+                                onChange={handleEditorChange}
+                            />
+                        </div>
                         <Button variant={'contained'} color={'primary'} className={classes.buttonSave}
                                 onClick={handleSave} C>Save</Button>
                     </div>

@@ -10,10 +10,9 @@ from app.helper.auth_connector import verify_jwt
 from app.helper.auth_connector import Permission
 from app.helper.Connection import get_connection
 from app.helper.ServiceURL import ServiceURL
-from bs4 import BeautifulSoup
-from markdown import markdown
 from app.models.like_model import Like
 from app.models.tag_model import Tags
+from bs4 import BeautifulSoup
 
 
 @post.route('/test')
@@ -51,8 +50,8 @@ def get_post_by_id(post_id):
 @verify_jwt(blueprint=post, permissions=[Permission.WRITE])
 def add_post(user_id):
     post_details = request.get_json()
-    html = markdown(post_details.get('body'))
-    text = '. '.join(BeautifulSoup(html).find_all(text=True))
+    body_html = post_details.get('body')
+    text = '. '.join(BeautifulSoup(body_html).find_all(text=True))
     post_add = Post(title=post_details.get('title'),
                     body_html=post_details.get('body'),
                     body=text,
@@ -101,8 +100,7 @@ def update_post(user_id):
         raise CustomException('Cannot found post', 404)
     post_update.title = post_details.get('title')
     post_update.body_html = post_details.get('body')
-    html = markdown(post_details.get('body'))
-    text = '. '.join(BeautifulSoup(html).find_all(text=True))
+    text = '. '.join(BeautifulSoup(post_details.get('body')).find_all(text=True))
     post_update.body = text
     tags = post_details.get('tags')
     tag_arr = tags.split(',')

@@ -8,6 +8,7 @@ class Config:
 
 
 class DevelopmentConfig(Config):
+    UPLOAD_DIR = '/home/ttnhat/upload'
     DEBUG = True
 
 
@@ -16,6 +17,7 @@ class TestingConfig(Config):
 
 
 class ProductionConfig(Config):
+    UPLOAD_DIR = '/usr/src/upload'
     pass
 
 

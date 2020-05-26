@@ -5,7 +5,6 @@ import ChatBubbleRoundedIcon from '@material-ui/icons/ChatBubbleRounded';
 import ThumbUpAltRoundedIcon from '@material-ui/icons/ThumbUpAltRounded';
 import {NavLink} from "react-router-dom";
 import {theme} from "../../Themes";
-import '../../Markdown.style.css'
 import VisibilityRoundedIcon from '@material-ui/icons/VisibilityRounded';
 import moment from "moment";
 import {useSelector} from "react-redux";

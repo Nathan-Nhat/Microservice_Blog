@@ -1,8 +1,5 @@
 import React, {useEffect, useState} from 'react';
 import {makeStyles} from "@material-ui/core/styles";
-import ReactMarkdown from "react-markdown/with-html";
-import CodeBlock from "../Helper/CodeBlock";
-import './MarkdownPost.css'
 import {Button, useMediaQuery} from "@material-ui/core";
 import {get_data, put_data} from "../ApiCall";
 import {URL_POST_SERVICE} from "../Constants";
@@ -16,6 +13,8 @@ import CloseRoundedIcon from '@material-ui/icons/CloseRounded';
 import {useParams} from 'react-router-dom'
 import {theme} from "../Themes";
 import {useHistory} from 'react-router-dom'
+import {Editor} from "@tinymce/tinymce-react";
+
 const useStyle = makeStyles({
     root_container: {
         float: 'left',
@@ -46,7 +45,7 @@ const useStyle = makeStyles({
         padding: '2rem 0',
     },
     body_html: {
-         fontSize: '1.2rem',
+        fontSize: '1.2rem',
         width: props => props.isMobile ? '100%' : "50%",
         border: '1px solid #9494b8',
         boxSizing: 'border-box',
@@ -65,13 +64,13 @@ const useStyle = makeStyles({
         padding: '0.7rem',
         '&:hover': {
             backgroundColor: '#42a5f5',
-            cursor : 'pointer'
+            cursor: 'pointer'
         }
     }
 })
 var timeout = null
 const EditPostComponent = () => {
-     const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
     const classes = useStyle({isMobile})
     const history = useHistory()
     const [state, setState] = useState({
@@ -83,8 +82,8 @@ const EditPostComponent = () => {
         isFocusedTags: false,
     })
     const [hint, setHint] = useState({
-        tags : [],
-        is_focusing : false
+        tags: [],
+        is_focusing: false
     })
     const handleChange = (e) => {
         var name = e.target.name
@@ -118,7 +117,7 @@ const EditPostComponent = () => {
             title: state.title,
             body: state.body,
             author_id: id,
-	        tags: state.tags.join(',')
+            tags: state.tags.join(',')
         }
         if (data.title === '' | data.body === '') {
             dispatch(open_notification({message: "Write something", type: 'error'}))
@@ -138,9 +137,9 @@ const EditPostComponent = () => {
     React.useEffect(() => {
         get_data(URL_POST_SERVICE + `/${post_id}`, {}, false)
             .then(res => {
-                let tags = res.data.tags.map((item)=> item.tag_name)
+                let tags = res.data.tags.map((item) => item.tag_name)
                 setState({
-                    tags : tags,
+                    tags: tags,
                     title: res.data.title,
                     body: res.data.body_html,
                     author_id: res.data.author.user_id,
@@ -178,12 +177,22 @@ const EditPostComponent = () => {
         })
     }
 
-    const handleClickHint = (name)=>{
+    const handleClickHint = (name) => {
         let cur_tags = state.tags
-            if (!cur_tags.includes(name)) {
-                cur_tags.push(name)
-            }
-            setState({...state, tag: '', tags: cur_tags, isFocusedTags: false})
+        if (!cur_tags.includes(name)) {
+            cur_tags.push(name)
+        }
+        setState({...state, tag: '', tags: cur_tags, isFocusedTags: false})
+    }
+    const handleEditorChange = (e) => {
+        console.log(
+            'Content was updated:',
+            e.target.getContent()
+        );
+        setState({
+            ...state,
+            body: e.target.getContent()
+        })
     }
     return (
         <div className={classes.root_container}>
@@ -224,21 +233,21 @@ const EditPostComponent = () => {
                                                          onMouseEnter={() => {
                                                              setHint({...hint, is_focusing: true})
                                                          }}
-                                                         onMouseLeave={()=>{
+                                                         onMouseLeave={() => {
                                                              setHint({...hint, is_focusing: false})
                                                          }}
-                                                         onClick={()=>handleClickHint(tag.tag_name)}
+                                                         onClick={() => handleClickHint(tag.tag_name)}
                                                     >
                                                         <Divider/>
                                                         <div
                                                             className={classes.hintElementFocus}>
                                                             <img alt={''}
-                                                                style={{
-                                                                    width: '2rem',
-                                                                    height: '2rem',
-                                                                    borderRadius: '50%'
-                                                                }}
-                                                                src={tag.url_image}/>
+                                                                 style={{
+                                                                     width: '2rem',
+                                                                     height: '2rem',
+                                                                     borderRadius: '50%'
+                                                                 }}
+                                                                 src={tag.url_image}/>
                                                             <Typography
                                                                 style={{
                                                                     lineHeight: '2rem',
@@ -281,15 +290,47 @@ const EditPostComponent = () => {
                                 }
                             </div>
                         </div>
-                        <div className={classes.bodyContianer}>
-                            <textarea name='body' className={classes.body_html} placeholder={`Body`}
-                                                      value={state.body}
-                                                      onChange={handleChange}></textarea>
-                            {
-                                isMobile? null:
-                                <ReactMarkdown className="markdown_write" source={state.body}
-                                               escapeHtml={false} renderers={{code: CodeBlock}}/>
-                            }
+                        <div style={{marginTop: "1rem", marginBottom: '1rem'}}>
+                            <Editor
+                                initialValue={state.body}
+                                apiKey="gzdsey0opala3t7opvlkqunzo51svo4mkwhmg5pwepf8ml2d"
+                                init={{
+
+                                    height: '60vh',
+                                    menubar: false,
+                                    plugins: [
+                                        'advlist autolink lists link image',
+                                        'charmap print preview anchor help',
+                                        'searchreplace visualblocks code codesample fullscreen',
+                                        'insertdatetime media table paste wordcount'
+                                    ],
+                                    toolbar:
+                                        'undo redo | formatselect | bold italic | \
+                                        alignleft aligncenter alignright | image preview fullscreen| \
+                                        bullist numlist outdent indent code codesample | help',
+                                    codesample_languages: [
+                                        {text: 'HTML/XML', value: 'markup'},
+                                        {text: 'JavaScript', value: 'javascript'},
+                                        {text: 'CSS', value: 'css'},
+                                        {text: 'PHP', value: 'php'},
+                                        {text: 'Ruby', value: 'ruby'},
+                                        {text: 'Python', value: 'python'},
+                                        {text: 'Java', value: 'java'},
+                                        {text: 'C', value: 'c'},
+                                        {text: 'C#', value: 'csharp'},
+                                        {text: 'C++', value: 'cpp'}
+                                    ],
+                                    images_upload_url: 'http://localhost:5004/api/v1/image/uploads',
+                                    images_upload_handler: function (blob, success, failed) {
+                                        let formData = new FormData()
+                                        formData.append('file', blob.blob(), blob.filename())
+                                        put_data('http://localhost:5004/api/v1/image/uploads', {}, formData, false)
+                                            .then(res => success(res.data.urls.default))
+                                            .catch(error => failed('Up load image fail'))
+                                    }
+                                }}
+                                onChange={handleEditorChange}
+                            />
                         </div>
                         <Button variant={'contained'} color={'primary'} className={classes.button_save}
                                 onClick={handleSave} C>Save</Button>

@@ -2,10 +2,6 @@ import React from 'react';
 import {Button, Typography} from "@material-ui/core";
 import Divider from "@material-ui/core/Divider";
 import {makeStyles} from "@material-ui/core/styles";
-import {useSelector} from "react-redux";
-import {URL_POST_SERVICE, URL_PROFILE_SERVICE} from "../../Constants";
-import {useHistory} from 'react-router-dom'
-import * as API from "../../ApiCall";
 import BookmarkIcon from '@material-ui/icons/Bookmark';
 import CheckIcon from '@material-ui/icons/Check';
 

@@ -5,9 +5,6 @@ import {makeStyles} from "@material-ui/core/styles";
 import {get_data} from "../ApiCall";
 import {URL_POST_SERVICE, URL_PROFILE_SERVICE} from "../Constants";
 import {NavLink} from "react-router-dom";
-import ReactMarkdown from "react-markdown/with-html";
-import '../Markdown.style.css'
-import CodeBlock from "../Helper/CodeBlock";
 import CommentComponents from "../Component/Post/Comment.Components";
 import Divider from "@material-ui/core/Divider";
 import {Button, IconButton} from "@material-ui/core";
@@ -22,6 +19,7 @@ import {useMediaQuery} from "@material-ui/core";
 import {theme} from "../Themes";
 import BookmarkIcon from "@material-ui/icons/Bookmark";
 import EditIcon from '@material-ui/icons/Edit';
+import ReactHtmlParser from 'react-html-parser';
 const useStyle = makeStyles({
     root: {
         display: 'flex',
@@ -359,8 +357,8 @@ const SinglePostPage = () => {
                                 </div>
                             </Box>
                             <div ref={ref}>
-                                <ReactMarkdown className="markdown" source={state.data.body}
-                                               renderers={{code: CodeBlock}} escapeHtml={false}/>
+
+                                {ReactHtmlParser(state.data.body)}
                             </div>
                         </Box>
                         <Divider/>
