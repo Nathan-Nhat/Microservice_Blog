@@ -3,7 +3,6 @@ from flask import request
 from app.models.userdetails_model import UserDetails
 from app import db
 from flask import jsonify
-from app.helper.Resp_Json import resp_json
 from app.helper.Exception import CustomException
 from app.helper.auth_connector import verify_jwt, Permission
 from flask_cors import cross_origin
