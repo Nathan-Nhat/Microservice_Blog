@@ -2,27 +2,31 @@ from app.api import image_service as image
 from flask import jsonify
 from flask import request
 from werkzeug.utils import secure_filename
-from flask import send_file
 import os
-from flask import current_app
+import cloudinary
+import cloudinary.uploader
+import cloudinary.utils
+from app.helper.auth_connector import verify_jwt, Permission
+cloudinary.config(
+    cloud_name=os.environ.get('CLOUDINARY_CLOUD_NAME'),
+    api_key= os.environ.get('CLOUDINARY_API_KEY'),
+    api_secret= os.environ.get('CLOUDINARY_API_SECRET')
+)
 
 
-@image.route('/uploads', methods=['POST', 'PUT'])
-def uploads_test():
+@image.route('/post/uploads', methods=['POST', 'PUT'])
+@verify_jwt(blueprint=image, permissions=[Permission.WRITE])
+def uploads_image_post(user_id):
     file = request.files.get('file')
-    file_name = secure_filename(file.filename)
-    print(file_name)
-    file.save(os.path.join(current_app.config['UPLOAD_DIR'], file_name))
-    print(os.path.join(current_app.config['UPLOAD_DIR'], file_name))
+    response = cloudinary.uploader.upload(file, tags='post_image')
     return jsonify({
         "urls": {
-            "default": f"http://localhost:5004/api/v1/image/img?name={file_name}"
+            "default": response.get('url')
         }}
     )
 
 
-@image.route('/img')
-def get_file():
-    file_name = request.args.get('name')
-    file = os.path.join(current_app.config['UPLOAD_DIR'], file_name)
-    return send_file(file)
+
+@image.route('/test')
+def test():
+    return jsonify({'message': 'ok'}), 200

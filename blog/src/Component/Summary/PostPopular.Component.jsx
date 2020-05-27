@@ -78,7 +78,7 @@ const PostPopularComponent = () => {
                         <div style={{
                             overflow: 'hidden',
 
-                        }}>
+                        }} key = {post.post_id}>
                             <NavLink to={`/post/${post.post_id}`} className = {classes.titlePosts}>{post.title}</NavLink>
                             <Box className={classes.commentContainer}>
                                 <Box className={classes.elementComment}>

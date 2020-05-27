@@ -1,11 +1,11 @@
-version: '3.0'
+version: '3.5'
 services:
   rabbitmq:
     image: rabbitmq:3.8.3
     container_name: rabbitmq
     restart: always
   auth_service:
-    image: auth_service:1.0
+    image: auth_service:${TAG}
     restart: always
     build:
         context: ./auth_service
@@ -13,7 +13,7 @@ services:
     container_name : auth_service
     environment:
     - PYTHONUNBUFFERED=0
-    - FLASK_CONFIG=production
+    - FLASK_CONFIG=${FLASK_CONFIG}
  #   ports:
  #  - "5000:5000"
     depends_on:
@@ -22,7 +22,7 @@ services:
     volumes:
     - ./auth_service:/usr/src/app
   profile_service:
-    image: profile_service:1.0
+    image: profile_service:${TAG}
     restart: always
     build:
         context: ./profile_service
@@ -30,7 +30,7 @@ services:
     container_name : profile_service
     environment:
     - PYTHONUNBUFFERED=0
-    - FLASK_CONFIG=production
+    - FLASK_CONFIG=${FLASK_CONFIG}
  #   ports:
  #  - "5001:5001"
     depends_on:
@@ -38,7 +38,7 @@ services:
     volumes:
     - ./profile_service:/usr/src/app
   post_service:
-    image: post_service:1.0
+    image: post_service:${TAG}
     restart: always
     build:
         context: ./post_service
@@ -48,16 +48,16 @@ services:
 #    - "5002:5002"
     environment:
     - PYTHONUNBUFFERED=0
-    - FLASK_CONFIG=production
+    - FLASK_CONFIG=${FLASK_CONFIG}
     depends_on:
     - mysql
     volumes:
     - ./post_service:/usr/src/app
   mail_service:
-    image: mail_service:1.0
+    image: mail_service:${TAG}
     restart: always
     environment:
-      - BUILD_ENV=production
+      - BUILD_ENV=${FLASK_CONFIG}
     build:
         context: ./mail_service
         dockerfile: Dockerfile
@@ -72,7 +72,7 @@ services:
     restart: always
     command: "--default-authentication-plugin=mysql_native_password"
     environment:
-    - MYSQL_ROOT_PASSWORD=Wakerjacob@90
+    - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
     volumes:
     - ./mysql/data:/var/lib/mysql
 #  front_end:
@@ -98,7 +98,7 @@ services:
     restart: always
 
   front_end_production:
-    image: fe_production:1.0
+    image: fe_production:${TAG}
     container_name: FE_Production
     build:
       context: ./front_end_production
@@ -109,4 +109,21 @@ services:
     - ./front_end_production/build:/usr/share/nginx/html
     - ./front_end_production/config:/etc/nginx/conf.d
     restart: always
- 
+
+  image_service:
+    image: image_service:${TAG}
+    container_name: image_service
+    restart: always
+    build:
+      context: ./image_service
+      dockerfile: Dockerfile
+      #  ports:
+      #  - "5002:5002"
+    environment:
+      - PYTHONUNBUFFERED=0
+      - FLASK_CONFIG=${FLASK_CONFIG}
+      - CLOUDINARY_CLOUD_NAME:${CLOUDINARY_CLOUD_NAME}
+      - CLOUDINARY_API_KEY:${CLOUDINARY_API_KEY}
+      - CLOUDINARY_API_SECRET:${CLOUDINARY_API_SECRET}
+    volumes:
+      - ./image_service:/usr/src/app

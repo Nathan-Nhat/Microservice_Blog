@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {makeStyles} from "@material-ui/core/styles";
 import {Button, useMediaQuery} from "@material-ui/core";
 import {get_data, put_data} from "../ApiCall";
-import {URL_POST_SERVICE} from "../Constants";
+import {URL_IMAGE_SERVICE, URL_POST_SERVICE} from "../Constants";
 import {useDispatch, useSelector} from "react-redux";
 import {open_notification} from "../redux/Actions/ActionObjects/ActionsObjects";
 import {Redirect} from 'react-router-dom'
@@ -320,20 +320,21 @@ const EditPostComponent = () => {
                                         {text: 'C#', value: 'csharp'},
                                         {text: 'C++', value: 'cpp'}
                                     ],
-                                    images_upload_url: 'http://localhost:5004/api/v1/image/uploads',
+                                    images_upload_url: `${URL_IMAGE_SERVICE}/post/uploads`,
                                     images_upload_handler: function (blob, success, failed) {
                                         let formData = new FormData()
                                         formData.append('file', blob.blob(), blob.filename())
-                                        put_data('http://localhost:5004/api/v1/image/uploads', {}, formData, false)
+                                        put_data(`${URL_IMAGE_SERVICE}/post/uploads`, {}, formData, false)
                                             .then(res => success(res.data.urls.default))
                                             .catch(error => failed('Up load image fail'))
                                     }
                                 }}
                                 onChange={handleEditorChange}
+                                value={state.body}
                             />
                         </div>
                         <Button variant={'contained'} color={'primary'} className={classes.button_save}
-                                onClick={handleSave} C>Save</Button>
+                                onClick={handleSave}>Save</Button>
                     </div>
             }
         </div>

@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {makeStyles} from "@material-ui/core/styles";
 import {Button, InputAdornment, useMediaQuery} from "@material-ui/core";
 import {get_data, post_data, put_data} from "../ApiCall";
-import {URL_POST_SERVICE} from "../Constants";
+import {URL_IMAGE_SERVICE, URL_POST_SERVICE} from "../Constants";
 import {useDispatch, useSelector} from "react-redux";
 import {open_notification} from "../redux/Actions/ActionObjects/ActionsObjects";
 import {Redirect} from 'react-router-dom'
@@ -288,7 +288,7 @@ const WritePostComponent = () => {
                         <div style={{marginTop: "1rem", marginBottom: '1rem'}}>
                             <Editor
                                 initialValue="Write your post here..."
-                                apiKey="gzdsey0opala3t7opvlkqunzo51svo4mkwhmg5pwepf8ml2d"
+                                apiKey="no-api-key"
                                 init={{
 
                                     height: '60vh',
@@ -315,11 +315,11 @@ const WritePostComponent = () => {
                                         {text: 'C#', value: 'csharp'},
                                         {text: 'C++', value: 'cpp'}
                                     ],
-                                    images_upload_url: 'http://localhost:5004/api/v1/image/uploads',
+                                    images_upload_url: `${URL_IMAGE_SERVICE}/post/uploads`,
                                     images_upload_handler: function (blob, success, failed) {
                                         let formData = new FormData()
                                         formData.append('file', blob.blob(), blob.filename())
-                                        put_data('http://localhost:5004/api/v1/image/uploads', {}, formData, false)
+                                        put_data(`${URL_IMAGE_SERVICE}/post/uploads`, {}, formData, false)
                                             .then(res => success(res.data.urls.default))
                                             .catch(error => failed('Up load image fail'))
                                     }
@@ -328,7 +328,7 @@ const WritePostComponent = () => {
                             />
                         </div>
                         <Button variant={'contained'} color={'primary'} className={classes.buttonSave}
-                                onClick={handleSave} C>Save</Button>
+                                onClick={handleSave}>Save</Button>
                     </div>
             }
         </div>

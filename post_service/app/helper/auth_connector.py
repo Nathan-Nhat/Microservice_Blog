@@ -4,6 +4,7 @@ from app.helper.ServiceURL import ServiceURL
 from flask import request, jsonify
 from app.helper.Exception import CustomException
 
+
 class Permission:
     FOLLOW = 1  # 00001
     COMMENT = 2  # 00010
