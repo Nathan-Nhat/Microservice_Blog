@@ -84,7 +84,7 @@ const PostRightComponent = ({parentData, post_id, toggle_like}) => {
             <div className={classes.bodyContent}>
                 {
                     parentData.list_contents.map((item, index) => {
-                            let ret = item.tagName === 'H1' ? <Typography key={index} onClick={() => {
+                            let ret = item.tagName === 'H2' ? <Typography key={index} onClick={() => {
                                     item.scrollIntoView({behavior: 'smooth', block: 'start'})
                                 }} className={classes.header1}> {item.textContent}</Typography> :
                                 <Typography key={index} onClick={() => {

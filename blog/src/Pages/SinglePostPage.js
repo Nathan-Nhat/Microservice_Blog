@@ -137,7 +137,7 @@ const SinglePostPage = () => {
     })
     useEffect(() => {
         if (state.isLoading === false) {
-            let list = Array.from(ref.current.querySelectorAll('h1, h2'))
+            let list = Array.from(ref.current.querySelectorAll('h2, h3'))
             setState({...state, list_contents: list})
         }
 
