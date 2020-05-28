@@ -106,7 +106,7 @@ const WritePostComponent = () => {
                         ...hint,
                         tags: res.data.tags
                     }))
-            }, 2000)
+            }, 1000)
         }
     }, [state.tag])
     const dispatch = useDispatch()
@@ -239,7 +239,7 @@ const WritePostComponent = () => {
                                                                      height: '2rem',
                                                                      borderRadius: '50%'
                                                                  }}
-                                                                 src={tag.url_image}/>
+                                                                 src={tag.tag_image}/>
                                                             <Typography
                                                                 style={{
                                                                     lineHeight: '2rem',

@@ -133,7 +133,6 @@ const TagFollowPage = () => {
                             </div>
                         </div>
                         <div style={{flexGrow: 1}}></div>
-                        <input name='image_tag' type='file' onChange={handleImageChange}/>
                         <Box>
                             {!state.is_followed ?
                                 <Button onClick={handleFollow} variant={'outlined'} color='primary'>Follow</Button> :
