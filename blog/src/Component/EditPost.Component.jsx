@@ -185,10 +185,6 @@ const EditPostComponent = () => {
         setState({...state, tag: '', tags: cur_tags, isFocusedTags: false})
     }
     const handleEditorChange = (e) => {
-        console.log(
-            'Content was updated:',
-            e.target.getContent()
-        );
         setState({
             ...state,
             body: e.target.getContent()

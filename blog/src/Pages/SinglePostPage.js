@@ -21,8 +21,6 @@ import BookmarkIcon from "@material-ui/icons/Bookmark";
 import EditIcon from '@material-ui/icons/Edit';
 import 'tinymce/skins/ui/oxide/content.css'
 import 'tinymce/skins/ui/oxide/skin.min.css'
-import '../Pages/prism.css'
-import Prism from "prismjs";
 import ReactHtmlParser from 'react-html-parser';
 const useStyle = makeStyles({
     root: {
@@ -182,10 +180,9 @@ const SinglePostPage = () => {
                 })
             })
     }, [])
-    React.useEffect(()=>{
-        console.log('hightlight')
-        Prism.highlightAll()
-    },[state.isHightlighted])
+    React.useEffect(() => {
+        window.Prism.highlightAll()
+    }, [state.isHightlighted])
     const handleFollow = () => {
         if (!isAuthenticated) {
             history.push({pathname: '/login', state: {nextUrl: `/post/${post_id}`}})
@@ -337,13 +334,14 @@ const SinglePostPage = () => {
                                         history.push(`/tag/${item.tag_id}`)
                                     }}>{item.tag_name}</a>
                                 })}
-                                <div style={{float:'right'}}>
+                                <div style={{float: 'right'}}>
                                     {isAuthenticated && id === state.data.author.user_id ?
                                         <div>
                                             <IconButton ref={myRef} aria-controls={true ? 'menu-list-post' : undefined}
                                                         aria-haspopup="true" onClick={toggleOpen}
                                                         size={'large'}>
-                                                <EditIcon style={{fontSize: '1.5rem', color: theme.palette.primary.dark}}/>
+                                                <EditIcon
+                                                    style={{fontSize: '1.5rem', color: theme.palette.primary.dark}}/>
                                             </IconButton>
                                             <Popover open={open} anchorEl={myRef.current} role={undefined}
                                                      disablePortal onClose={handleClose} anchorOrigin={{

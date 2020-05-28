@@ -182,10 +182,6 @@ const WritePostComponent = () => {
         }
     }, [])
     const handleEditorChange = (e) => {
-        console.log(
-            'Content was updated:',
-            e.target.getContent()
-        );
         setState({
             ...state,
             body: e.target.getContent()
