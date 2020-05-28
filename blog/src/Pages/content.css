@@ -839,7 +839,7 @@ table {
         width: 82vw;
         margin :auto
     }
-    code {
+    code span {
         font-size: 0.9rem;
     }
     body {
