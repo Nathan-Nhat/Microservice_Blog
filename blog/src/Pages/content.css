@@ -835,7 +835,13 @@ table {
         opacity: 0.5;
         position: absolute;
     }
-
+    pre {
+        width: 82vw;
+        margin :auto
+    }
+    code {
+        font-size: 0.9rem;
+    }
     body {
         -webkit-text-size-adjust: none;
     }
