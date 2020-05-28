@@ -19,8 +19,7 @@ import {useMediaQuery} from "@material-ui/core";
 import {theme} from "../Themes";
 import BookmarkIcon from "@material-ui/icons/Bookmark";
 import EditIcon from '@material-ui/icons/Edit';
-import 'tinymce/skins/ui/oxide/content.css'
-import 'tinymce/skins/ui/oxide/skin.min.css'
+import './content.css'
 import ReactHtmlParser from 'react-html-parser';
 const useStyle = makeStyles({
     root: {

@@ -297,7 +297,7 @@ const WritePostComponent = () => {
                                     ],
                                     toolbar:
                                         'undo redo | formatselect | bold italic | forecolor backcolor |\
-                                        alignleft aligncenter alignright | image preview fullscreen| table \
+                                        alignleft aligncenter alignright | image preview fullscreen| table blockquote\
                                         bullist numlist outdent indent code codesample | help',
                                     table_toolbar: "tableprops tabledelete | tableinsertrowbefore tableinsertrowafter tabledeleterow | tableinsertcolbefore tableinsertcolafter tabledeletecol",
                                     codesample_languages: [
