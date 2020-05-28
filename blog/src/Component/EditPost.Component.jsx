@@ -325,7 +325,7 @@ const EditPostComponent = () => {
                                     images_upload_handler: function (blob, success, failed) {
                                         let formData = new FormData()
                                         formData.append('file', blob.blob(), blob.filename())
-                                        put_data(`${URL_IMAGE_SERVICE}/post/uploads`, {}, formData, false)
+                                        put_data(`${URL_IMAGE_SERVICE}/post/uploads`, {}, formData, true)
                                             .then(res => success(res.data.urls.default))
                                             .catch(error => failed('Up load image fail'))
                                     }
