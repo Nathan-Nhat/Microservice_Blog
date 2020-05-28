@@ -7,6 +7,7 @@ import cloudinary
 import cloudinary.uploader
 import cloudinary.utils
 from app.helper.auth_connector import verify_jwt, Permission
+
 cloudinary.config(
     cloud_name=os.environ.get('CLOUDINARY_CLOUD_NAME'),
     api_key= os.environ.get('CLOUDINARY_API_KEY'),
