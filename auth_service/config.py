@@ -6,10 +6,10 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 class Config:
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'trantrungnhat'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    ITSDANGEROUS_SECRET_KEY = os.environ.get('SECRET_KEY_ITSDANGEROUS') or 'trantrungnhat'
+    ITSDANGEROUS_SECRET_KEY = os.environ.get('ITSDANGEROUS_SECRET_KEY')
     ITSDANGEROUS_EXPIRATION = int(os.environ.get('ITSDANGEROUS_EXPIRATION', 3600))  # s
-    SECRET_JWT_KEY = os.environ.get('SECRET_JWT_KEY') or 'jwt_trantrungnhat'
-    BLOG_ADMIN = os.environ.get('BLOG_ADMIN') or 'trantrungnhat6196@gmail.com'
+    SECRET_JWT_KEY = os.environ.get('SECRET_JWT_KEY')
+    BLOG_ADMIN = os.environ.get('BLOG_ADMIN')
     RABBITMQ_URL = 'localhost'
     @staticmethod
     def init_app(app):

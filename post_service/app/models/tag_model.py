@@ -20,8 +20,8 @@ class Tags(db.Model):
     tag_user = db.relationship('Tag_user',
                                backref='tag_user',
                                lazy='dynamic')
-    url_image = db.Column(db.String(100),
-                          default='https://www.sketchappsources.com/resources/source-image/python-logo.png')
+    url_image = db.Column(db.Text,
+                          default='https://res.cloudinary.com/nathan-ttnhat/image/upload/v1590673215/tag-png-11554004615vlvfzhhkxc_omalgp.png')
 
     posts = db.relationship('Post',
                             secondary='tag_post',

@@ -12,8 +12,12 @@ services:
         dockerfile: Dockerfile
     container_name : auth_service
     environment:
-    - PYTHONUNBUFFERED=0
+    - PYTHONUNBUFFERED=TRUE
     - FLASK_CONFIG=${FLASK_CONFIG}
+    - SECRET_KEY=${SECRET_KEY}
+    - ITSDANGEROUS_SECRET_KEY=${ITSDANGEROUS_SECRET_KEY}
+    - SECRET_JWT_KEY=${SECRET_JWT_KEY}
+    - BLOG_ADMIN=${BLOG_ADMIN}  
  #   ports:
  #  - "5000:5000"
     depends_on:
@@ -29,8 +33,12 @@ services:
         dockerfile: Dockerfile
     container_name : profile_service
     environment:
-    - PYTHONUNBUFFERED=0
+    - PYTHONUNBUFFERED=TRUE
     - FLASK_CONFIG=${FLASK_CONFIG}
+    - SECRET_KEY=${SECRET_KEY}
+    - ITSDANGEROUS_SECRET_KEY=${ITSDANGEROUS_SECRET_KEY}
+    - SECRET_JWT_KEY=${SECRET_JWT_KEY}
+    - BLOG_ADMIN=${BLOG_ADMIN}  
  #   ports:
  #  - "5001:5001"
     depends_on:
@@ -47,8 +55,12 @@ services:
 #    ports:
 #    - "5002:5002"
     environment:
-    - PYTHONUNBUFFERED=0
+    - PYTHONUNBUFFERED=TRUE
     - FLASK_CONFIG=${FLASK_CONFIG}
+    - SECRET_KEY=${SECRET_KEY}
+    - ITSDANGEROUS_SECRET_KEY=${ITSDANGEROUS_SECRET_KEY}
+    - SECRET_JWT_KEY=${SECRET_JWT_KEY}
+    - BLOG_ADMIN=${BLOG_ADMIN}  
     depends_on:
     - mysql
     volumes:
@@ -120,7 +132,7 @@ services:
       #  ports:
       #  - "5002:5002"
     environment:
-      - PYTHONUNBUFFERED=0
+      - PYTHONUNBUFFERED=TRUE
       - FLASK_CONFIG=${FLASK_CONFIG}
       - CLOUDINARY_CLOUD_NAME=${CLOUDINARY_CLOUD_NAME}
       - CLOUDINARY_API_KEY=${CLOUDINARY_API_KEY}

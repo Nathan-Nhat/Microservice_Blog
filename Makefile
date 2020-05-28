@@ -20,3 +20,7 @@ stop:
 	docker-compose stop
 up-logs:
 	docker-compose up
+init-database:
+	docker-compose exec auth_service python3 add_database.py
+	docker-compose exec profile_service python3 add_database.py
+	docker-compose exec post_service python3 add_database.py

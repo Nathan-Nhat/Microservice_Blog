@@ -39,6 +39,8 @@ def get_user_profile():
 def post_user_profile():
     user_details = request.get_json()
     user_id = user_details.get('profile_id')
+    if UserDetails.query.filter_by(email=user_details.get('email')).first() is not None:
+        return jsonify({'message': 'User already there'}), 404
     userDetails = UserDetails(user_id=user_id, email=user_details.get('email'), name=user_details.get('name'))
     userDetails.avatar_hash = userDetails.gravatar(size=256)
     db.session.add(userDetails)

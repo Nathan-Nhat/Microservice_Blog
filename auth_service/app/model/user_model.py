@@ -40,6 +40,7 @@ class User(db.Model):
 
 
 def generate_confirmation_token(user_id, expiration=3600):
+    print(current_app.config['ITSDANGEROUS_SECRET_KEY'],  current_app.config['ITSDANGEROUS_EXPIRATION'])
     s = Serializer(current_app.config['ITSDANGEROUS_SECRET_KEY'], current_app.config['ITSDANGEROUS_EXPIRATION'])
     return s.dumps({'confirm': user_id}).decode('utf-8')
 

@@ -4,10 +4,10 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 
 
 class Config:
-    SECRET_KEY = os.environ.get('SECRET_KEY') or 'trantrungnhat'
+    SECRET_KEY = os.environ.get('SECRET_KEY')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
-    SECRET_JWT_KEY = os.environ.get('SECRET_JWT_KEY') or 'jwt_trantrungnhat'
-    BLOG_ADMIN = os.environ.get('BLOG_ADMIN') or 'trantrungnhat6196@gmail.com'
+    SECRET_JWT_KEY = os.environ.get('SECRET_JWT_KEY')
+    BLOG_ADMIN = os.environ.get('BLOG_ADMIN')
     @staticmethod
     def init_app(app):
         pass

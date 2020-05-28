@@ -41,7 +41,6 @@ def sign_up_user():
                 'profile_id': user.id,
                 'email': user.email,
                 'name': data.get('name'),
-                'avatar_hash': 'https://www.w3schools.com/w3images/avatar2.png'
             }
             resp = conn.post(ServiceURL.PROFILE_SERVICE + 'user_profile', json=user_details)
         if resp.status_code != 200:
@@ -59,7 +58,7 @@ def sign_up_user():
             'username': user.username,
             'roles': user.roles.name
         }), 200
-    except Exception:
+    except:
         db.session.rollback()
         raise
         return jsonify({
