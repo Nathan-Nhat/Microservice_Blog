@@ -317,6 +317,10 @@ const EditPostComponent = () => {
                                         {text: 'C#', value: 'csharp'},
                                         {text: 'C++', value: 'cpp'}
                                     ],
+                                    image_dimensions: false,
+                                    image_class_list:[{
+                                        title: 'Responsive', value : 'img-responsive'
+                                    }],
                                     images_upload_url: `${URL_IMAGE_SERVICE}/post/uploads`,
                                     images_upload_handler: function (blob, success, failed) {
                                         let formData = new FormData()
