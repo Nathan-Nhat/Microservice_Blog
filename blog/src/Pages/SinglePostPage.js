@@ -19,6 +19,10 @@ import {useMediaQuery} from "@material-ui/core";
 import {theme} from "../Themes";
 import BookmarkIcon from "@material-ui/icons/Bookmark";
 import EditIcon from '@material-ui/icons/Edit';
+import 'tinymce/skins/ui/oxide/content.css'
+import 'tinymce/skins/ui/oxide/skin.min.css'
+import '../Pages/prism.css'
+import Prism from "prismjs";
 import ReactHtmlParser from 'react-html-parser';
 const useStyle = makeStyles({
     root: {
@@ -32,6 +36,7 @@ const useStyle = makeStyles({
         wordWrap: 'break-word',
         hyphens: 'auto',
         width: '100%',
+        maxWidth: '800px'
     },
     title: {
         textAlign: 'left',
@@ -117,6 +122,7 @@ const SinglePostPage = () => {
         list_contents: [],
         is_followed: false,
         isLoading: true,
+        isHightlighted: false,
         data: {
             title: 'Title',
             tag: [],
@@ -155,6 +161,7 @@ const SinglePostPage = () => {
                     ...state,
                     is_followed: res.data.author.is_followed,
                     isLoading: false,
+                    isHightlighted: true,
                     data: {
                         title: res.data.title,
                         tag: res.data.tags,
@@ -175,6 +182,10 @@ const SinglePostPage = () => {
                 })
             })
     }, [])
+    React.useEffect(()=>{
+        console.log('hightlight')
+        Prism.highlightAll()
+    },[state.isHightlighted])
     const handleFollow = () => {
         if (!isAuthenticated) {
             history.push({pathname: '/login', state: {nextUrl: `/post/${post_id}`}})

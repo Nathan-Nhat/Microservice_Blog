@@ -288,7 +288,7 @@ const WritePostComponent = () => {
                         <div style={{marginTop: "1rem", marginBottom: '1rem'}}>
                             <Editor
                                 initialValue="Write your post here..."
-                                apiKey="no-api-key"
+                                apiKey="gzdsey0opala3t7opvlkqunzo51svo4mkwhmg5pwepf8ml2d"
                                 init={{
 
                                     height: '60vh',
@@ -297,12 +297,13 @@ const WritePostComponent = () => {
                                         'advlist autolink lists link image',
                                         'charmap print preview anchor help',
                                         'searchreplace visualblocks code codesample fullscreen',
-                                        'insertdatetime media table paste wordcount'
+                                        'insertdatetime media table paste wordcount table'
                                     ],
                                     toolbar:
-                                        'undo redo | formatselect | bold italic | \
-                                        alignleft aligncenter alignright | image preview fullscreen| \
+                                        'undo redo | formatselect | bold italic | forecolor backcolor |\
+                                        alignleft aligncenter alignright | image preview fullscreen| table \
                                         bullist numlist outdent indent code codesample | help',
+                                    table_toolbar: "tableprops tabledelete | tableinsertrowbefore tableinsertrowafter tabledeleterow | tableinsertcolbefore tableinsertcolafter tabledeletecol",
                                     codesample_languages: [
                                         {text: 'HTML/XML', value: 'markup'},
                                         {text: 'JavaScript', value: 'javascript'},
