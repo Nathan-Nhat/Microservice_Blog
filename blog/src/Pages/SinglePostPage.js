@@ -20,6 +20,7 @@ import {theme} from "../Themes";
 import BookmarkIcon from "@material-ui/icons/Bookmark";
 import EditIcon from '@material-ui/icons/Edit';
 import './content.css'
+import './skins.css'
 import ReactHtmlParser from 'react-html-parser';
 const useStyle = makeStyles({
     root: {
