@@ -21,7 +21,7 @@ class Tags(db.Model):
                                backref='tag_user',
                                lazy='dynamic')
     url_image = db.Column(db.Text,
-                          default='https://res.cloudinary.com/nathan-ttnhat/image/upload/v1590673215/tag-png-11554004615vlvfzhhkxc_omalgp.png')
+                          default='https://res.cloudinary.com/nathan-ttnhat/image/upload/w_200,q_auto/v1590673215/tag-png-11554004615vlvfzhhkxc_omalgp.png')
 
     posts = db.relationship('Post',
                             secondary='tag_post',

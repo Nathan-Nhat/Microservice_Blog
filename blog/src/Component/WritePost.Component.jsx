@@ -233,13 +233,13 @@ const WritePostComponent = () => {
                                                     >
                                                         <div
                                                             className={classes.hintElementFocus}>
-                                                            <img alt={''}
+                                                            <img src={tag.tag_image} alt={''}
                                                                  style={{
                                                                      width: '2rem',
                                                                      height: '2rem',
                                                                      borderRadius: '50%'
                                                                  }}
-                                                                 src={tag.tag_image}/>
+                                                                 />
                                                             <Typography
                                                                 style={{
                                                                     lineHeight: '2rem',
