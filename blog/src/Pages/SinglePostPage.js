@@ -364,7 +364,7 @@ const SinglePostPage = () => {
                                     }
                                 </div>
                             </Box>
-                            <div ref={ref}>
+                            <div ref={ref} style={{marginTop:"2rem"}}>
 
                                 {ReactHtmlParser(state.data.body)}
                             </div>

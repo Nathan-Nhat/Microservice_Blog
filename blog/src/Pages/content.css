@@ -826,6 +826,15 @@ table {
     border-collapse: collapse;
 }
 
+p {
+    line-height: 1.8rem;
+    font-size: 1.1rem;
+}
+
+a {
+    color: #009688;
+}
+
 
 @media only screen and (max-width: 600px) {
     .tinymce-mobile-unfocused-selections .tinymce-mobile-unfocused-selection {

@@ -14,9 +14,10 @@ code {
 
 a {
   text-decoration: none;
+  color: #009688;
 }
 a:hover {
-  color: #8989e5;
+  color: #80cbc4;
 }
 a::selection{
   text-decoration: none;
