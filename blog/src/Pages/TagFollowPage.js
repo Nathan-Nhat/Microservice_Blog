@@ -23,7 +23,7 @@ const useStyle = makeStyles({
         paddingBottom: '2rem'
     },
     tagImage: {
-        marginRight: props => props.isMobile ? '1rem' : '3rem',
+        marginRight: props => props.isMobile ? '1rem' : '1rem',
         width: '4rem',
         height: '4rem',
         borderRadius: '50%'

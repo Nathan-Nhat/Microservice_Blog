@@ -108,7 +108,7 @@ const useStyle = makeStyles({
 const PostComponent = ({post, user}) => {
     const isMobile = useMediaQuery(theme.breakpoints.down('md'))
     const classes = useStyle({isMobile})
-    const {id, isAuthenticated} = useSelector(state => state.AuthenReducer)
+    const {id, isAuthenticated,is_admin} = useSelector(state => state.AuthenReducer)
     const history = useHistory()
     const myRef = React.useRef('123')
     const [state, setState] = React.useState({
@@ -177,7 +177,7 @@ const PostComponent = ({post, user}) => {
                         </Box>
                     </Box>
                     <div>
-                            {isAuthenticated && id === user.user_id ?
+                            {(isAuthenticated && id === user.user_id)|| is_admin ?
                                 <div>
                                     <IconButton ref={myRef} aria-controls={true ? 'menu-list-grow' : undefined}
                                                 aria-haspopup="true" onClick={toggleOpen}

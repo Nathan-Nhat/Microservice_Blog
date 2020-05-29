@@ -243,7 +243,7 @@ const EditPostComponent = () => {
                                                                      height: '2rem',
                                                                      borderRadius: '50%'
                                                                  }}
-                                                                 src={tag.url_image}/>
+                                                                 src={tag.tag_image}/>
                                                             <Typography
                                                                 style={{
                                                                     lineHeight: '2rem',

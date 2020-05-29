@@ -63,10 +63,10 @@ const CommentComponents = ({post_id}) => {
         post_data(URL_POST_SERVICE + '/comments', {}, data, true)
             .then(res => {
                 var new_list = state.list_comment
+		setComment('')
                 new_list.unshift(res.data)
                 setState({
                     ...state,
-                    comment: '',
                     list_comment: new_list
                 })
             })
