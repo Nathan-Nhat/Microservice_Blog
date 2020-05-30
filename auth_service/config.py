@@ -10,6 +10,7 @@ class Config:
     ITSDANGEROUS_EXPIRATION = int(os.environ.get('ITSDANGEROUS_EXPIRATION', 3600))  # s
     SECRET_JWT_KEY = os.environ.get('SECRET_JWT_KEY')
     BLOG_ADMIN = os.environ.get('BLOG_ADMIN')
+    SQLALCHEMY_POOL_SIZE = 1000
     RABBITMQ_URL = 'localhost'
     @staticmethod
     def init_app(app):

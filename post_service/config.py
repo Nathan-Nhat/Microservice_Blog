@@ -8,6 +8,7 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SECRET_JWT_KEY = os.environ.get('SECRET_JWT_KEY')
     BLOG_ADMIN = os.environ.get('BLOG_ADMIN')
+    SQLALCHEMY_POOL_SIZE = 1000
     @staticmethod
     def init_app(app):
         pass

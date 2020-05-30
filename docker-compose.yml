@@ -87,6 +87,7 @@ services:
     - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
     volumes:
     - ./mysql/data:/var/lib/mysql
+    - ./mysql/config:/etc/mysql/conf.d
 #  front_end:
 #    image: front_end:1.0
 #    restart: always

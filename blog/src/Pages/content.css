@@ -841,6 +841,9 @@ li {
 	line-height: 1.8rem;
     font-size: 1.1rem;
 }
+pre {
+    overflow-x: auto;
+}
 @media only screen and (max-width: 600px) {
     .tinymce-mobile-unfocused-selections .tinymce-mobile-unfocused-selection {
         /* Note: this file is used inside the content, so isn't part of theming */

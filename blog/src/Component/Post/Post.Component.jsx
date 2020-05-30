@@ -20,13 +20,18 @@ const useStyle = makeStyles({
     container: {
         display: "flex",
         flexDirection: "row",
-        padding: "1rem 0.5rem 0.5rem 0"
+        padding: "1rem 0.5rem 0.5rem 0",
+        borderLeft: `0.3rem solid ${theme.palette.primary.main}`,
+        '&:hover': {
+            borderLeft: `0.6rem solid ${theme.palette.primary.main}`,
+        }
     },
     image: {
         width: props => props.isMobile ? '2.5rem' : "3rem",
         height: props => props.isMobile ? '2.5rem' : "3rem",
         borderRadius: "50%",
-        marginRight: '0.5rem'
+        marginRight: '0.5rem',
+        marginLeft: '1rem'
     },
     detail: {
         width: "100%",
@@ -71,11 +76,11 @@ const useStyle = makeStyles({
         }
     },
     tags: {
-        display : 'inline-block',
+        display: 'inline-block',
         fontSize: '0.8rem',
         backgroundColor: '#dee3e0',
         borderRadius: "0.2rem",
-        marginLeft : '0.5rem',
+        marginLeft: '0.5rem',
         padding: '0.1rem 0.2rem 0.1rem 0.2rem',
         border: '1px solid #d7d9d7',
         opacity: '0.5',
@@ -108,7 +113,7 @@ const useStyle = makeStyles({
 const PostComponent = ({post, user}) => {
     const isMobile = useMediaQuery(theme.breakpoints.down('md'))
     const classes = useStyle({isMobile})
-    const {id, isAuthenticated,is_admin} = useSelector(state => state.AuthenReducer)
+    const {id, isAuthenticated, is_admin} = useSelector(state => state.AuthenReducer)
     const history = useHistory()
     const myRef = React.useRef('123')
     const [state, setState] = React.useState({
@@ -171,40 +176,40 @@ const PostComponent = ({post, user}) => {
                             </Box>
                             <Box className={classes.elementComment} style={post.is_liked ? {opacity: '1'} : {}}>
                                 <BookmarkIcon color={post.is_liked ? 'primary' : 'inherit'}
-                                                       className={classes.iconComment}/>
+                                              className={classes.iconComment}/>
                                 <Typography className={classes.numComment}>{post.num_like}</Typography>
                             </Box>
                         </Box>
                     </Box>
                     <div>
-                            {(isAuthenticated && id === user.user_id)|| is_admin ?
-                                <div>
-                                    <IconButton ref={myRef} aria-controls={true ? 'menu-list-grow' : undefined}
-                                                aria-haspopup="true" onClick={toggleOpen}
-                                                size={'small'}>
-                                        <KeyboardArrowDownIcon style={{fontSize: '1.5rem'}}/>
-                                    </IconButton>
-                                    <Popover open={open} anchorEl={myRef.current} role={undefined}
-                                             disablePortal onClose={handleClose} anchorOrigin={{
-                                        vertical: 'bottom',
-                                        horizontal: 'center',
-                                    }}
-                                             transformOrigin={{
-                                                 vertical: 'top',
-                                                 horizontal: 'left',
-                                             }}>
-                                        <Grow in={true}>
-                                            <Paper>
-                                                <MenuList id="menu-list-grow">
-                                                    <MenuItem onClick={handleEdit}>Edit</MenuItem>
-                                                    <MenuItem onClick={handleDelete}>Delete</MenuItem>
-                                                </MenuList>
-                                            </Paper>
-                                        </Grow>
-                                    </Popover>
-                                </div> : null
-                            }
-                        </div>
+                        {(isAuthenticated && id === user.user_id) || is_admin ?
+                            <div>
+                                <IconButton ref={myRef} aria-controls={true ? 'menu-list-grow' : undefined}
+                                            aria-haspopup="true" onClick={toggleOpen}
+                                            size={'small'}>
+                                    <KeyboardArrowDownIcon style={{fontSize: '1.5rem'}}/>
+                                </IconButton>
+                                <Popover open={open} anchorEl={myRef.current} role={undefined}
+                                         disablePortal onClose={handleClose} anchorOrigin={{
+                                    vertical: 'bottom',
+                                    horizontal: 'center',
+                                }}
+                                         transformOrigin={{
+                                             vertical: 'top',
+                                             horizontal: 'left',
+                                         }}>
+                                    <Grow in={true}>
+                                        <Paper>
+                                            <MenuList id="menu-list-grow">
+                                                <MenuItem onClick={handleEdit}>Edit</MenuItem>
+                                                <MenuItem onClick={handleDelete}>Delete</MenuItem>
+                                            </MenuList>
+                                        </Paper>
+                                    </Grow>
+                                </Popover>
+                            </div> : null
+                        }
+                    </div>
                 </Box>
             }
         </Box>
