@@ -13,6 +13,7 @@ import {useMediaQuery} from "@material-ui/core";
 import {theme} from "../../Themes";
 import queryString from "query-string";
 import {useLocation, useHistory} from 'react-router-dom'
+import LoadingComponents from "../Loading/Loading.Components";
 
 const useStyle = makeStyles({
     root: {
@@ -57,12 +58,14 @@ const AllPostComponents = () => {
         <div className={classes.root}>
             {
                 state.isLoading === true ?
-                    null
+                    <div style={{marginTop:'2rem'}}>
+                        <LoadingComponents/>
+                    </div>
                     :
                     <div>
                         {
                             pathname === '/p/followed_tags' ?
-                                <div style = {{marginTop : '4rem', fontSize  :'2rem'}}>
+                                <div style={{marginTop: '4rem', fontSize: '2rem'}}>
                                     Inprogress...
                                 </div> :
                                 <Box style={{textAlign: 'center'}}>

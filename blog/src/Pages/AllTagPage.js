@@ -11,6 +11,7 @@ import SubdirectoryArrowRightRoundedIcon from "@material-ui/icons/SubdirectoryAr
 import {HtmlTooltip} from "../Component/Appbar.Component";
 import SearchIcon from "@material-ui/icons/Search";
 import Pagination from "@material-ui/lab/Pagination";
+import LoadingComponents from "../Component/Loading/Loading.Components";
 
 const useStyle = makeStyles({
     title: {
@@ -85,68 +86,78 @@ const AllTagPage = () => {
             history.push(`/all_tags?q=${query.queryWord}&page=${1}`)
         }
     }
-    const handlePageChange = (e, newVal)=>{
-         history.push(`/all_tags?q=${query.queryWord}&page=${newVal}`)
+    const handlePageChange = (e, newVal) => {
+        history.push(`/all_tags?q=${query.queryWord}&page=${newVal}`)
     }
     return (
-        <div style={{position: 'relative'}}>
-            <Typography variant={'h4'}
-                        className={classes.title}>Tags <span>{`(${state.total_tags})`}</span></Typography>
-            <Divider variant={'middle'}/>
-            <div className={classes.searchContainer}>
-                <HtmlTooltip disableHoverListener arrow={true} placement="bottom-start"
-                             title={
-                                 <React.Fragment>
-                                     <Typography style={{fontSize: '0.7rem'}}>{`Press `}
-                                         <div style={{
-                                             border: "1px solid #888a8c",
-                                             padding: '0 0.5rem 0 0.5rem',
-                                             borderRadius: '3px',
-                                             display: 'inline-block'
-                                         }}>
-                                             <SubdirectoryArrowRightRoundedIcon
-                                                 style={{fontSize: '0.7rem', paddingRight: '0.3rem'}}/>
-                                             Enter
-                                         </div>
-                                         {` to search`}</Typography>
-                                 </React.Fragment>
-                             }
-                >
-                    <Input className={classes.search}
-                           onKeyDown={handleKeyDown}
-                           id="input-with-tags"
-                           variant='outlined'
-                           disableUnderline
-                           onChange={handleChange}
-                           name="queryWord" value={query.queryWord}
-                           placeholder={'Enter keyword'}
-                           startAdornment={(<InputAdornment>
-                               <SearchIcon style={{marginRight: '0.4rem', opacity: '0.5'}}/>
-                           </InputAdornment>)}
-                    />
-                </HtmlTooltip>
-            </div>
-            <div className={classes.main}>
-                {
-                    state.tags.map((item, index) => {
-                        return (
-                            <div className={classes.tagContained} key = {item.tag_id}>
-                                <TagComponent tag={item}/>
-                            </div>
-                        )
-                    })
-                }
-            </div>
-            <Box>
-                {
-                    state.total_pages <= 1 ? null :
-                        <div style={{display: 'flex', flexDirection: 'column', width: '100%'}}>
-                            <Pagination page={state.page} count={state.total_pages} variant="outlined"
-                                        style={{marginTop: '1rem', alignSelf: 'center'}}
-                                        color="primary" onChange={handlePageChange}/>
+        <div>
+            {
+                state.isLoading ?
+                    <div>
+                        <div style={{marginTop: '2rem'}}>
+                            <LoadingComponents/>
                         </div>
-                }
-            </Box>
+                    </div> :
+                    <div style={{position: 'relative'}}>
+                        <Typography variant={'h4'}
+                                    className={classes.title}>Tags <span>{`(${state.total_tags})`}</span></Typography>
+                        <Divider variant={'middle'}/>
+                        <div className={classes.searchContainer}>
+                            <HtmlTooltip disableHoverListener arrow={true} placement="bottom-start"
+                                         title={
+                                             <React.Fragment>
+                                                 <Typography style={{fontSize: '0.7rem'}}>{`Press `}
+                                                     <div style={{
+                                                         border: "1px solid #888a8c",
+                                                         padding: '0 0.5rem 0 0.5rem',
+                                                         borderRadius: '3px',
+                                                         display: 'inline-block'
+                                                     }}>
+                                                         <SubdirectoryArrowRightRoundedIcon
+                                                             style={{fontSize: '0.7rem', paddingRight: '0.3rem'}}/>
+                                                         Enter
+                                                     </div>
+                                                     {` to search`}</Typography>
+                                             </React.Fragment>
+                                         }
+                            >
+                                <Input className={classes.search}
+                                       onKeyDown={handleKeyDown}
+                                       id="input-with-tags"
+                                       variant='outlined'
+                                       disableUnderline
+                                       onChange={handleChange}
+                                       name="queryWord" value={query.queryWord}
+                                       placeholder={'Enter keyword'}
+                                       startAdornment={(<InputAdornment>
+                                           <SearchIcon style={{marginRight: '0.4rem', opacity: '0.5'}}/>
+                                       </InputAdornment>)}
+                                />
+                            </HtmlTooltip>
+                        </div>
+                        <div className={classes.main}>
+                            {
+                                state.tags.map((item, index) => {
+                                    return (
+                                        <div className={classes.tagContained} key={item.tag_id}>
+                                            <TagComponent tag={item}/>
+                                        </div>
+                                    )
+                                })
+                            }
+                        </div>
+                        <Box>
+                            {
+                                state.total_pages <= 1 ? null :
+                                    <div style={{display: 'flex', flexDirection: 'column', width: '100%'}}>
+                                        <Pagination page={state.page} count={state.total_pages} variant="outlined"
+                                                    style={{marginTop: '1rem', alignSelf: 'center'}}
+                                                    color="primary" onChange={handlePageChange}/>
+                                    </div>
+                            }
+                        </Box>
+                    </div>
+            }
         </div>
     );
 };

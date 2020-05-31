@@ -842,7 +842,7 @@ li {
     font-size: 1.1rem;
 }
 pre {
-    overflow-x: auto;
+    overflow-x: scroll;
 }
 @media only screen and (max-width: 600px) {
     .tinymce-mobile-unfocused-selections .tinymce-mobile-unfocused-selection {

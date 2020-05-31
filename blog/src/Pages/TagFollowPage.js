@@ -11,6 +11,7 @@ import {useHistory, useLocation} from 'react-router-dom'
 import {theme} from "../Themes";
 import queryString from 'query-string'
 import {Dialog, DialogTitle, TextField} from '@material-ui/core'
+import LoadingComponents from "../Component/Loading/Loading.Components";
 
 const useStyle = makeStyles({
     root: {
@@ -118,7 +119,9 @@ const TagFollowPage = () => {
     }
     return (
         <div>
-            {state.isLoading ? <div></div> :
+            {state.isLoading ? <div style={{marginTop:'2rem'}}>
+                        <LoadingComponents/>
+                    </div> :
                 <div className={classes.root}>
                     <Box className={classes.follow}>
                         <div className={classes.tagsContainer}>

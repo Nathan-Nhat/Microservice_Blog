@@ -22,7 +22,7 @@ class Tags(db.Model):
                                lazy='dynamic')
     url_image = db.Column(db.Text,
                           default='https://res.cloudinary.com/nathan-ttnhat/image/upload/w_200,q_auto/v1590673215/tag-png-11554004615vlvfzhhkxc_omalgp.png')
-
+    is_popular = db.Column(db.Integer, default=0)
     posts = db.relationship('Post',
                             secondary='tag_post',
                             backref=db.backref('tags', lazy='dynamic', cascade='save-update, merge'),
