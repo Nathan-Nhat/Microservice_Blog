@@ -62,10 +62,10 @@ const HeaderPost = () => {
                     isAuthenticated?
                     <AntTab label={'Saved Posts'}></AntTab> : null
                 }
-                {
-                    isAuthenticated?
-                    <AntTab label={'Followed Tags'}></AntTab> : null
-                }
+                {/*{*/}
+                {/*    isAuthenticated?*/}
+                {/*    <AntTab label={'Followed Tags'}></AntTab> : null*/}
+                {/*}*/}
             </AntTabs>
         </div>
     );

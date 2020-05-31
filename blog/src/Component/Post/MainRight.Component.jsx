@@ -7,7 +7,6 @@ const useStyle = makeStyles({
     root: {
         width: '400px',
         height: '400px',
-        marginTop: '4rem',
         padding: '1rem',
         marginRight: '2rem',
         alignSelf: "flex-start",
