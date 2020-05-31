@@ -13,7 +13,7 @@ from app.helper.ServiceURL import ServiceURL
 from app.models.like_model import Like
 from app.models.tag_model import Tags
 from bs4 import BeautifulSoup
-
+from app.helper.Color import get_color
 
 @post.route('/test')
 def test():
@@ -63,7 +63,7 @@ def add_post(user_id):
     for tag_name in tag_arr:
         tag_target = Tags.query.filter_by(name=tag_name).first()
         if tag_target is None:
-            tag_insert = Tags(name=tag_name)
+            tag_insert = Tags(name=tag_name, url_image=f'https://placehold.jp/16/{get_color()}/ffffff/80x80.jpg?text={tag_name}&css=%7B%22padding%22%3A%223px%22%7D')
             db.session.add(tag_insert)
             db.session.flush()
             post_add.tags.append(tag_insert)
@@ -109,7 +109,7 @@ def update_post(user_id):
     for tag_name in tag_arr:
         tag_target = Tags.query.filter_by(name=tag_name).first()
         if tag_target is None:
-            tag_insert = Tags(name=tag_name)
+            tag_insert = Tags(name=tag_name, url_image=f'https://placehold.jp/16/{get_color()}/ffffff/80x80.jpg?text={tag_name}&css=%7B%22padding%22%3A%223px%22%7D')
             db.session.add(tag_insert)
             db.session.flush()
             post_update.tags.append(tag_insert)
