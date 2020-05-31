@@ -47,15 +47,18 @@ const useStyle = makeStyles({
         paddingTop: props => props.isMobile ? '1rem' : "2rem",
     },
     tags: {
+        display: 'inline-block',
         fontSize: '0.8rem',
         backgroundColor: '#dee3e0',
         borderRadius: "0.2rem",
-        marginRight: "0.8rem",
-        padding: '0.4rem',
-        opacity: "0.7",
+        marginLeft: '0.5rem',
+        padding: '0.1rem 0.2rem 0.1rem 0.2rem',
+        border: '1px solid #d7d9d7',
+        opacity: '0.5',
         '&:hover': {
             cursor: 'pointer',
-            boxShadow: '0px 2px 18px -8px rgba(0,0,0,0.75)'
+            boxShadow: '0px 2px 18px -8px rgba(0,0,0,0.75)',
+            backgroundColor: '#d7d9d7'
         }
     },
     author: {

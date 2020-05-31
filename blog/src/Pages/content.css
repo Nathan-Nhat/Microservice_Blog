@@ -844,6 +844,9 @@ li {
 pre {
     overflow-x: scroll;
 }
+code span {
+    font-size: 0.9rem;
+}
 @media only screen and (max-width: 600px) {
     .tinymce-mobile-unfocused-selections .tinymce-mobile-unfocused-selection {
         /* Note: this file is used inside the content, so isn't part of theming */
@@ -858,6 +861,9 @@ pre {
     }
     code span {
         font-size: 0.9rem;
+    }
+    code {
+	    font-size: 0.9rem;
     }
     body {
         -webkit-text-size-adjust: none;
