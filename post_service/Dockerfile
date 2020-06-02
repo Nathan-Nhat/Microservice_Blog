@@ -4,7 +4,8 @@ COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
+EXPOSE 6000
+EXPOSE 6001
+EXPOSE 6002
 
-EXPOSE 5002
-
-CMD [ "python", "./gunicorn_run.py" ]
+CMD [ "python3", "./gunicorn_run.py" ]

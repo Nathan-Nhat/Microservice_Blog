@@ -45,6 +45,13 @@ services:
     - mysql
     volumes:
     - ./profile_service:/usr/src/app
+  nginx_post:
+    image: nginx_post:${TAG}
+    restart: always
+    build:
+      context: ./nginx_post
+      dockerfile: Dockerfile
+    container_name: nginx_post
   post_service:
     image: post_service:${TAG}
     restart: always
@@ -105,7 +112,7 @@ services:
     image: nginx:1.17.10
     container_name: api_gateway
     ports:
-    - "8000:8000"
+    - "1005:8000"
     volumes:
     - ./api_gateway:/etc/nginx/conf.d
     restart: always
@@ -117,7 +124,7 @@ services:
       context: ./front_end_production
       dockerfile: Dockerfile
     ports:
-    - "80:80"
+    - "6196:80"
     volumes:
     - ./front_end_production/build:/usr/share/nginx/html
     - ./front_end_production/config:/etc/nginx/conf.d
