@@ -5,6 +5,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-EXPOSE 5001
+EXPOSE 7000
 
 CMD [ "python", "./gunicorn_run.py" ]

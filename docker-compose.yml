@@ -4,13 +4,20 @@ services:
     image: rabbitmq:3.8.3
     container_name: rabbitmq
     restart: always
+  nginx_auth:
+    image: nginx_auth:${TAG}
+    restart: always
+    build:
+      context: ./nginx_auth
+      dockerfile: Dockerfile
+    container_name: nginx_auth
   auth_service:
     image: auth_service:${TAG}
     restart: always
     build:
         context: ./auth_service
         dockerfile: Dockerfile
-    container_name : auth_service
+#    container_name : auth_service
     environment:
     - PYTHONUNBUFFERED=TRUE
     - FLASK_CONFIG=${FLASK_CONFIG}
@@ -25,13 +32,20 @@ services:
     - rabbitmq
     volumes:
     - ./auth_service:/usr/src/app
+  nginx_profile:
+    image: nginx_profile:${TAG}
+    restart: always
+    build:
+      context: ./nginx_profile
+      dockerfile: Dockerfile
+    container_name: nginx_profile
   profile_service:
     image: profile_service:${TAG}
     restart: always
     build:
         context: ./profile_service
         dockerfile: Dockerfile
-    container_name : profile_service
+#    container_name : profile_service
     environment:
     - PYTHONUNBUFFERED=TRUE
     - FLASK_CONFIG=${FLASK_CONFIG}
@@ -58,7 +72,7 @@ services:
     build:
         context: ./post_service
         dockerfile: Dockerfile
-    container_name : post_service
+#    container_name : post_service
 #    ports:
 #    - "5002:5002"
     environment:

@@ -30,10 +30,10 @@ class TestingConfig(Config):
 
 
 class ProductionConfig(Config):
-    AUTH_SERVICE = 'http://auth_service:5000/api/v1/auth/'
-    PROFILE_SERVICE = 'http://profile_service:5001/api/v1/profile/'
-    POST_SERVICE = 'http://post_service:5002/api/v1/post/'
-    FRONT_END_SERVER = 'http://35.240.191.124/'
+    AUTH_SERVICE = 'http://nginx_auth:5000/'
+    PROFILE_SERVICE = 'http://nginx_profile:5001/'
+    POST_SERVICE = 'http://nginx_post:5002/'
+    FRONT_END_SERVER = 'http://tnshare.online/'
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'mysql+pymysql://root:Wakerjacob@90@mysql' \
                                                                     ':3306/profile?charset=utf8mb4'
 

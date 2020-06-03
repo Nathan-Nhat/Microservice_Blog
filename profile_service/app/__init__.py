@@ -19,6 +19,6 @@ def create_app(config_name):
     swagger.init_app(app)
     moment.init_app(app)
     from app.api import profile
-    app.register_blueprint(profile, url_prefix='/api/v1/profile')
+    app.register_blueprint(profile)
 
     return app

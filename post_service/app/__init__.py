@@ -22,5 +22,5 @@ def create_app(config_name):
     from app.models.post_model import Post
     from app.models.comment_model import Comments
     from app.models.like_comment_model import LikeComment
-    app.register_blueprint(post, url_prefix='/api/v1/post')
+    app.register_blueprint(post)
     return app
